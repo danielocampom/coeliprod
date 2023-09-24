@@ -83,21 +83,21 @@
         </router-link>
       </vs-sidebar-item>
       
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PRENDA'].includes(role))" id="prendas">
-        <template #icon>
-          <box-icon name='body'></box-icon>
-        </template>
-        <router-link to="/prendas" class="nav-link">
-          Prendas
-        </router-link>
-      </vs-sidebar-item>
-
       <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="registroLavado">
         <template #icon>
           <box-icon type='solid' name='file-plus'></box-icon>
         </template>
         <router-link to="/registroLavado" class="nav-link">
           Registrar Proceso de Lavado
+        </router-link>
+      </vs-sidebar-item>
+
+      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PRENDA'].includes(role))" id="prendas">
+        <template #icon>
+          <box-icon name='body'></box-icon>
+        </template>
+        <router-link to="/prendas" class="nav-link">
+          Prendas
         </router-link>
       </vs-sidebar-item>
         
