@@ -112,7 +112,6 @@
 import ConfirmComponent from '@/components/confirm.vue'
 import { fetchApi } from "@/service/service.js"
 
-
 export default {
     name: 'CardUsrComponent',
     props: {

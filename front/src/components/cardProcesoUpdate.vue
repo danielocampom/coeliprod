@@ -1,11 +1,98 @@
 <template>
     <div>
-        <HeaderComponent/>
-        <br>
-    
-        <b-container fluid class="mt-5">
-            <template>
-                <div>
+        <b-card  v-if="render">
+            <b-skeleton animation="throb" width="85%"></b-skeleton>
+            <b-skeleton animation="throb" width="55%"></b-skeleton>
+            <b-skeleton animation="throb" width="70%"></b-skeleton>
+            <b-skeleton type="input" class="mt-2"></b-skeleton>
+            <b-skeleton type="input" class="mt-2"></b-skeleton>
+            <b-skeleton type="input" class="mt-2"></b-skeleton>
+            <b-skeleton type="input" class="mt-2"></b-skeleton>
+        </b-card>        
+        <b-card v-else >
+            <div class="d-flex flex-row bd-highlight">
+                <div class="p-1 bd-highlight">
+                    <box-icon name='radio-circle-marked' :color="dataProceso.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
+                    
+                </div>
+                <div class="p-1 bd-highlight">
+                    <h5 class="card-title">{{dataProceso.codigo}}</h5>
+                    <h6 class="card-subtitle text-muted mb-2">{{dataProceso.nombre}}</h6>
+                </div>
+            </div>
+            <!-- {{ dataProceso.pasos }} -->
+            <vs-button primary block class="mt-2"  @click="activeDetalles=!activeDetalles">
+                <box-icon name='detail' color="#fff"></box-icon> Mostrar Detalles
+            </vs-button>
+            <b-modal centered v-model="activeDetalles">
+                <template #modal-header="{ close }">
+                    <h5>Detalles <b>{{dataProceso.codigo}}</b></h5>
+                    <vs-button circle icon floating danger @click="close()">
+                        <box-icon name='x' color="#fff"></box-icon>
+                    </vs-button>
+                </template>
+                <div class="con-form">
+                    <v-timeline  dense v-for="(paso, i) in dataProceso.pasos" :key="i">
+                        <v-timeline-item  color="deep-purple lighten-1" >
+                            <span slot="opposite">{{paso.nombre}}</span>
+                            <v-card class="elevation-2">
+                                <v-card-text>
+                                    <div class="mt-1">
+                                        <label for="descripcion">Descripcion: </label>
+                                        <strong>{{paso.descripcion}}</strong>
+                                    </div>
+                                    <div class="mt-1">
+                                        <label for="tipoLavado">Tipo de Lavado: </label>                                    
+                                        <strong>
+                                            {{paso.idTipoLavado}}
+                                        </strong>
+                                    </div>
+                                    <div class="mt-1">
+                                        <label for="tipoLavado">Programa de lavado: </label>                                    
+                                        
+                                            <ul v-if="paso.idProgramaLavado">
+                                                
+                                                <li>
+                                                    Nombre: ejemplo
+                                                </li>
+                                                <li>
+                                                    Descripcion: ejemplo
+                                                </li>
+                                                <li>
+                                                    cantidad Minima: ejemplo
+                                                </li>
+                                                <li>
+                                                    cantidad Maxima: ejemplo
+                                                </li>
+                                            </ul>
+                                        <strong v-else>
+                                            No aplica programa de lavado
+                                        </strong>
+                                    </div>
+                                </v-card-text>
+                            </v-card>
+                        </v-timeline-item>
+                       
+                    </v-timeline>
+                </div>
+                <br>
+                <template #modal-footer="{ ok }">
+                    <vs-button danger @click="ok()">
+                        <box-icon name='exit' color="#fff"></box-icon> Salir
+                    </vs-button>
+                </template>
+            </b-modal>
+            <vs-button primary block class="mt-2" @click="activeEditar=!activeEditar">
+                <box-icon name='edit' color="#fff"></box-icon> Editar
+            </vs-button>
+            <b-modal size="xl" centered v-model="activeEditar">
+                <template #modal-header="{ close }">
+                    <h5>Editar <b>{{dataProceso.codigo}}</b></h5>
+                    <vs-button circle icon floating danger @click="close()">
+                        <box-icon name='x' color="#fff"></box-icon>
+                    </vs-button>
+                </template>
+                <div class="con-form">
                     <b-container class="bv-example-row">
                         <b-card>
                             <b-row>
@@ -91,11 +178,10 @@
                                 <b-container class="mt-3">
                                     <vs-button
                                         success
-                                        flat
                                         :active="Agregar == 1"
                                         @click="addPaso()"
                                     >
-                                        Asignar Paso
+                                    <box-icon name='plus' color="#fff"></box-icon > Asignar Paso
                                     </vs-button>
                                 </b-container>
                             </b-row>
@@ -116,30 +202,49 @@
                                 </b-card>
                             </div>
                         </draggable>
-                        <b-row>
-                                <b-col lg="12" class="pb-2"><vs-button success size="large" @click="addProceso()">Guardar Registro</vs-button></b-col>
-                        </b-row>
                     </b-container>
                 </div>
-            </template>
-        </b-container>
-        <br>
+                <br>
+                <template #modal-footer="{ ok }">
+                     <vs-button success size="large" @click="addProceso()">
+                        <box-icon name='save' color="#fff"></box-icon > Guardar Registro
+                    </vs-button>
+                    <vs-button danger @click="ok()">
+                        <box-icon name='exit' color="#fff"></box-icon> Salir
+                    </vs-button>
+                </template>
+            </b-modal>
+            <vs-button primary block class="mt-2" @click="activarProceso">
+                <box-icon name='play' color="#fff"></box-icon> Activar
+            </vs-button>
+            <vs-button danger block class="mt-2"  @click="deleteProceso">
+                <box-icon name='trash' color="#fff"></box-icon> Eliminar
+            </vs-button>
+        </b-card>
+       
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
         </div>
 
     </div>
 </template>
+
 <script>
-import HeaderComponent from '@/components/Header.vue';
-import { fetchApi, refreshSession } from "@/service/service.js"
-import loginComponent from '@/components/cardLogin.vue';
+import ConfirmComponent from '@/components/confirm.vue'
+import loginComponent from './cardLogin.vue';
+import { refreshSession, fetchApi } from "@/service/service.js"
 import draggable from 'vuedraggable';
 
 
 export default {
-    name:"PrendasView",
+    name:"CardProcesoUpdateComponent",
+    props: {
+        dataProceso: Object,
+    },
     data: () => ({
+        
+        elementos: [],
+
         allRoles: [],
         lavados: [],
         tipoLavados: [],
@@ -154,12 +259,17 @@ export default {
         optionsRoles: [],
         pasos: [],
         Agregar: 0,
+
+        activeDetalles: false,
+        activeEditar: false,
+        render: true,
+        pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     components: {
-        HeaderComponent,
+        ConfirmComponent,
         loginComponent,
-        draggable
+        draggable,
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -167,10 +277,25 @@ export default {
             this.$session.set('token', data.datos.token)
         })
     },
-    mounted(){    
+    mounted(){
+        this.contador = this.dataProceso.pasos.length
+        this.pasos = this.dataProceso.pasos.map((paso) => ({
+            id: paso.id,
+            descripcion: paso.descripcion,
+            nombre: paso.nombre,
+            orden: paso.orden,
+            rolesCambio: paso.roles,
+            idProgramaLavado: paso.idProgramaLavado, 
+            idTipoLavado: paso.idTipoLavado
+        }));
+        this.nombreProceso = this.dataProceso.nombre
+        this.codigoProceso = this.dataProceso.codigo
         this.mostraRoles()
         this.mostrarLavados()
         this.mostrarTipoLavados()
+        setTimeout(() => {
+            this.render = false
+        }, 1000) 
     },
     methods: {
         refresh(){
@@ -275,12 +400,13 @@ export default {
             let token = this.$session.get('token')
 
             let json = {
+                "idProceso": this.dataProceso.id,
                 "nombreProceso": this.nombreProceso,
                 "codigo": this.codigoProceso,
                 "pasos": this.pasos,
             };
-            let res = await fetch(this.url+"proceso/register",{
-                method: "POST",
+            let res = await fetch(this.url+"proceso/update",{
+                method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': "*",
@@ -294,26 +420,58 @@ export default {
             if(data.status == 200){
                 this.refresh()
                 //se actualiza token
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.updatePage(200)
+            }else{
+                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
+        },
+
+        async deleteProceso(){
+            let token = this.$session.get('token')
+            const res = await fetch(this.url+`  /delete/${this.dataProceso.id}`,{
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+            })
+            const data = await res.json();
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.$emit('updatePage', '200')
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+
+            }else{
+                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
+        },
+        async activarProceso(){
+            let token = this.$session.get('token')
+            const res = await fetch(this.url+`proceso/activate/${this.dataProceso.id}`,{
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+            })
+            const data = await res.json();
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.$emit('updatePage', '200')
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Activado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+
             }else{
                 this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async updatePage(status){
             if(status == 200){
-                this.mostraRoles()
-                this.pasos = []
-                this.contador = 0
-                this.descripcion = ''
-                this.nombre = ''
-                this.optionsRole = []
-                this.lavado = ''
-                this.tipoLavado = ''
-                this.codigoProceso = ''
-                this.nombreProcesos = ''
-
-                // location.reload();
+                this.mostrarDetailPrendas(this.data.idPrenda, this.data.cantidadPrendas)
             }
         },
         openNotification( title, text, color, position = null, icon) {
@@ -335,78 +493,19 @@ body {
     height: 100vh;
     background: #f1f1f1 !important;
 }
-input {
-    width: 100%;
-}
+
 .card{
     border-radius: 1rem;
 }
+input {
+    width: 100%;
+}
 .ml-5 .vs-card{
     margin-left: auto!important
-} 
-
-.centerAll{
-    display: grid;
-    place-items: center;
 }
 
 .vs-card{
     padding: 0.5rem;
 }
-.vs-input{
-    width: 95%;
-}
-.form-select{
-    background: rgba(var(--vs-primary), 0.1) !important;
-    color: rgba(var(--vs-primary), 1);
-    width: 95%;
-    border-radius: 1rem;
-    height: 1rem;
-}
-</style>
-<style lang="stylus">
-  getColor(vsColor, alpha = 1)
-      unquote("rgba(var(--vs-"+vsColor+"), "+alpha+")")
-  getVar(var)
-      unquote("var(--vs-"+var+")")
-  .not-margin
-    margin 0px
-    font-weight normal
-    padding 10px
-  .con-form
-    width 100%
-    .flex
-      display flex
-      align-items center
-      justify-content space-between
-      a
-        font-size .8rem
-        opacity .7
-        &:hover
-          opacity 1
-    .vs-checkbox-label
-      font-size .8rem
-    .vs-input-content
-      margin 10px 0px
-      width calc(100%)
-      .vs-input
-        width 100%
-  .footer-dialog
-    display flex
-    align-items center
-    justify-content center
-    flex-direction column
-    width calc(100%)
-    .new
-      margin 0px
-      margin-top 20px
-      padding: 0px
-      font-size .7rem
-      a
-        color getColor('primary') !important
-        margin-left 6px
-        &:hover
-          text-decoration underline
-    .vs-button
-      margin 0px
+
 </style>

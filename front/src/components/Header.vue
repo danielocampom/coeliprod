@@ -6,17 +6,17 @@
           <box-icon name='menu'></box-icon>
         </vs-button>
       </template>
-      <vs-navbar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" :active="active == 'llegada'" id="llegada">
+      <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="llegada">
         <router-link to="/llegada" class="nav-link">
             <box-icon name='grid-alt'></box-icon> Llegada
         </router-link>
       </vs-navbar-item>
-      <vs-navbar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" :active="active == 'procesoPrendas'" id="procesoPrendas">
+      <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" id="procesoPrendas">
         <router-link to="/procesoPrendas" class="nav-link">
             <box-icon name='briefcase'></box-icon>Proceso Prendas
         </router-link>
       </vs-navbar-item>
-      <vs-navbar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTREGA'].includes(role))" :active="active == 'entregas'" id="entregas">
+      <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTREGA'].includes(role))" id="entregas">
         <router-link to="/entregas" class="nav-link">
             <box-icon name='shopping-bag'></box-icon> Entregas
         </router-link>
@@ -31,14 +31,13 @@
     </vs-navbar>
     <vs-sidebar
       absolute
-      v-model="active"
       :open.sync="activeSidebar"
       >
       <template #logo>
         <!-- ...img logo -->
           <img src="@/assets/logo_coeli.png" alt="urvina-coeli">
       </template>
-      <vs-sidebar-item  id="home">
+      <vs-sidebar-item  :class="{ 'active': isActive('/dashboard') }"  id="home">
         <template #icon>
           <box-icon name='home-alt-2' ></box-icon>
         </template>
@@ -47,16 +46,16 @@
         </router-link>
       </vs-sidebar-item>
       
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" id="usuario">
+      <vs-sidebar-item :class="{ 'active': isActive('/usuarios') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" id="usuarios">
         <template #icon>
           <box-icon name='user'></box-icon>
         </template>
-        <router-link to="/usuarios" class="nav-link">
+        <router-link to="/usuarios" class="nav-link active"  >
           usuarios
         </router-link>
       </vs-sidebar-item>
 
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CLIENTES'].includes(role))" id="cliente">
+      <vs-sidebar-item :class="{ 'active': isActive('/clientes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CLIENTES'].includes(role))" id="clientes">
         <template #icon>
           <box-icon type='solid' name='user-badge'></box-icon>
         </template>
@@ -65,7 +64,7 @@
         </router-link>
       </vs-sidebar-item>
 
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'LAVADORA'].includes(role))" id="tipoLavados">
+      <vs-sidebar-item :class="{ 'active': isActive('/tipoLavados') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'LAVADORA'].includes(role))" id="tipoLavados">
         <template #icon>
           <box-icon name='water'></box-icon>
         </template>
@@ -74,7 +73,7 @@
         </router-link>
       </vs-sidebar-item>
 
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'LAVADORA'].includes(role))" id="lavadora">
+      <vs-sidebar-item :class="{ 'active': isActive('/lavadoras') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'LAVADORA'].includes(role))" id="lavadoras">
         <template #icon>
           <box-icon type='solid' name='washer'></box-icon>
         </template>
@@ -83,7 +82,7 @@
         </router-link>
       </vs-sidebar-item>
       
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="registroLavado">
+      <vs-sidebar-item :class="{ 'active': isActive('/registroLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="registroLavado">
         <template #icon>
           <box-icon type='solid' name='file-plus'></box-icon>
         </template>
@@ -92,7 +91,16 @@
         </router-link>
       </vs-sidebar-item>
 
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PRENDA'].includes(role))" id="prendas">
+      <vs-sidebar-item :class="{ 'active': isActive('/procesoLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="procesoLavado">
+        <template #icon>
+          <box-icon type='solid' name='file-plus'></box-icon>
+        </template>
+        <router-link to="/procesoLavado" class="nav-link">
+          Proceso de Lavado
+        </router-link>
+      </vs-sidebar-item>
+
+      <vs-sidebar-item :class="{ 'active': isActive('/prendas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PRENDA'].includes(role))" id="prendas">
         <template #icon>
           <box-icon name='body'></box-icon>
         </template>
@@ -101,7 +109,7 @@
         </router-link>
       </vs-sidebar-item>
         
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="histOrdenes">
+      <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="ordenes">
         <template #icon>
           <box-icon name='folder-open'></box-icon>
         </template>
@@ -110,7 +118,7 @@
         </router-link>
       </vs-sidebar-item>
 
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="canOrdenes">
+      <vs-sidebar-item :class="{ 'active': isActive('/canceladas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="canceladas">
         <template #icon>
           <box-icon name='folder-minus'></box-icon>
         </template>
@@ -120,7 +128,7 @@
       </vs-sidebar-item>
 
 
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ROLES'].includes(role))" id="rolesUsr" >
+      <vs-sidebar-item :class="{ 'active': isActive('/roles') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ROLES'].includes(role))" id="roles" >
         <template #icon>
           <box-icon name='toggle-right' ></box-icon>
         </template>
@@ -129,7 +137,7 @@
         </router-link>
       </vs-sidebar-item>
       
-      <vs-sidebar-item v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'RASTREO'].includes(role))" id="rastOrdenes" >
+      <vs-sidebar-item :class="{ 'active': isActive('/rastreo') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'RASTREO'].includes(role))" id="rastreo" >
         <template #icon>
           <box-icon name='map-pin'></box-icon>
         </template>
@@ -243,6 +251,7 @@ export default {
           "confirmPassword": this.passConf,
           "actualPassword": this.passAct
       };
+      
       let res = await fetch(this.url+"usuario/changePassword",{
           method: "POST",
           headers: {
@@ -260,7 +269,9 @@ export default {
           this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
       }
     },
-    
+    isActive(route) {
+      return this.$route.path == route;
+    },
     logout(){
       this.$session.destroy();
       location.reload();
