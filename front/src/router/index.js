@@ -99,6 +99,12 @@ const routes = [
   },
 
   {
+    path: '/procesoLavado',
+    name: 'procesoLavado',
+    component: () => import('../views/procesoLavadoView.vue'),
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.PROCESOLAVADO]}
+  },
+  {
     path: '/entregas',
     name: 'entregas',
     component: () => import('../views/EntregaView.vue'),
@@ -148,6 +154,12 @@ const routes = [
     path: '/access-denied',
     name: 'access-denied',
     component: () => import('../views/accessDeniedView.vue'),
+    meta: {requireAuth: true}
+  },
+  {
+    path: '/ejemplo',
+    name: 'ejemplo',
+    component: () => import('../views/ejemploView.vue'),
     meta: {requireAuth: true}
   },
 ]

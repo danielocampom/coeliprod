@@ -100,8 +100,8 @@
                                 </b-container>
                             </b-row>
                         </b-card>
-                        <b-row>
-                            <b-col class="mt-3 mb-3" lg="4" md="6" sm="6" v-for="(paso, i) in pasos" :key="i">
+                        <draggable class="row" v-model="pasos" @change="onDragEnd">
+                            <div class="col-lg-4 col-md-6 col-sm-12 mt-3 mb-3" lg="4" md="6" sm="6" v-for="(paso, i) in pasos" :key="i">
                                 <b-card :title="paso.nombre" tag="article" class="mb-2">
                                     <b-card-text>
                                         {{paso.descripcion}}
@@ -111,11 +111,11 @@
                                         block
                                         @click="deletePaso(paso.id)"
                                     >
-                                        Eliminar
+                                    <box-icon name='minus' color="#fff"></box-icon >Eliminar
                                     </vs-button>
                                 </b-card>
-                            </b-col>
-                        </b-row>
+                            </div>
+                        </draggable>
                         <b-row>
                                 <b-col lg="12" class="pb-2"><vs-button success size="large" @click="addProceso()">Guardar Registro</vs-button></b-col>
                         </b-row>
@@ -134,14 +134,12 @@
 import HeaderComponent from '@/components/Header.vue';
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
+import draggable from 'vuedraggable';
 
 
 export default {
     name:"PrendasView",
     data: () => ({
-        options: [
-        'Google', 'Facebook', 'Twitter', 'Apple', 'Oracle'
-      ],
         allRoles: [],
         lavados: [],
         tipoLavados: [],
@@ -160,7 +158,8 @@ export default {
     }),
     components: {
         HeaderComponent,
-        loginComponent
+        loginComponent,
+        draggable
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -180,7 +179,17 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-    
+        onDragEnd() {
+            this.pasos = this.pasos.map((paso, index) => ({
+                orden: index+1,
+                id: paso.id,
+                descripcion: paso.descripcion,
+                nombre: paso.nombre,
+                rolesCambio: paso.roles,
+                idProgramaLavado: paso.idProgramaLavado, 
+                idTipoLavado: paso.idTipoLavado
+            }));
+        },
         async mostraRoles(){
             fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
             .then(data => {

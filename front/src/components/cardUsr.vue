@@ -62,6 +62,11 @@
                 <vs-button primary @click="updateUsr()">
                     <box-icon name='save' color="#fff"></box-icon> Guardar
                 </vs-button>
+                <div v-if="mostrarBtn">
+                    <vs-button warn @click="updatePass(dataUser.id)">
+                        <box-icon name='lock' color="#fff"></box-icon> Cambiar Contraseña
+                    </vs-button>
+                </div>
                 <vs-button danger @click="ok()">
                     <box-icon name='exit' color="#fff"></box-icon> Salir
                 </vs-button>
@@ -76,6 +81,28 @@
             </template>
             <ConfirmComponent @confirm="deleteUsuario"/>
         </vs-dialog>
+        <vs-dialog width="550px" not-center v-model="activeupdatePass">
+        <template #header>
+          <h4 class="not-margin">
+            Contraseña Actualizada<b> {{dataUser.username}}</b>
+          </h4>
+        </template>
+
+
+        <div class="con-content">
+          <h5>
+            tu nueva contraseña es <b>{{ newPass }}</b>
+          </h5>
+        </div>
+
+        <template #footer>
+          <div class="con-footer">
+            <vs-button @click="active=false" transparent>
+              Ok
+            </vs-button>
+          </div>
+        </template>
+      </vs-dialog>
 
     </div>
     
@@ -84,7 +111,6 @@
 
 import ConfirmComponent from '@/components/confirm.vue'
 import { fetchApi } from "@/service/service.js"
-
 
 export default {
     name: 'CardUsrComponent',
@@ -95,6 +121,8 @@ export default {
         estado: '',
         active: false,
         active2: false,
+        activeupdatePass: false,
+        mostrarBtn: false,
         nombre: '',
         paterno: '',
         materno: '',
@@ -103,6 +131,7 @@ export default {
         allRoles: [],
         permisosUpCli: false,
         btnElimina: 0,
+        newPass: '',
         btnActualizar: 0,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
@@ -111,6 +140,9 @@ export default {
         ConfirmComponent,
     },
     async mounted(){
+        if(this.$session.get('roles').includes("SISTEMAS") || this.$session.get('roles').includes("ADMIN")){
+            this.mostrarBtn = true
+        }
         this.mostraRoles()
         this.nombre = this.dataUser.nombre
         this.paterno = this.dataUser.paterno
@@ -160,6 +192,32 @@ export default {
                 this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
+        async updatePass(id){
+            let token = this.$session.get('token')
+
+            let res = await fetch(this.url+`usuario/resetPassword/${id}`,{
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+            })
+            let data = await res.json()
+
+            if(data.status == 200){
+                //se actualiza token
+                this.active = false
+                this.openNotification(`Exito: ${data.mensaje}`, `Contraseña Actualizada`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.activeupdatePass = true
+                this.newPass = data.datos.password
+
+                this.$emit('updatePage', '200')
+            }else{
+                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
+        },
+
         async deleteUsuario(status){
             if(status == 200){
                 let token = this.$session.get('token')
