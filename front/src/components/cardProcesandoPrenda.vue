@@ -9,7 +9,7 @@
             <b-skeleton type="input" v-if="data.idEstado != 10 "></b-skeleton>
             <b-skeleton type="input" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
-        <b-card v-else :title="data.nombrePrenda" :sub-title="'Cantidad de Prendas '+ data.cantidad">
+        <b-card :style="{ 'border-left': `solid 5px #d9534f !important` }" v-else :title="data.nombrePrenda" :sub-title="'Cantidad de Prendas '+ data.cantidad">
             <div class='badge bg-primary text-wrap float-end mb-2' >
                 {{ data.nombrePaso }}
             </div>

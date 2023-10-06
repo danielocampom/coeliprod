@@ -5,38 +5,39 @@
         <vs-button @click="activeSidebar = !activeSidebar" flat icon>
           <box-icon name='menu'></box-icon>
         </vs-button>
+          <box-icon name='last-page'></box-icon> {{ breadcrumb }} /
       </template>
-      <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="llegada">
-        <router-link to="/llegada" class="nav-link">
-            <box-icon name='grid-alt'></box-icon> Llegada
-        </router-link>
-      </vs-navbar-item>
-      <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" id="procesoPrendas">
-        <router-link to="/procesoPrendas" class="nav-link">
-            <box-icon name='briefcase'></box-icon>Proceso Prendas
-        </router-link>
-      </vs-navbar-item>
-      <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTREGA'].includes(role))" id="entregas">
-        <router-link to="/entregas" class="nav-link">
-            <box-icon name='shopping-bag'></box-icon> Entregas
-        </router-link>
-      </vs-navbar-item>
+        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="llegada">
+          <router-link to="/llegada" class="nav-link">
+              <box-icon name='grid-alt'></box-icon> Llegada
+          </router-link>
+        </vs-navbar-item>
+        <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" id="procesoPrendas">
+          <router-link to="/procesoPrendas" class="nav-link">
+              <box-icon name='briefcase'></box-icon> Proceso Prendas
+          </router-link>
+        </vs-navbar-item>
+        <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTREGA'].includes(role))" id="entregas">
+          <router-link to="/entregas" class="nav-link">
+              <box-icon name='shopping-bag'></box-icon> Entregas
+          </router-link>
+        </vs-navbar-item>
+
 
       <template #right>
-
+        <vs-navbar-item>
+          <box-icon name='street-view'></box-icon> | mmanzanares
+        </vs-navbar-item>
         <vs-navbar-item :active="active == 'exit'" id="exit" @click="logoutModal=!logoutModal">
             <box-icon name='exit' ></box-icon>
         </vs-navbar-item>
       </template>
     </vs-navbar>
-    <vs-sidebar
-      absolute
-      :open.sync="activeSidebar"
-      >
+    <vs-sidebar absolute :open.sync="activeSidebar">
       <template #logo>
-        <!-- ...img logo -->
           <img src="@/assets/logo_coeli.png" alt="urvina-coeli">
       </template>
+      
       <vs-sidebar-item  :class="{ 'active': isActive('/dashboard') }"  id="home">
         <template #icon>
           <box-icon name='home-alt-2' ></box-icon>
@@ -199,7 +200,6 @@
       
       
     </vs-sidebar>
-
     <vs-dialog prevent-close v-model="logoutModal">
       <template #header>
         <h4 class="not-margin">
@@ -220,6 +220,7 @@
       </template>
     </vs-dialog>
   </div>
+
 </template>
 
 <script>
@@ -231,6 +232,7 @@ export default {
     passNueva: '',
     passConf: '',
     passAct: '',
+    breadcrumb: '',
     active: 'home',
     activeSidebar: false,
     activeNotify: false,
@@ -239,6 +241,7 @@ export default {
     url: process.env.VUE_APP_SERVICE_URL_API
   }),
   mounted(){
+    this.breadcrumb = window.location.pathname.split("/")[1]
   },
   methods:{
     

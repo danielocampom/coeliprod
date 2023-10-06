@@ -76,11 +76,11 @@ export default {
                 }
             })
         },
-        async updatePage(status){
-            if(status == 200){
+        // async updatePage(status){
+        //     if(status == 200){
 
-            }
-        },
+        //     }
+        // },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
             progress: 'auto',

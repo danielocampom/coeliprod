@@ -8,9 +8,9 @@
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
-        <b-card v-else :title="data.prenda" :sub-title="data.descripcionEstado">
+        <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.prenda" :sub-title="data.descripcionEstado">
             <div class="badge bg-primary text-wrap float-end" >
-                {{ data.nombrePaso }}
+                {{ data.nombrePaso }} {{ data.estado }}
             </div>
             <strong class="fw-light">Cantidad: {{ data.cantidadPrendas }}</strong>
             <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button>
@@ -202,6 +202,8 @@ export default {
         modalIniciar: false,
         comfirm: false,
         cancelPredas: false,
+        borderColor: '',
+
         
         detail: [],
         pasos: [],
@@ -217,6 +219,7 @@ export default {
     },
     mounted(){
         // console.log(this.data.idTipoLavado)
+        
         this.mostraLavadoras()
         setTimeout(() => {
             this.render = false

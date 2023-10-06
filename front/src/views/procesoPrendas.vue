@@ -10,7 +10,7 @@
                         <!-- <b-container class="bv-example-row"> -->
                             <b-row>
                                 <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
-                                    <CardProcesoPrendaComponent  v-if="!cons.idEstado" @updatePage="updatePage" :data="{prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso}"></CardProcesoPrendaComponent>
+                                    <CardProcesoPrendaComponent @updatePage="updatePage" :data="{estado:cons.idEstado, prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso}"></CardProcesoPrendaComponent>
                                 </b-col>
                             </b-row>            
                             <vs-alert v-if="sinData" shadow danger>
@@ -95,9 +95,10 @@ export default {
                 if(data.status == 200){
                     
                     data.datos.forEach( value => {
-                        // console.log(value)
+                        console.log(value)
                         if(value.idEstado == null){
                             this.consultas.push(value)
+                            // console.log(value)
                         }else{
                             this.consultasProcesando.push(value)
                         }

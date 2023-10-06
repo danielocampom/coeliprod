@@ -230,7 +230,6 @@
 </template>
 
 <script>
-import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import draggable from 'vuedraggable';
@@ -267,7 +266,6 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     components: {
-        ConfirmComponent,
         loginComponent,
         draggable,
     },
