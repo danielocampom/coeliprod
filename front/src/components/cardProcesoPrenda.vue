@@ -9,9 +9,11 @@
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.prenda" :sub-title="data.descripcionEstado">
+            <p>{{ date }}</p>
             <div class="badge bg-primary text-wrap float-end" >
                 {{ data.nombrePaso }} {{ data.estado }}
             </div>
+
             <strong class="fw-light">Cantidad: {{ data.cantidadPrendas }}</strong>
             <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button>
             <vs-dialog blur  v-model="modalIniciar">
@@ -185,7 +187,7 @@
 import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
-
+import moment from 'moment';
 
 export default {
     name:"CardProcesoPrendaComponent",
@@ -193,6 +195,7 @@ export default {
         data: Object,
     },
     data: () => ({
+        date: '',
         cantidad: '',
         motivoElim: '',
         cantidadElim: '',
@@ -218,8 +221,9 @@ export default {
         loginComponent
     },
     mounted(){
+        moment.locale('es');  
         // console.log(this.data.idTipoLavado)
-        
+        this.date = moment("2023-10-05 02:11:35").startOf('hour').fromNow()
         this.mostraLavadoras()
         setTimeout(() => {
             this.render = false
@@ -235,6 +239,7 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
+        
         async mostraLavadoras(){
             fetchApi(this.url+'lavadora/findByEstado/1', 'GET', this.$session.get('token'))
             .then(data => {
