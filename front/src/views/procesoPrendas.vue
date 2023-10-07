@@ -24,7 +24,7 @@
                         <!-- <b-container class="bv-example-row"> -->
                             <b-row>
                                 <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cp, i) in consultasProcesando" :key="i">
-                                    <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="{idOrdenPrenda: cp.idOrdenPrenda, idPrenda: cp.idPrenda, idHist:cp.idHist, nombrePaso: cp.nombrePaso, nombrePrenda: cp.nombrePrenda, nombreProgramaLavado: cp.nombreProgramaLavado, nombreSigPaso: cp.nombreSigPaso, tipoLavado: cp.tipoLavado, cantidad: cp.cantidadPrendas, idSigPaso: cp.idSigPaso, nombrePaso: cp.nombrePaso, idEstado: cp.idEstado, idHist: cp.idHist, idLavadora: cp.idLavadora, cantidadMaxima: cp.cantidadMaxima, cantidadMinima: cp.cantidadMinima }"></CardProcesandoPrendaComponent>
+                                    <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="{idOrdenPrenda: cp.idOrdenPrenda, idPrenda: cp.idPrenda, idHist:cp.idHist, nombrePaso: cp.nombrePaso, nombrePrenda: cp.nombrePrenda, nombreProgramaLavado: cp.nombreProgramaLavado, nombreSigPaso: cp.nombreSigPaso, tipoLavado: cp.tipoLavado, cantidad: cp.cantidadPrendas, idSigPaso: cp.idSigPaso, nombrePaso: cp.nombrePaso, idEstado: cp.idEstado, idHist: cp.idHist, idLavadora: cp.idLavadora, cantidadMaxima: cp.cantidadMaxima, cantidadMinima: cp.cantidadMinima, fechaInicio: cp.fechaInicio }"></CardProcesandoPrendaComponent>
                                 </b-col>
                             </b-row>            
                             <vs-alert v-if="sinDataProcesando" shadow danger>
