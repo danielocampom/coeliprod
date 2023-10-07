@@ -5,16 +5,33 @@
     
         <b-container fluid class="mt-5">
             <template>
-                <b-row>
-                    <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
+                <b-card style="max-width: 400px;" class="mx-auto">
+                    <b-col class="p-1">
+                        <vs-switch class="mt-3" v-model="buscar" @click="mostrarAct()">
+                            <template #off>
+                                <box-icon name='check'></box-icon> ordenes Concluidas
+                            </template>
+                            <template #on>
+                                <box-icon name='x' color="#fff"></box-icon> Prendas Concluidas
+                            </template>
+                        </vs-switch>
+                    </b-col>
+                </b-card>
+                <b-row v-if="procesando">
+                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
+                        <ProcesandoComponent @updatePage="updatePage" :data="{nomCliente:dt.nomCliente, idOrden: dt.idOrden, prenda:dt.prenda, fechaAlta:dt.fechaAlta, estado:dt.estado, cantidad:dt.cantidad}"></ProcesandoComponent>
+                    </b-col>
+                </b-row>
+                <b-row v-else>
+                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
                         <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena}"></EntregasComponent>
                     </b-col>
                 </b-row>
-                <vs-alert v-if="sinData" shadow danger>
+                <!-- <vs-alert v-if="sinData" shadow danger>
                     <template #title>
                         No se han encontrado datos
                     </template>
-                </vs-alert>
+                </vs-alert> -->
             </template>
         </b-container>
         <div v-if="activarReboot">
@@ -30,6 +47,7 @@ import HeaderComponent from '@/components/Header.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 import EntregasComponent from '@/components/cardEntrega.vue';
+import ProcesandoComponent from '@/components/cardProcesando.vue';
 
 
 
@@ -40,13 +58,16 @@ export default {
     data: () => ({
         getDatos: [],
         sinData: false,
+        procesando: false,
+        buscar: false,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
     }),
     components: {
         HeaderComponent,
         loginComponent,
-        EntregasComponent
+        EntregasComponent,
+        ProcesandoComponent
         // CardAsignacionPrendaComponent,
 
     },
@@ -68,6 +89,36 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        mostrarAct(){
+            if(!this.procesando){
+                this.procesando = true
+                this.mostrarProcesos()
+            }else{
+                this.procesando = false
+                this.mostraPrendas()
+            }
+        },
+        async mostrarProcesos(){
+            this.getDatos = []
+            fetchApi(this.url+`orden/ordenPrenda/estado/8`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    if(data.datos.length != 0){
+                        data.datos.forEach( value => {
+                            fetchApi(this.url+`prenda/findById/${value.idPrenda}`, 'GET', this.$session.get('token'))
+                            .then(dt => {
+                                let info = {"nomCliente":value.nomCliente, "idOrden": value.idOrden, "prenda": dt.datos.nombre, "cantidad": value.cantidad, "fechaAlta":value.fechaAlta, "estado": value.nombreEstado}
+                                this.getDatos.push(info)
+                            })
+                        })
+                    }
+                }else{
+                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
+            })
+            .catch(err => console.log(err))
         },
         async mostraPrendas(){
             this.getDatos = []

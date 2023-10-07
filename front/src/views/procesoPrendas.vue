@@ -10,28 +10,28 @@
                         <!-- <b-container class="bv-example-row"> -->
                             <b-row>
                                 <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
-                                    <CardProcesoPrendaComponent @updatePage="updatePage" :data="{estado:cons.idEstado, prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso}"></CardProcesoPrendaComponent>
+                                    <CardProcesoPrendaComponent @updatePage="updatePage" :data="{idOrdenLavado:cons.idOrdenLavado, estado:cons.idEstado, prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso, fechaIngreso: cons.fhUltEdoPrenda}"></CardProcesoPrendaComponent>
                                 </b-col>
                             </b-row>            
-                            <vs-alert v-if="sinData" shadow danger>
+                            <!-- <vs-alert v-if="sinData" shadow danger>
                                 <template #title>
                                     No se han encontrado datos
                                 </template>
-                            </vs-alert>
+                            </vs-alert> -->
                         <!-- </b-container> -->
                     </b-tab>
                     <b-tab title="Procesando">
                         <!-- <b-container class="bv-example-row"> -->
                             <b-row>
                                 <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cp, i) in consultasProcesando" :key="i">
-                                    <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="{idOrdenPrenda: cp.idOrdenPrenda, idPrenda: cp.idPrenda, idHist:cp.idHist, nombrePaso: cp.nombrePaso, nombrePrenda: cp.nombrePrenda, nombreProgramaLavado: cp.nombreProgramaLavado, nombreSigPaso: cp.nombreSigPaso, tipoLavado: cp.tipoLavado, cantidad: cp.cantidadPrendas, idSigPaso: cp.idSigPaso, nombrePaso: cp.nombrePaso, idEstado: cp.idEstado, idHist: cp.idHist, idLavadora: cp.idLavadora, cantidadMaxima: cp.cantidadMaxima, cantidadMinima: cp.cantidadMinima, fechaInicio: cp.fechaInicio }"></CardProcesandoPrendaComponent>
+                                    <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="{idOrdenLavado:cp.idOrdenLavado, idOrdenPrenda: cp.idOrdenPrenda, idPrenda: cp.idPrenda, idHist:cp.idHist, nombrePaso: cp.nombrePaso, nombrePrenda: cp.nombrePrenda, nombreProgramaLavado: cp.nombreProgramaLavado, nombreSigPaso: cp.nombreSigPaso, tipoLavado: cp.tipoLavado, cantidad: cp.cantidadPrendas, idSigPaso: cp.idSigPaso, nombrePaso: cp.nombrePaso, idEstado: cp.idEstado, idHist: cp.idHist, idLavadora: cp.idLavadora, cantidadMaxima: cp.cantidadMaxima, cantidadMinima: cp.cantidadMinima, fechaIngreso: cp.fhUltEdoPrenda }"></CardProcesandoPrendaComponent>
                                 </b-col>
                             </b-row>            
-                            <vs-alert v-if="sinDataProcesando" shadow danger>
+                            <!-- <vs-alert v-if="sinDataProcesando" shadow danger>
                                 <template #title>
                                     No se han encontrado datos
                                 </template>
-                            </vs-alert>
+                            </vs-alert> -->
                         <!-- </b-container> -->
                     </b-tab>
                 </b-tabs>
@@ -74,10 +74,10 @@ export default {
     mounted(){    
         this.mostratConsultas()
         // console.log(this.consultasProcesando)
-        setTimeout(() => {
+        // setTimeout(() => {
             this.sinData = this.consultas.length == 0 ? false : true
             this.sinDataProcesando = this.consultasProcesando.length == 0 ? false : true
-        }, 100);
+        // }, 100);
     },
     methods: {
         refresh(){
@@ -95,7 +95,6 @@ export default {
                 if(data.status == 200){
                     
                     data.datos.forEach( value => {
-                        console.log(value)
                         if(value.idEstado == null){
                             this.consultas.push(value)
                             // console.log(value)

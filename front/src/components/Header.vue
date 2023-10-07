@@ -26,7 +26,7 @@
 
       <template #right>
         <vs-navbar-item>
-          <box-icon name='street-view'></box-icon> | mmanzanares
+          <box-icon name='street-view'></box-icon> | {{ userName }}
         </vs-navbar-item>
         <vs-navbar-item :active="active == 'exit'" id="exit" @click="logoutModal=!logoutModal">
             <box-icon name='exit' ></box-icon>
@@ -116,6 +116,15 @@
         </template>
         <router-link to="/ordenes" class="nav-link">
           Historial ordenes
+        </router-link>
+      </vs-sidebar-item>
+
+      <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="rastreo" >
+        <template #icon>
+          <box-icon name='book-reader'></box-icon>
+        </template>
+        <router-link to="/historico" class="nav-link">
+            Historico de Ordenes
         </router-link>
       </vs-sidebar-item>
 
@@ -227,6 +236,7 @@
 export default {
   name: 'HeaderComponent',
   data:() => ({
+    userName: '',
     logoutModal: false,
     activeModal: false,
     passNueva: '',
@@ -241,6 +251,7 @@ export default {
     url: process.env.VUE_APP_SERVICE_URL_API
   }),
   mounted(){
+    this.userName = this.$session.get('username')
     this.breadcrumb = window.location.pathname.split("/")[1]
   },
   methods:{

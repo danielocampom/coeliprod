@@ -1,73 +1,34 @@
 <template>
         
-    <b-card :title="dataRastreo.nombreCliente" :sub-title="dataRastreo.nombrePrenda">
+    <!-- <b-card :title="dataRastreo.prendas[0].nomCliente"> -->
+    <b-card :title="BMW">
         <v-row justify="space-between">
             <v-col cols="10">
-                <strong>Fecha Inicio:</strong> {{ fecha(dataRastreo.fechaInicio) }}
+                <!-- <strong>Fecha Recepcion:</strong> {{ fecha(dataRastreo.fechaRecepcion) }} -->
+                <strong>Fecha Recepcion:</strong> 23/10/08
                 <br>
-                <strong>Fecha Fin:</strong> {{ fecha(dataRastreo.fechaFin) }}
+                <strong>Fecha Entrega:</strong> 23/10/08
+                <!-- <strong>Fecha Entrega:</strong> {{ fecha(dataRastreo.fechaEntrega) }} -->
             </v-col>
             <v-col class="text-right" cols="2">
                 <div class='badge bg-primary text-wrap float-start' >
-                    {{ dataRastreo.estado }}
+                    Activado
+                    <!-- {{ dataRastreo.nombreEstado }} -->
                 </div>
             </v-col>
         </v-row>
         <br>
-        <v-row>
-            <v-col cols="4">
-                <div class="badge bg-primary text-wrap float-end" v-if="dataRastreo.autorizacion">
-                    Si
-                </div>
-                <div class="badge bg-danger text-wrap float-end" v-else>
-                    No
-                </div>
-                <h6>Utilizo autorizacion:</h6>
-            </v-col>
-        </v-row>
-        <h6 class="mt-1">Responsable: <strong>{{ dataRastreo.usuario ? nombreUs1 : '' }}</strong></h6>
-        <label for="cantidad">Lavadora: <strong>{{ dataRastreo.lavadora ? lavadora : 'No se utilizo lavadora' }}</strong></label> <br>
-        <label for="cantidad">Cantidad: <strong>{{dataRastreo.cantidad }}</strong></label> <br>
         <v-timeline  dense >
             <v-timeline-item  color="deep-purple lighten-1">
-                <span slot="opposite">{{dataRastreo.pasoProceso.nombre}}</span>
+                <span slot="opposite">ACTIVADO</span>
                 <v-card class="elevation-2">
                     <v-card-title class="text-h5">
-                        {{dataRastreo.pasoProceso.nombre}}
+                        fechaAlta: 2023-10-07
                     </v-card-title>
                     <v-card-text>
                         <div class="mt-1">
-                            <label for="descripcion">Descripcion: </label>
-                            <strong>{{dataRastreo.pasoProceso.descripcion}}</strong>
-                        </div>
-                        <h6 class="mt-1">Responsable: <strong>{{ dataRastreo.pasoProceso.usuario ? nombreUs2 : '' }}</strong></h6>
-                        <div class="mt-1">
-                            <label for="tipoLavado">Tipo de Lavado: </label>                                    
-                            <strong>
-                                {{ dataRastreo.pasoProceso.idTipoLavado ? tipoLavado : "No aplica tipo de lavado" }} 
-                            </strong>
-                        </div>
-                        <div class="mt-1">
-                            <label for="tipoLavado">Programa de lavado: </label>                                    
-                            
-                                <ul v-if="dataRastreo.pasoProceso.idProgramaLavado">
-                                    
-                                    <li>
-                                        Nombre: <strong >{{ programaLavado.nombre }}</strong>
-                                    </li>
-                                    <li>
-                                        Descripcion: <strong >{{  programaLavado.descripcion }}</strong>
-                                    </li>
-                                    <li>
-                                        cantidad Minima: <strong >{{ programaLavado.cantidadMinima }}</strong>
-                                    </li>
-                                    <li>
-                                        cantidad Maxima: <strong >{{ programaLavado.cantidadMaxima }}</strong>
-                                    </li>
-                                </ul>
-                            <strong v-else>
-                                No aplica programa de lavado
-                            </strong>
+                            <label for="descripcion">cantidad: </label>
+                            <strong>101</strong>
                         </div>
                     </v-card-text>
                 </v-card>
@@ -103,14 +64,14 @@ export default {
             this.$session.start()
             this.$session.set('token', data.datos.token)
         })
+
     },
     mounted(){
-        this.buscarUsuario(this.dataRastreo.usuario, 1)
+        // this.buscarUsuario(this.dataRastreo.usuario, 1)
         // this.buscarUsuario(this.dataRastreo.pasoProceso.usuario, 2)
-        this.dataRastreo.pasoProceso.idTipoLavado ? this.buscarTipoLavado(this.dataRastreo.pasoProceso.idTipoLavado) : ''
-        this.dataRastreo.pasoProceso.idProgramaLavado ? this.buscarProgramaLavado(this.dataRastreo.pasoProceso.idProgramaLavado) : ''
-        this.dataRastreo.lavadora ? this.buscarLavadora(this.dataRastreo.lavadora) : ''
-
+        // this.dataRastreo.pasoProceso.idTipoLavado ? this.buscarTipoLavado(this.dataRastreo.pasoProceso.idTipoLavado) : ''
+        // this.dataRastreo.pasoProceso.idProgramaLavado ? this.buscarProgramaLavado(this.dataRastreo.pasoProceso.idProgramaLavado) : ''
+        // this.dataRastreo.lavadora ? this.buscarLavadora(this.dataRastreo.lavadora) : ''
     },
     methods: {
         

@@ -10,6 +10,8 @@
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.prenda" :sub-title="data.descripcionEstado">
             <p>{{ date }}</p>
+            Numero Orden {{ data.idOrdenLavado }}
+            <br>
             <div class="badge bg-primary text-wrap float-end" >
                 {{ data.nombrePaso }}
             </div>
@@ -222,8 +224,11 @@ export default {
     },
     mounted(){
         moment.locale('es');  
-        // console.log(this.data.idTipoLavado)
-        this.date = moment(this.date.fechaInicio).startOf('hour').fromNow()
+        let fechaIngreso = this.data.fechaIngreso.split('T')
+        let horaIngreso = fechaIngreso[1].split('.')[0]
+        let fechaHora = fechaIngreso[0]+" "+horaIngreso
+        this.date = moment(fechaHora).startOf('hour').fromNow()
+
         this.mostraLavadoras()
         setTimeout(() => {
             this.render = false
@@ -373,7 +378,7 @@ body {
     border-radius: 1rem;
 }
 input {
-    width: 100%;
+    width: 90%;
 }
 .ml-5 .vs-card{
     margin-left: auto!important

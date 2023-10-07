@@ -8,11 +8,13 @@
                 <b-skeleton type="button" width="100%" class="mb-2"></b-skeleton>
                 <b-skeleton type="button" width="100%"></b-skeleton>
             </b-card>        
-            <b-card v-else :title="nomCli">
+            <b-card v-else :title="nomCli" :style="{ 'border-left': `solid 5px #0d6efd !important` }">
                 <div class="badge bg-success text-wrap float-end" >
                     {{ data.nombreEstado }}
                 </div>
-                <p class="fw-light text-muted">{{ claveCli }}.</p>
+                <p class="fw-light text-muted">clave Cliente {{ claveCli }}.</p>
+                <p class="fw-light text-muted">id Orden {{ data.idOrden }}.</p>
+
                 <!-- <div class="d-flex flex-row bd-highlight mb-3"> -->
                     <!-- <div class="p-2 bd-highlight"> -->
                         <vs-button block primary @click="entregar(data.idOrden)"> Entregar </vs-button>
@@ -23,7 +25,7 @@
                 <!-- </div> -->
                 <b-modal size="xl" centered v-model="modalShowDetail">
                     <template #modal-header="{ close }">
-                        <h5>Detalles {{ data.nomCli }} <p class="fw-light">{{ claveCli }}.</p></h5>
+                        <h5>Detalles {{ nomCli }} <p class="fw-light">clave cliente{{ claveCli }}.</p></h5>
                         <vs-button circle icon floating danger @click="close()">
                             <box-icon name='x' color="#fff"></box-icon>
                         </vs-button>

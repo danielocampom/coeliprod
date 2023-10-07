@@ -10,6 +10,9 @@
             <b-skeleton type="input" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #d9534f !important` }" v-else :title="data.nombrePrenda" :sub-title="'Cantidad de Prendas '+ data.cantidad">
+            <p>{{ date }}</p>
+            Numero Orden {{ data.idOrdenLavado }}
+            <br>
             <div class='badge bg-primary text-wrap float-end mb-2' >
                 {{ data.nombrePaso }}
             </div>
@@ -18,7 +21,7 @@
             </div>
             <p class="fw-light" v-if="data.lavadora">Lavadora {{ data.lavadora }}</p>
             <vs-button block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
-            <vs-button v-if="data.idEstado == 10 && $session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "  block flat primary  @click="autorizar(data.idHist)"> Autorizar </vs-button>
+            <vs-button v-if="data.idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.idHist)"> Autorizar </vs-button>
             <vs-button v-if="data.idEstado != 10" block flat danger @click="terminar(data.idHist)"> Terminar </vs-button>
             <vs-button v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' " block flat danger @click="cancel()"> Cancelar Prendra </vs-button>
             <vs-dialog blur v-model="cancelPredas">
@@ -113,6 +116,7 @@
 import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession } from "@/service/service.js"
+import moment from 'moment';
 
 
 export default {
@@ -121,6 +125,7 @@ export default {
         data: Object,
     },
     data: () => ({
+        date: '',
         comfirm: false,
         comfirmApertura: false,
         cancelPredas: false,
@@ -140,6 +145,11 @@ export default {
         loginComponent
     },
     mounted(){
+        moment.locale('es');  
+        let fechaIngreso = this.data.fechaIngreso.split('T')
+        let horaIngreso = fechaIngreso[1].split('.')[0]
+        let fechaHora = fechaIngreso[0]+" "+horaIngreso
+        this.date = moment(fechaHora).startOf('hour').fromNow()
         setTimeout(() => {
             this.render = false
         }, 1000)   

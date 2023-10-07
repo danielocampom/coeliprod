@@ -144,6 +144,13 @@ const routes = [
   },
   
   {
+    path: '/historico',
+    name: 'historico',
+    component: () => import('../views/historicoOrdenesView.vue'),
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN, ROLES.ALMACENENTRADA]}
+  },
+
+  {
     path: '/rastreo',
     name: 'rastreo',
     component: () => import('../views/rastreoOrdenesView.vue'),

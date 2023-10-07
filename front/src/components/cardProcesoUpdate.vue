@@ -230,6 +230,7 @@
 </template>
 
 <script>
+// arreglar registro drag
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import draggable from 'vuedraggable';
@@ -302,6 +303,7 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
+
         onDragEnd() {
             this.pasos = this.pasos.map((paso, index) => ({
                 orden: index+1,

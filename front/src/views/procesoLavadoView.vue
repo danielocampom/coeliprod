@@ -2,7 +2,6 @@
     <div>
         <HeaderComponent/>
         <br>
-    
         <b-container fluid class="mt-5">
             <b-container class="bv-example-row">
             <b-row >
