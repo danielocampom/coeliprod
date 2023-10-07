@@ -11,7 +11,7 @@
         <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.prenda" :sub-title="data.descripcionEstado">
             <p>{{ date }}</p>
             <div class="badge bg-primary text-wrap float-end" >
-                {{ data.nombrePaso }} {{ data.estado }}
+                {{ data.nombrePaso }}
             </div>
 
             <strong class="fw-light">Cantidad: {{ data.cantidadPrendas }}</strong>
@@ -223,7 +223,7 @@ export default {
     mounted(){
         moment.locale('es');  
         // console.log(this.data.idTipoLavado)
-        this.date = moment("2023-10-05 02:11:35").startOf('hour').fromNow()
+        this.date = moment(this.date.fechaInicio).startOf('hour').fromNow()
         this.mostraLavadoras()
         setTimeout(() => {
             this.render = false
