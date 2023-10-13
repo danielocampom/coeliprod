@@ -180,7 +180,8 @@ export default {
                 if(data.status == 200){
                     this.cliente = data.datos
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 
@@ -193,7 +194,8 @@ export default {
                 if(data.status == 200){
                     this.proceso = data.datos
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 
@@ -207,7 +209,8 @@ export default {
                     this.procesoSelect = data.datos
 
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -219,7 +222,8 @@ export default {
                 if(data.status == 200){
                     this.clienteSelect = data.datos
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -244,7 +248,8 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }
         },
@@ -267,8 +272,8 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-            }
+                console.warn(data)
+                this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)            }
         },
         async update(){
             let token = this.$session.get('token')
@@ -299,7 +304,8 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.$emit('updatePage', '200')
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                console.warn(data)
+                this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         openNotification( title, text, color, position = null, icon) {

@@ -633,8 +633,6 @@ export default {
                         type: 'line',
                         data: this.barCodeAnterior
                     }]
-                }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
 
             })
@@ -650,8 +648,6 @@ export default {
                     if(this.lavadoras.length == 0){
                         this.sinData == false
                     }
-                }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },

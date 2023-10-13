@@ -9,7 +9,10 @@
             <b-skeleton type="input" v-if="data.idEstado != 10 "></b-skeleton>
             <b-skeleton type="input" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
-        <b-card :style="{ 'border-left': `solid 5px #d9534f !important` }" v-else :title="data.nombrePrenda" :sub-title="'Cantidad de Prendas '+ data.cantidad">
+        <b-card :style="{ 'border-left': `solid 5px #d9534f !important` }" v-else :title="data.nomCliente" :sub-title="data.nombrePrenda">
+            <strong>
+                Cantidad de Prendas {{ data.cantidad }}
+            </strong>
             <p>{{ date }}</p>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
@@ -61,7 +64,7 @@
                     </div>
                 </template>
             </vs-dialog>
-            <b-modal size="xl" centered v-model="modalShowDetail">
+            <b-modal size="lg" centered v-model="modalShowDetail">
                 <template #modal-header="{ close }">
                     <h5>Detalles {{ data.nombrePrenda }}</h5>
                     
@@ -116,7 +119,6 @@
 import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession } from "@/service/service.js"
-import moment from 'moment';
 
 
 export default {
@@ -145,11 +147,8 @@ export default {
         loginComponent
     },
     mounted(){
-        moment.locale('es');  
-        let fechaIngreso = this.data.fechaIngreso.split('T')
-        let horaIngreso = fechaIngreso[1].split('.')[0]
-        let fechaHora = fechaIngreso[0]+" "+horaIngreso
-        this.date = moment(fechaHora).startOf('hour').fromNow()
+        let fecha=new Date(this.data.fechaIngreso);
+        this.date = this.calcularTiempoTranscurrido(fecha);
         setTimeout(() => {
             this.render = false
         }, 1000)   
@@ -160,6 +159,35 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        calcularTiempoTranscurrido(fechaInicial){
+            const fechaActual = new Date();
+            const diferencia = fechaActual - fechaInicial;
+
+            if (diferencia < 0) {
+                return "La fecha proporcionada es en el futuro.";
+            }
+
+            const segundos = Math.floor(diferencia / 1000);
+            const minutos = Math.floor(segundos / 60);
+            const horas = Math.floor(minutos / 60);
+            const dias = Math.floor(horas / 24);
+            const meses = Math.floor(dias / 30.44); // Promedio de días en un mes
+            const años = Math.floor(meses / 12);
+
+            if (años > 0) {
+                return `${años} año${años > 1 ? 's' : ''}, ${meses % 12} m${meses % 12 > 1 ? 'es' : ''}, ${dias % 30} d${dias % 30 > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (meses > 0) {
+                return `${meses} m${meses > 1 ? 'es' : ''}, ${dias % 30} d${dias % 30 > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (dias > 0) {
+                return `${dias} d${dias > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (horas > 0) {
+                return `${horas} h${horas > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (minutos > 0) {
+                return `${minutos} min${minutos > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else {
+                return `${segundos} seg${segundos > 1 ? 's' : ''}`;
+            }
         },
         aprt(){
             this.modalShowDetail = false
@@ -317,6 +345,8 @@ body {
 
 .card{
     border-radius: 1rem;
+    min-height: 9rem; 
+    min-width: 12rem;
 }
 input {
     width: 100%;

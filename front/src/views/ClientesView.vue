@@ -92,7 +92,7 @@
                     <cardClienteComponent @updatePage="updatePage" :dataCli="{nombre: cliente.nombre, estado: cliente.estado, clave: cliente.clave, id: cliente.id}" />
                 </b-col>
             </b-row>
-            <vs-alert v-if="sinData.length == 0" shadow danger>
+            <vs-alert v-if="sinData" shadow danger>
                 <template #title>
                     No se han encontrado datos
                 </template>
@@ -159,10 +159,12 @@ export default {
                 if(data.status == 200){
                     this.clientes = data.datos
                     if(this.clientes.length == 0){
-                        this.sinData == true
+                        this.sinData = true
                     }
+                    this.sinData = false
+
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
         },
@@ -174,8 +176,11 @@ export default {
                 if(data.status == 401){  this.activarReboot = true }
                 if(data.status == 200){
                     this.clientes = data.datos
+                    this.sinData = false
+
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
+                    
                 }
             })
         },
@@ -208,7 +213,8 @@ export default {
                 this.mostraActivos()
                 
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
             }
         },
         async buscarCli(){
@@ -236,7 +242,7 @@ export default {
                     this.clientes = data.datos
 
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }else{
                 this.mostraActivos()

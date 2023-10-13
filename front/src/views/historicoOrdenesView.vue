@@ -45,7 +45,7 @@
                     </v-timeline-item>
                     <br>
                     <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(bs, i) in busqueda" :key="i">
-                        <cardRastroView :dataRastreo="bs"></cardRastroView>
+                        <cardHistoricoComponent :dataRastreo="bs"></cardHistoricoComponent>
                     </v-timeline-item>
                 </v-timeline>
             </v-container>
@@ -62,7 +62,7 @@
 import HeaderComponent from '@/components/Header.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
-import cardRastroView from '@/components/cardRastroView.vue';
+import cardHistoricoComponent from '@/components/cardHistorico.vue';
 import moment from 'moment'
 
 export default {
@@ -80,7 +80,7 @@ export default {
     components: {
         HeaderComponent,
         loginComponent,
-        cardRastroView
+        cardHistoricoComponent
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {

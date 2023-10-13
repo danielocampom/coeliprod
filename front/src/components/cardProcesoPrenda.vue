@@ -8,7 +8,8 @@
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
-        <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.prenda" :sub-title="data.descripcionEstado">
+        <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.nomCliente" :sub-title="data.prenda">
+            <strong>{{ data.descripcionEstado }}</strong>
             <p>{{ date }}</p>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
@@ -34,7 +35,7 @@
                     />
                     <div class="con-selects" v-if="data.idTipoLavado">
                         <b-skeleton class="mt-3" type="input" v-if="lavadorasAll.length == 0"></b-skeleton>
-                        <vs-select  class="mt-3" v-else success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
+                        <vs-select style="max-width:99%;"  class="mt-3" v-else success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
                             <vs-option  v-for="(lavadora, i) in lavadorasAll" :key="i" :label="lavadora.lavadora" :value="lavadora.idLavadora">
                                 {{lavadora.lavadora}}
                             </vs-option>
@@ -50,7 +51,7 @@
                 </template>
             </vs-dialog>
             <vs-button block flat success @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
-            <b-modal size="xl" centered v-model="modalShowDetail">
+            <b-modal size="lg" centered v-model="modalShowDetail">
                 <template #modal-header="{ close }">
                     <h5>Detalles </h5>
                     <vs-button circle icon floating danger @click="close()">
@@ -103,24 +104,35 @@
                         </b-row>
     
                     </b-card>
-                    <div v-else v-for="(dt, i) in detail" :key="i">
-                        <hr v-if="i>0">
-                        <div class="d-flex flex-row bd-highlight mb-3">
-                            <div class="p-2 bd-highlight">
-                                <h4 class="mt-2">{{ dt.prenda.nombre }}</h4>
-                            </div>
+                    <div v-else>
+                        <div v-for="(prenda, i) in detail" :key="i">
+                            <hr v-if="i>0">
+                            <b-card>
+                                <div class="d-flex flex-row bd-highlight mb-3">
+                                    <div class="p-2 bd-highlight">
+                                        <h4 class="mt-2">{{ prenda.prenda.nombre }}</h4>
+                                    </div>
+                                </div>
+                                cantidad: <b>{{ prenda.cantidad }}</b> <br>
+                                tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
+                                <br>
+                                <strong class="mt-5">Pasos:</strong>
+                                <hr>
+                                <b-row align-h="start">
+                                    <b-col class="mt-4" v-for="(paso, i) in prenda.detalle.pasos" :key="i">
+                                        <div class="d-flex flex-row bd-highlight mb-3">
+                                            <div class="bd-highlight">
+                                                <b-card :title="paso.nombre" :sub-title="paso.descripcion">
+                                                </b-card>
+                                            </div>
+                                            <div v-if="prenda.detalle.pasos.length != i+1" class="bd-highlight">
+                                                <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
+                                            </div>
+                                        </div>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
                         </div>
-                        cantidad: <b>{{ dt.cantidad }}</b> <br>
-                        tipo de lavado:<b> {{ dt.detalle.codigo }}</b> 
-                        
-                        <br>
-                        <b-row cols="1" cols-sm="12" cols-md="6" cols-lg="4" class="mt-4">
-                            <b-col v-for="(paso, i) in dt.detalle.pasos" :key="i">
-                                <b-card :title="paso.nombre">
-                                    {{ paso.descripcion }}
-                                </b-card>
-                            </b-col>
-                        </b-row>
                     </div>
                 </template>
     
@@ -131,7 +143,7 @@
                 </template>
                 
             </b-modal>
-            <vs-button v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' " block flat danger @click="cancelPredas = !cancelPredas"> Cancelar Prendra </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat danger @click="cancelPredas = !cancelPredas"> Cancelar Prendra </vs-button>
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
                     <h4 class="not-margin">
@@ -189,7 +201,6 @@
 import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
-import moment from 'moment';
 
 export default {
     name:"CardProcesoPrendaComponent",
@@ -223,19 +234,15 @@ export default {
         loginComponent
     },
     mounted(){
-        moment.locale('es');  
-        let fechaIngreso = this.data.fechaIngreso.split('T')
-        let horaIngreso = fechaIngreso[1].split('.')[0]
-        let fechaHora = fechaIngreso[0]+" "+horaIngreso
-        this.date = moment(fechaHora).startOf('hour').fromNow()
-
+        let fecha=new Date(this.data.fechaIngreso);
+        
+        this.date = this.calcularTiempoTranscurrido(fecha);
+        // console.log(fechaHora)
         this.mostraLavadoras()
         setTimeout(() => {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda, this.data.cantidadPrendas)
-        }, 1000)   
-        // console.log(this.data)
-        // console.log({pasos:this.idPasos, paso: this.data.idPaso, idOrdenPrenda: this.data.idOrdenPrenda, cantidadPrendas:this.data.cantidadPrendas})
+        }, 1000)  
     },
     methods: {
         refresh(){
@@ -244,16 +251,46 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-        
+        calcularTiempoTranscurrido(fechaInicial){
+            const fechaActual = new Date();
+            const diferencia = fechaActual - fechaInicial;
+
+            if (diferencia < 0) {
+                return "La fecha proporcionada es en el futuro.";
+            }
+
+            const segundos = Math.floor(diferencia / 1000);
+            const minutos = Math.floor(segundos / 60);
+            const horas = Math.floor(minutos / 60);
+            const dias = Math.floor(horas / 24);
+            const meses = Math.floor(dias / 30.44); // Promedio de días en un mes
+            const años = Math.floor(meses / 12);
+
+            if (años > 0) {
+                return `${años} año${años > 1 ? 's' : ''}, ${meses % 12} m${meses % 12 > 1 ? 'es' : ''}, ${dias % 30} d${dias % 30 > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (meses > 0) {
+                return `${meses} m${meses > 1 ? 'es' : ''}, ${dias % 30} d${dias % 30 > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (dias > 0) {
+                return `${dias} d${dias > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (horas > 0) {
+                return `${horas} h${horas > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else if (minutos > 0) {
+                return `${minutos} min${minutos > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
+            } else {
+                return `${segundos} seg${segundos > 1 ? 's' : ''}`;
+            }
+        },
         async mostraLavadoras(){
-            fetchApi(this.url+'lavadora/findByEstado/1', 'GET', this.$session.get('token'))
+            fetchApi(this.url+`lavadora/findByTipoLavado/${this.data.idTipoLavado}`, 'GET', this.$session.get('token'))
+            // fetchApi(this.url+`lavadora/findByEstado/1`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.lavadorasAll = data.datos
+                    data.datos.forEach(element => {
+                        this.lavadorasAll.push({"idLavadora": element.idLavadora, "lavadora": element.nombreLvd})
+                    });
                 }else{
                     this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]
-                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -286,7 +323,8 @@ export default {
                 this.$emit('updatePage', '200')
 
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
             }
         },
         async mostrarDetailPrendas(id, cantidad){
@@ -344,7 +382,8 @@ export default {
                         this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                         this.$emit('updatePage', '200')
                     }else{
-                        this.openNotification( `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                        this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
                     }
                 }
             }
@@ -376,6 +415,8 @@ body {
 
 .card{
     border-radius: 1rem;
+    min-height: 9rem; 
+    min-width: 12rem;
 }
 input {
     width: 90%;

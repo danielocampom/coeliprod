@@ -12,8 +12,9 @@
                 <div class="badge bg-success text-wrap float-end" >
                     {{ data.nombreEstado }}
                 </div>
-                <p class="fw-light text-muted">clave Cliente {{ claveCli }}.</p>
-                <p class="fw-light text-muted">id Orden {{ data.idOrden }}.</p>
+                <p class="fw-light text-muted">Clave Cliente {{ claveCli }}</p>
+                <p class="fw-light text-muted">Id Orden {{ data.idOrden }}</p>
+                <p class="fw-light text-muted">Fecha Entrega {{ date }}</p>
 
                 <!-- <div class="d-flex flex-row bd-highlight mb-3"> -->
                     <!-- <div class="p-2 bd-highlight"> -->
@@ -23,7 +24,7 @@
                         <vs-button block success @click="modalShowDetail=!modalShowDetail"> Ver Detalles </vs-button>
                     <!-- </div> -->
                 <!-- </div> -->
-                <b-modal size="xl" centered v-model="modalShowDetail">
+                <b-modal size="lg" centered v-model="modalShowDetail">
                     <template #modal-header="{ close }">
                         <h5>Detalles {{ nomCli }} <p class="fw-light">clave cliente{{ claveCli }}.</p></h5>
                         <vs-button circle icon floating danger @click="close()">
@@ -76,33 +77,48 @@
                             </b-row>
         
                         </b-card>
-                    <div v-else v-for="(prenda, i) in prendas" :key="i">
-                        <hr v-if="i>0">
-                        <div class="d-flex flex-row bd-highlight mb-3">
-                            <div class="p-2 flex-grow-1 bd-highligh">
-                                <h4 class="mt-2">{{ prenda.prenda }}</h4>
-                            </div>
-                            <div class="p-2 bd-highlight">
-                                <vs-button circle icon floating primary @click="imprimirTicket(prenda.idOrdenPrena)">
-                                    <box-icon name='printer' color="#fff"></box-icon>
-                                </vs-button>
-                            </div>
+                    <div v-else>
+                        <div v-for="(prenda, i) in prendas" :key="i">
+                            <hr v-if="i>0">
+                            <b-card>
+                                <div class="d-flex flex-row bd-highlight mb-3">
+                                    <div class="p-2 flex-grow-1 bd-highligh">
+                                        <h4 class="mt-2">{{ prenda.prenda }}</h4>
+                                    </div>
+                                    <div class="p-2 bd-highlight">
+                                        <vs-button circle icon floating primary @click="imprimirTicket(prenda.idOrdenPrena)">
+                                            <box-icon name='printer' color="#fff"></box-icon>
+                                        </vs-button>
+                                    </div>
+                                </div>
+                                cantidad: <b>{{ prenda.cantidad }} 
+                                <div v-if="prenda.nombreEstado" class="badge bg-success text-wrap float-end" >
+                                    {{ prenda.nombreEstado }}
+                                </div></b> <br>
+                                tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
+                                
+                                <br>
+                                <br>
+                                <strong class="mt-5">Pasos:</strong>
+                                <hr>
+                                <b-row align-h="start">
+                                    <b-col class="mt-4" v-for="(paso, i) in prenda.detalle.pasos" :key="i">
+                                        <div class="d-flex flex-row bd-highlight mb-3">
+                                            <div class="bd-highlight">
+                                                <b-card :title="paso.nombre" :sub-title="paso.descripcion">
+                                                </b-card>
+                                            </div>
+                                            <div v-if="prenda.detalle.pasos.length != i+1" class="bd-highlight">
+                                                <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
+                                            </div>
+                                        </div>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
                         </div>
-                        cantidad: <b>{{ prenda.cantidad }} 
-                        <div v-if="prenda.nombreEstado" class="badge bg-success text-wrap float-end" >
-                            {{ prenda.nombreEstado }}
-                        </div></b> <br>
-                        tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
-                        
-                        <br>
-                        <b-row cols="1" cols-sm="12" cols-md="6" cols-lg="4" class="mt-4">
-                            <b-col v-for="(paso, i) in prenda.detalle.pasos" :key="i">
-                                <b-card :title="paso.nombre">
-                                    {{ paso.descripcion }}
-                                </b-card>
-                            </b-col>
-                        </b-row>
+                     
                     </div>
+                    
                     </template>
         
                     <template #modal-footer="{ ok }">
@@ -124,6 +140,7 @@
 // import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
+import moment from 'moment';
 
 export default {
     name:"CardEntregasComponent",
@@ -136,6 +153,7 @@ export default {
         modalPrint: false,
         prendas: [],
         nomCli: '',
+        date: '',
         claveCli: '',
         render: true,
         pathname: window.location.pathname,
@@ -146,6 +164,7 @@ export default {
         loginComponent
     },
     mounted(){
+        this.date = moment(this.fechaEntrega).format('MM/DD/YYYY');
         this.mostraCli()
         this.mostraCliDetail()
         setTimeout(() => {
@@ -229,7 +248,8 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `La prenda se ha entregado`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
                 }
             })
 
@@ -261,6 +281,8 @@ body {
 
 .card{
     border-radius: 1rem;
+    min-height: 9rem; 
+    min-width: 12rem;
 }
 input {
     width: 100%;

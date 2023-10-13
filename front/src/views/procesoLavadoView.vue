@@ -71,15 +71,15 @@ export default {
                         this.sinData == true
                     }
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
-        // async updatePage(status){
-        //     if(status == 200){
-
-        //     }
-        // },
+        async updatePage(status){
+            if(status == 200){
+                this.mostrarProcesos()
+            }
+        },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
             progress: 'auto',

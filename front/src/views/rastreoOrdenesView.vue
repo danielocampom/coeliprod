@@ -38,7 +38,7 @@
         </b-container>
         <br>
         <template>
-            <v-container style="max-width: 900px;" v-if="busqueda.length > 0">
+            <v-container style="max-width: 900px;" v-if="rastreo.length > 0">
                 <v-timeline dense clipped >
                     <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
                         <template v-slot:icon>
@@ -46,8 +46,8 @@
                         </template>
                     </v-timeline-item>
                     <br>
-                    <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(bs, i) in busqueda" :key="i">
-                        <cardRastroView :dataRastreo="bs"></cardRastroView>
+                    <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(rs, i) in rastreo" :key="i">
+                        <cardRastroComponent :dataRastreo="{idOrden:rs.idOrden, idCliente:rs.idCliente, fechaRecepcion:rs.fechaRecepcion, fechaEntrega:rs.fechaEntrega, nombreEstado:rs.nombreEstado, prendas:rs.prendas}"></cardRastroComponent>
                     </v-timeline-item>
                 </v-timeline>
             </v-container>
@@ -64,13 +64,13 @@
 import HeaderComponent from '@/components/Header.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
-import cardRastroView from '@/components/cardRastroView.vue';
+import cardRastroComponent from '@/components/cardRastro.vue';
 import moment from 'moment'
 
 export default {
     name:"rastreoOrdenesView",
     data: () => ({
-        busqueda: [],
+        rastreo: [],
         nombreUsr: '',
         lavadora: '',
         tipoLavado: '',
@@ -82,7 +82,7 @@ export default {
     components: {
         HeaderComponent,
         loginComponent,
-        cardRastroView
+        cardRastroComponent
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -104,26 +104,21 @@ export default {
             return moment(fecha).format("LLLL");  
         },
         async buscar(){
-            this.busqueda = []
+            this.rastreo = []
 
-            fetchApi(this.url+`orden/historial/${this.buscarTxt}`, 'GET', this.$session.get('token'))
+            fetchApi(this.url+`orden/findByIdOrdenLavado/${this.buscarTxt}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.busqueda = data.datos
+                    this.rastreo.push(data.datos)
                     this.refresh()
                 }else{
                     this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-                    this.busqueda = []
+                    this.rastreo = []
                 }
             })
         },
         
-        async updatePage(status){
-            if(status == 200){
-                this.mostraActivos()
-            }
-        },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
             progress: 'auto',

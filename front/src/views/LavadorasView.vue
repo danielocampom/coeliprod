@@ -427,7 +427,8 @@ export default {
                         let pl = data.datos
                         this.programasLavado.push({"id": this.contador, "nombre": pl.nombre, "descripcion": pl.descripcion, "cantidadMinima": pl.cantidadMinima, "cantidadMaxima": pl.cantidadMaxima, "idPrograma": pl.id })
                     }else{
-                        this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                        this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
                     }
                 })
             }else{
@@ -460,7 +461,7 @@ export default {
                     
                     this.totalRows = this.items.length 
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 
@@ -478,7 +479,7 @@ export default {
                 if(data.status == 200){
                     this.tiposLavado = data.datos
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -490,10 +491,11 @@ export default {
                 if(data.status == 200){
                     this.lavadoras = data.datos
                     if(this.lavadoras.length == 0){
-                        this.sinData == true
+                        this.sinData = true
                     }
+                    this.sinData = false
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
         },
@@ -505,10 +507,12 @@ export default {
                 if(data.status == 200){
                     this.lavadoras = data.datos
                     if(this.lavadoras.length == 0){
-                        this.sinData == true
+                        this.sinData = true
                     }
+                    this.sinData = false
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
+    
                 }
             })
         },
@@ -521,10 +525,11 @@ export default {
                 if(data.status == 200){
                     this.lavadoras = data.datos
                     if(this.lavadoras.length == 0){
-                        this.sinData == true
+                        this.sinData = true
                     }
+                    this.sinData = false
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
         },
@@ -543,7 +548,7 @@ export default {
                     this.totalRows = this.items.length 
 
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -580,7 +585,8 @@ export default {
                 this.desLavado = ''
                 this.nomLavado = ''
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
             }
         },
         async addWasher(){
@@ -616,7 +622,8 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostraActivos()
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
             }
         },
         async searchWasher(){
@@ -646,7 +653,8 @@ export default {
                     this.lavadoras = data.datos
 
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
                 }
             }else{
                 this.mostrarTodos()
@@ -677,6 +685,11 @@ body {
     font-family: "Poppins", sans-serif;
     height: 100vh;
     background: #f1f1f1 !important;
+}
+.card{
+    border-radius: 1rem;
+    min-height: 7rem; 
+    min-width: 12rem;
 }
 input {
     width: 100%;
@@ -738,9 +751,10 @@ input {
     display: grid;
     place-items: center;
 }
-
 .card{
     border-radius: 1rem;
+    min-height: 6rem; 
+    min-width: 12rem;
 }
 .vs-input{
     width: 100%;

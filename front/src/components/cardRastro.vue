@@ -1,34 +1,33 @@
 <template>
         
-    <!-- <b-card :title="dataRastreo.prendas[0].nomCliente"> -->
-    <b-card :title="BMW">
+    <b-card :title="dataRastreo.prendas[0].nomCliente" :sub-title="'Id Orden' + dataRastreo.idOrden">
         <v-row justify="space-between">
             <v-col cols="10">
-                <!-- <strong>Fecha Recepcion:</strong> {{ fecha(dataRastreo.fechaRecepcion) }} -->
-                <strong>Fecha Recepcion:</strong> 23/10/08
+                <strong>Fecha Recepcion: </strong> {{ fecha(dataRastreo.fechaRecepcion) }}
                 <br>
-                <strong>Fecha Entrega:</strong> 23/10/08
-                <!-- <strong>Fecha Entrega:</strong> {{ fecha(dataRastreo.fechaEntrega) }} -->
+                <strong>Fecha Entrega: </strong> {{ fecha(dataRastreo.fechaEntrega) }}
             </v-col>
             <v-col class="text-right" cols="2">
                 <div class='badge bg-primary text-wrap float-start' >
-                    Activado
-                    <!-- {{ dataRastreo.nombreEstado }} -->
+                    {{ dataRastreo.nombreEstado }}
                 </div>
             </v-col>
         </v-row>
         <br>
         <v-timeline  dense >
-            <v-timeline-item  color="deep-purple lighten-1">
-                <span slot="opposite">ACTIVADO</span>
+            <v-timeline-item  color="deep-purple lighten-1"  v-for="(rs, i) in dataRastreo.prendas" :key="i">
                 <v-card class="elevation-2">
+                    <div class='badge bg-primary text-wrap float-end' >
+                        {{ rs.nombreEstado }}
+                    </div>
                     <v-card-title class="text-h5">
-                        fechaAlta: 2023-10-07
+                        <strong>Fecha Alta: </strong> {{ fecha(rs.fechaAlta) }}
+                        <strong>Ultimo Movimiento: </strong> {{ fecha(rs.ultimoEstado) }}
                     </v-card-title>
                     <v-card-text>
                         <div class="mt-1">
                             <label for="descripcion">cantidad: </label>
-                            <strong>101</strong>
+                            <strong>{{rs.cantidad}}</strong>
                         </div>
                     </v-card-text>
                 </v-card>
@@ -60,6 +59,8 @@ export default {
     components: {
     },
     created(){
+        moment.locale('es');  
+        
         refreshSession(this.url ,this.$session.get('token')).then( data => {
             this.$session.start()
             this.$session.set('token', data.datos.token)
@@ -67,11 +68,7 @@ export default {
 
     },
     mounted(){
-        // this.buscarUsuario(this.dataRastreo.usuario, 1)
-        // this.buscarUsuario(this.dataRastreo.pasoProceso.usuario, 2)
-        // this.dataRastreo.pasoProceso.idTipoLavado ? this.buscarTipoLavado(this.dataRastreo.pasoProceso.idTipoLavado) : ''
-        // this.dataRastreo.pasoProceso.idProgramaLavado ? this.buscarProgramaLavado(this.dataRastreo.pasoProceso.idProgramaLavado) : ''
-        // this.dataRastreo.lavadora ? this.buscarLavadora(this.dataRastreo.lavadora) : ''
+
     },
     methods: {
         

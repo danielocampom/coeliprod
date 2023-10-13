@@ -19,12 +19,12 @@
                                                             <div class="con-selects">
                                                                 <div class="form-floating">
                                                                     <b-form-select class="form-select"  v-model="SelectCliente" @change="mostarPrendas()" :options="getClientes"></b-form-select>
-                                                                    <label for="floatingSelect">Selecciona una Opción</label>
+                                                                    <label for="floatingSelect">Selecciona un cliente</label>
                                                                 </div>
                                                             </div>
                                                         </b-col>
                                                         <b-col lg="12" class="mt-5">
-                                                            <vs-input type="date" size="large" v-model="fechaEntrega" primary label-placeholder="Fecha de entrega">
+                                                            <vs-input type="date" size="large" v-model="fechaEntrega" primary label-placeholder="Fecha de entrega" :min="minDate">
                                                                 <template #icon>
                                                                     <box-icon name='calendar' ></box-icon>
                                                                 </template>
@@ -38,7 +38,7 @@
                                                             <div class="con-selects">
                                                                 <div class="form-floating">
                                                                     <b-form-select class="form-select"   v-model="SelectPrenda" :options="getPrendas"></b-form-select>
-                                                                    <label for="floatingSelect">Selecciona una Opción</label>
+                                                                    <label for="floatingSelect">Selecciona una prenda</label>
                                                                 </div>
                                                             </div>
                                                         </b-col>
@@ -95,7 +95,7 @@
                                                 </b-list-group>
                                             </div>
                                             <div v-else>
-                                                <vs-alert>
+                                                <vs-alert shadow>
                                                     <template #title>
                                                         No hay Prendas Asignadas
                                                     </template>
@@ -114,7 +114,7 @@
                                     <cardLlegada @updatePage="updatePage" :data="{idCiente:ordenes.idCliente, prendas: ordenes.prendas, fechaEntrega: ordenes.fechaEntrega, idOrden: ordenes.idOrden}"></cardLlegada>
                                 </b-col>
                             </b-row>            
-                            <vs-alert v-if="sinData" shadow danger>
+                            <vs-alert v-if="sinData" class="mt-5" shadow danger>
                                 <template #title>
                                     No se han encontrado datos
                                 </template>
@@ -159,6 +159,13 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
     }),
+    computed: {
+    minDate() {
+        const today = new Date(); // Obtiene la fecha actual
+        today.setHours(0, 0, 0, 0); // Establece la hora a 00:00:00
+        return today.toISOString().split('T')[0]; // Devuelve la fecha actual en formato YYYY-MM-DD
+        },
+    },
     components: {
         HeaderComponent,
         loginComponent,
@@ -172,6 +179,7 @@ export default {
         })
     },
     mounted(){    
+        this.getPrendas = [{"value": "null", "text": "Selecciona un cliente para mostrar informacion"}]
         this.mostraClientesActivos()
         this.mostrarOrdenes()
     },
@@ -191,26 +199,29 @@ export default {
                 if(data.status == 200){
                     this.ordenesEspera = data.datos
                     if(this.ordenesEspera.length == 0){
-                        this.sinData == true
+                        this.sinData = true
                     }
                 }else{
                     console.log(data)
 
-                    this.sinData == true
+                    this.sinData = true
                     // this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
         async mostraClientesActivos(){
+            this.getClientes = [{"value": "null", "text": "cargando..."}]
+
             fetchApi(this.url+'cliente/findByEstado/1', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
+                    this.getClientes = []
                     data.datos.forEach( value => {
                         this.getClientes.push({"value": value.id, "text": value.nombre})
                     })
                 }else{
-                    this.getClientes.push({"value": 0, "text": "Sin clientes"})
+                    this.getClientes = [{"value": "null", "text": "Sin clientes"}]
 
                     // this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
@@ -220,22 +231,21 @@ export default {
             this.mostraPrendasActivas()
         },
         async mostraPrendasActivas(){
-            this.getPrendas = []
+
             fetchApi(this.url+`prenda/findByCliente/${this.SelectCliente}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     if(data.datos.length != 0){
+                        this.getPrendas = []
                         data.datos.forEach( value => {
                             this.getPrendas.push({"value": {id: value.id, nombre: value.nombre}, "text": value.nombre})
                         })
                     }else{
-                        this.getPrendas.push({"value": '', "text": "Prendas sin asignar"})
+                        this.getPrendas = [{"value": "null", "text": "Prendas sin asignar"}]
                     }
                 }else{
-                    this.getPrendas.push({"value": '', "text": "Prendas sin asignar"})
-
-                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.getPrendas = [{"value": "null", "text": "Prendas sin asignar"}]
                 }
             })
             .catch(err => console.log(err))
@@ -257,40 +267,44 @@ export default {
                 this.prendas.push(prenda)
                 this.contador++
             }else{
-                this.openNotification(`Error: En los capos`, `${this.error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: En los campos`, `${this.error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         eliminarPrenda(id){
             this.prendas = this.prendas.filter(pren => pren.id != id)
         },
         async add(){
-                this.contador = 0
-                let token = this.$session.get('token')
-    
-                let json = {
-                    "idCliente": this.SelectCliente,
-                    "fechaEntrega": this.fechaEntrega,
-                    "ordenPrendas": this.prendas
-                };
-                let res = await fetch(this.url+"orden/register",{
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': "*",
-                        'Authorization': token
-                    },
-                    body: JSON.stringify(json)
-                })
-                let data = await res.json()
-    
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.refresh()
-                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
-                    this.updatePage(200)
-                }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-                }
+
+            this.sinData = false
+
+            this.contador = 0
+            let token = this.$session.get('token')
+
+            let json = {
+                "idCliente": this.SelectCliente,
+                "fechaEntrega": this.fechaEntrega,
+                "ordenPrendas": this.prendas
+            };
+            let res = await fetch(this.url+"orden/register",{
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
+            })
+            let data = await res.json()
+
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.updatePage(200)
+            }else{
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
+            }
             
         },
         async updatePage(status){

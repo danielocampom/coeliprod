@@ -69,7 +69,11 @@
                     <CardTipoLavadoraComponent @updatePage="updatePage" :dataTypeWasher="{nombre: tipoLavado.nombre, id: tipoLavado.id}" />
                 </b-col>
             </b-row>
-            
+            <vs-alert v-if="sinData" shadow danger>
+                <template #title>
+                    No se han encontrado datos
+                </template>
+            </vs-alert>
         </b-container>
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
@@ -90,7 +94,7 @@ export default {
     name:"tipoLavadosView",
     data: () => ({
         tiposLavado: [],
-
+        sinData: false,
         activeModal: false,
         nombreLavado: '',
         btnGuardar: 0,
@@ -130,8 +134,9 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.tiposLavado = data.datos
+                    this.sinData = false
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
         },
@@ -161,7 +166,7 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostraTipoLavado()
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async searchTypeWasher(){
@@ -191,7 +196,8 @@ export default {
                     this.tiposLavado = data.datos
 
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+
                 }
             }else{
                 this.mostraTipoLavado()

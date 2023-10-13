@@ -65,7 +65,7 @@
                                             </vs-input>
                                             <div class="con-selects">
                                                 <b-skeleton class="mt-4" type="input" v-if="clientes.length == 0"></b-skeleton>
-                                                <vs-select class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
+                                                <vs-select style="width:66%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
                                                     <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
                                                         {{cli.nombre}}
                                                     </vs-option>
@@ -73,7 +73,7 @@
                                             </div>
                                             <div class="con-selects">
                                                 <b-skeleton class="mt-5" type="input" v-if="tiposProceso.length == 0"></b-skeleton>
-                                                <vs-select  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
+                                                <vs-select style="width:66%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
                                                     <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
                                                         {{proceso.nombre}}
                                                     </vs-option>
@@ -106,7 +106,7 @@
                     <CardPrendaComponent @updatePage="updatePage" :data="{nombre: prenda.nombre, cantidadBolsa: prenda.cantidadBolsa, usuario: prenda.usuario, estado: prenda.estado, proceso: prenda.proceso, cliente: prenda.cliente, id: prenda.id}" />
                 </b-col>
             </b-row>            
-            <vs-alert v-if="sinData" shadow danger>
+            <vs-alert v-if="sinData" shadow danger class="mt-5">
                 <template #title>
                     No se han encontrado datos
                 </template>
@@ -207,7 +207,7 @@ export default {
                         this.sinData == true
                     }
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
         },
@@ -221,9 +221,11 @@ export default {
                     this.prendas = data.datos
                     if(this.prendas.length == 0){
                         this.sinData == true
+                    }else{
+                        this.sinData = false
                     }
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
         },
@@ -262,7 +264,8 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostraActivos()
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                console.warn(data)
+                this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async searchWasher(){
@@ -294,7 +297,8 @@ export default {
                     }
 
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }else{
                 this.mostraActivos()

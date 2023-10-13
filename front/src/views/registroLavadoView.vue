@@ -181,13 +181,13 @@ export default {
         },
         onDragEnd() {
             this.pasos = this.pasos.map((paso, index) => ({
-                orden: index+1,
                 id: paso.id,
-                descripcion: paso.descripcion,
-                nombre: paso.nombre,
-                rolesCambio: paso.roles,
                 idProgramaLavado: paso.idProgramaLavado, 
-                idTipoLavado: paso.idTipoLavado
+                idTipoLavado: paso.idTipoLavado,
+                nombre: paso.nombre,
+                orden: index+1,
+                descripcion: paso.descripcion,
+                rolesCambio: paso.rolesCambio,
             }));
         },
         async mostraRoles(){
@@ -197,7 +197,9 @@ export default {
                 if(data.status == 200){
                     this.allRoles = data.datos
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                
                 }
             })
         },
@@ -211,7 +213,9 @@ export default {
                         this.lavados.push({"value": {id: value.id, nombre: value.nombre, descripcion: value.descripcion, maxima: value.cantidadMaxima, minima: value.cantidadMinima}, "text": value.nombre})
                     })
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                
                 }
             })
         },  
@@ -226,7 +230,8 @@ export default {
                         this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
                     })
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
+                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },  
@@ -250,12 +255,12 @@ export default {
             }
             let pasos = {
                 "id": this.contador,
-                "descripcion": this.descripcion,
+                "idProgramaLavado": this.lavado.id, 
+                "idTipoLavado": this.tipoLavado.id,
                 "nombre": this.nombre,
+                "descripcion": this.descripcion,
                 "orden": this.orden++,
                 "rolesCambio": this.optionsRoles,
-                "idProgramaLavado": this.lavado.id, 
-                "idTipoLavado": this.tipoLavado.id
             }
             if(error.length == 0){
                 this.pasos.push(pasos)
@@ -273,11 +278,13 @@ export default {
         },
         async addProceso(){
             let token = this.$session.get('token')
+            
+            let pasosFiltrados = this.pasos.filter(paso => paso.idProgramaLavado !== 0);
 
             let json = {
                 "nombreProceso": this.nombreProceso,
                 "codigo": this.codigoProceso,
-                "pasos": this.pasos,
+                "pasos": pasosFiltrados,
             };
             let res = await fetch(this.url+"proceso/register",{
                 method: "POST",
@@ -293,27 +300,20 @@ export default {
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
                 this.refresh()
-                //se actualiza token
+                
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.updatePage(200)
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                console.warn(data)
+                this.openNotification(`Error Inesperado`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async updatePage(status){
             if(status == 200){
-                this.mostraRoles()
-                this.pasos = []
-                this.contador = 0
-                this.descripcion = ''
-                this.nombre = ''
-                this.optionsRole = []
-                this.lavado = ''
-                this.tipoLavado = ''
-                this.codigoProceso = ''
-                this.nombreProcesos = ''
+                setTimeout(function() {
+                    location.reload();
+                }, 3000)
 
-                // location.reload();
             }
         },
         openNotification( title, text, color, position = null, icon) {

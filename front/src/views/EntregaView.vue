@@ -24,14 +24,14 @@
                 </b-row>
                 <b-row v-else>
                     <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
-                        <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena}"></EntregasComponent>
+                        <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena, fechaEntrega:dt.fechaEntrega}"></EntregasComponent>
                     </b-col>
                 </b-row>
-                <!-- <vs-alert v-if="sinData" shadow danger>
+                <vs-alert class="mt-5" v-if="sinData" shadow danger>
                     <template #title>
                         No se han encontrado datos
                     </template>
-                </vs-alert> -->
+                </vs-alert>
             </template>
         </b-container>
         <div v-if="activarReboot">
@@ -48,9 +48,6 @@ import { refreshSession, fetchApi } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 import EntregasComponent from '@/components/cardEntrega.vue';
 import ProcesandoComponent from '@/components/cardProcesando.vue';
-
-
-
 
 
 export default {
@@ -79,9 +76,6 @@ export default {
     },
     mounted(){    
         this.mostraPrendas()
-        setTimeout(() => {
-            this.sinData = this.getDatos.length == 0 ? false : true
-        }, 100);
     },
     methods: {
         refresh(){
@@ -109,13 +103,15 @@ export default {
                         data.datos.forEach( value => {
                             fetchApi(this.url+`prenda/findById/${value.idPrenda}`, 'GET', this.$session.get('token'))
                             .then(dt => {
+                                this.sinData = false
+
                                 let info = {"nomCliente":value.nomCliente, "idOrden": value.idOrden, "prenda": dt.datos.nombre, "cantidad": value.cantidad, "fechaAlta":value.fechaAlta, "estado": value.nombreEstado}
                                 this.getDatos.push(info)
                             })
                         })
                     }
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
                 }
             })
             .catch(err => console.log(err))
@@ -130,10 +126,12 @@ export default {
                     if(data.datos.length != 0){
                         data.datos.forEach( value => {
                            this.getDatos.push(value) 
+                            this.sinData = false
                         })
                     }
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.sinData = true
+                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
             .catch(err => console.log(err))

@@ -27,7 +27,7 @@
         <vs-button success block @click="modalShowDetail = !modalShowDetail">
             Ver Detalles
         </vs-button>
-        <b-modal size="xl" centered v-model="modalShowDetail">
+        <b-modal size="lg" centered v-model="modalShowDetail">
             <template #modal-header="{ close }">
                 <h5>Detalles <b>{{ nomCliente }}</b></h5>
                 <vs-button circle icon floating danger @click="close()">
@@ -80,24 +80,35 @@
                     </b-row>
 
                 </b-card>
-                <div v-else v-for="(prenda, i) in prendas" :key="i">
-                    <hr v-if="i>0">
-                    <div class="d-flex flex-row bd-highlight mb-3">
-                        <div class="p-2 bd-highlight">
-                            <h4 class="mt-2">{{ prenda.prenda.nombre }}</h4>
-                        </div>
+                <div v-else>
+                    <div v-for="(prenda, i) in prendas" :key="i">
+                        <hr v-if="i>0">
+                        <b-card>
+                            <div class="d-flex flex-row bd-highlight mb-3">
+                                <div class="p-2 bd-highlight">
+                                    <h4 class="mt-2">{{ prenda.prenda.nombre }}</h4>
+                                </div>
+                            </div>
+                            cantidad: <b>{{ prenda.cantidad }}</b> <br>
+                            tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
+                            <br>
+                            <strong class="mt-5">Pasos:</strong>
+                            <hr>
+                            <b-row align-h="start">
+                                    <b-col class="mt-4" v-for="(paso, i) in prenda.detalle.pasos" :key="i">
+                                        <div class="d-flex flex-row bd-highlight mb-3">
+                                            <div class="bd-highlight">
+                                                <b-card :title="paso.nombre" :sub-title="paso.descripcion">
+                                                </b-card>
+                                            </div>
+                                            <div v-if="prenda.detalle.pasos.length != i+1" class="bd-highlight">
+                                                <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
+                                            </div>
+                                        </div>
+                                    </b-col>
+                            </b-row>
+                        </b-card>
                     </div>
-                    cantidad: <b>{{ prenda.cantidad }}</b> <br>
-                    tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
-                    
-                    <br>
-                    <b-row cols="1" cols-sm="12" cols-md="6" cols-lg="4" class="mt-4">
-                        <b-col v-for="(paso, i) in prenda.detalle.pasos" :key="i">
-                            <b-card :title="paso.nombre">
-                                {{ paso.descripcion }}
-                            </b-card>
-                        </b-col>
-                    </b-row>
                 </div>
             </template>
 
@@ -163,7 +174,7 @@ export default {
                 if(data.status == 200){
                     this.nomCliente = data.datos.nombre
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    console.warn(data)
                 }
             })
         },
@@ -201,7 +212,8 @@ export default {
                 ordenPrendas = []
                 this.$emit('updatePage', '200')
             }else{
-                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                console.warn(data)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         mostrarDataPrenda(id, cantidad, idOrdenPrena){
