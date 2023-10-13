@@ -56,7 +56,7 @@
                     </vs-input>
                     <b-skeleton class="mt-4" type="input" v-if="clienteSelect.length == 0"></b-skeleton>
                     <div class="con-selects mt-4" v-else>
-                        <vs-select label-placeholder="Cliente" color="success"  v-model="selectCliente" >
+                        <vs-select style="width:100%;" label-placeholder="Cliente" color="success"  v-model="selectCliente" >
                             <vs-option  v-for="(cli, i) in clienteSelect" :key="i" :label="cli.nombre" :value="cli.id">
                                 {{cli.nombre}}
                             </vs-option>
@@ -65,7 +65,7 @@
                     <b-skeleton class="mt-5" type="input" v-if="procesoSelect.length == 0"></b-skeleton>
 
                     <div class="con-selects mt-5" v-else>
-                        <vs-select label-placeholder="Tipo de proceso" color="success"  v-model="selectProceso" >
+                        <vs-select style="width:100%;" label-placeholder="Tipo de proceso" color="success"  v-model="selectProceso" >
                             <vs-option  v-for="(proceso, i) in procesoSelect" :key="i" :label="proceso.nombre" :value="proceso.id">
                                 {{proceso.nombre}}
                             </vs-option>
@@ -91,14 +91,14 @@
                             Desactivar
                         </vs-button>
                     </div>
-                    <div v-else>
+                    <!-- <div v-else>
                         <vs-button class="m-1" success
                             flat
                             :btnActualizar="btnElimina == 1"
                             @click="activar()">
                             Activar
                         </vs-button>
-                    </div>
+                    </div> -->
                 </div>
             </template>
         </vs-dialog>
@@ -348,9 +348,9 @@ input {
 .vs-input{
     width: 95%;
 }
-.vs-select--state-null{
-    width: 186%;
+.vs-select .vs-select--state-null{
     margin-bottom: 1rem;
+    max-width: 100% !important;
 }
 </style>
 <style lang="stylus">

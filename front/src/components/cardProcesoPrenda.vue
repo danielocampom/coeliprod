@@ -35,7 +35,7 @@
                     />
                     <div class="con-selects" v-if="data.idTipoLavado">
                         <b-skeleton class="mt-3" type="input" v-if="lavadorasAll.length == 0"></b-skeleton>
-                        <vs-select style="max-width:99%;"  class="mt-3" v-else success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
+                        <vs-select style="max-width:100%!important;"  class="mt-3" v-else success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
                             <vs-option  v-for="(lavadora, i) in lavadorasAll" :key="i" :label="lavadora.lavadora" :value="lavadora.idLavadora">
                                 {{lavadora.lavadora}}
                             </vs-option>
@@ -143,7 +143,7 @@
                 </template>
                 
             </b-modal>
-            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat danger @click="cancelPredas = !cancelPredas"> Cancelar Prendra </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat danger @click="cancelPredas = !cancelPredas"> Cancelar Prenda </vs-button>
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
                     <h4 class="not-margin">
@@ -185,7 +185,7 @@
         <vs-dialog v-model="comfirm">
             <template #header>
                 <h4 class="not-margin">
-                    Estas seguro que deseas <b>Eliminar las prednas?</b>
+                    Estas seguro que deseas <b>Eliminar las prendas?</b>
                 </h4>
             </template>
             <ConfirmComponent @confirm="cancelPrednas"/>
@@ -420,6 +420,9 @@ body {
 }
 input {
     width: 90%;
+}
+.vs-select .vs-select--state-null{
+    max-width: 100% !important;
 }
 .ml-5 .vs-card{
     margin-left: auto!important

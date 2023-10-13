@@ -257,7 +257,7 @@ export default {
     width: 95%;
 }
 .vs-select--state-null{
-    width: 186%;
+    width: 100%;
     margin-bottom: 1rem;
 }
 </style>

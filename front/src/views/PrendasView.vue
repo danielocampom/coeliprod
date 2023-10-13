@@ -65,7 +65,7 @@
                                             </vs-input>
                                             <div class="con-selects">
                                                 <b-skeleton class="mt-4" type="input" v-if="clientes.length == 0"></b-skeleton>
-                                                <vs-select style="width:66%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
+                                                <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
                                                     <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
                                                         {{cli.nombre}}
                                                     </vs-option>
@@ -73,7 +73,7 @@
                                             </div>
                                             <div class="con-selects">
                                                 <b-skeleton class="mt-5" type="input" v-if="tiposProceso.length == 0"></b-skeleton>
-                                                <vs-select style="width:66%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
+                                                <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
                                                     <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
                                                         {{proceso.nombre}}
                                                     </vs-option>
@@ -331,6 +331,9 @@ body {
 }
 input {
     width: 100%;
+}
+.vs-select .vs-select--state-null{
+    max-width: 100% !important;
 }
 .ml-5 .vs-card{
     margin-left: auto!important

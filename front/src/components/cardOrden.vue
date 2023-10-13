@@ -133,27 +133,29 @@
                         </b-row>
     
                     </b-card>
-                    <div v-else v-for="(prenda, i) in prendas" :key="i">
-                        <hr v-if="i>0">
-                        <div class="d-flex flex-row bd-highlight mb-3">
-                            <div class="p-2 bd-highlight">
-                                <h4 class="mt-2">{{ prenda.prenda.nombre }}</h4>
+                    <div v-else>
+                        <div v-for="(prenda, i) in prendas" :key="i">
+                            <hr v-if="i>0">
+                            <div class="d-flex flex-row bd-highlight mb-3">
+                                <div class="p-2 bd-highlight">
+                                    <h4 class="mt-2">{{ prenda.prenda.nombre }}</h4>
+                                </div>
+                                <div class="p-2 bd-highlight">
+                                    <upPrendaAsignacion @updatePage="updatePage" :dataUp="{idOrden: dataClient.idOrden, cantidad: prenda.cantidad, idPrenda: prenda.id, nombre: prenda.prenda.nombre}"></upPrendaAsignacion>
+                                </div>
                             </div>
-                            <div class="p-2 bd-highlight">
-                                <upPrendaAsignacion @updatePage="updatePage" :dataUp="{idOrden: dataClient.idOrden, cantidad: prenda.cantidad, idPrenda: prenda.id, nombre: prenda.prenda.nombre}"></upPrendaAsignacion>
-                            </div>
+                            cantidad: <b>{{ prenda.cantidad }}</b> <br>
+                            tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
+                            
+                            <br>
+                            <b-row cols="1" cols-sm="12" cols-md="6" cols-lg="4" class="mt-4">
+                                <b-col v-for="(paso, i) in prenda.detalle.pasos" :key="i">
+                                    <b-card :title="paso.nombre">
+                                        {{ paso.descripcion }}
+                                    </b-card>
+                                </b-col>
+                            </b-row>
                         </div>
-                        cantidad: <b>{{ prenda.cantidad }}</b> <br>
-                        tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
-                        
-                        <br>
-                        <b-row cols="1" cols-sm="12" cols-md="6" cols-lg="4" class="mt-4">
-                            <b-col v-for="(paso, i) in prenda.detalle.pasos" :key="i">
-                                <b-card :title="paso.nombre">
-                                    {{ paso.descripcion }}
-                                </b-card>
-                            </b-col>
-                        </b-row>
                     </div>
                 </template>
     
@@ -279,7 +281,7 @@ export default {
     width: 95%;
 }
 .vs-select--state-null{
-    width: 186%;
+    width: 100%;
     margin-bottom: 1rem;
 }
 </style>

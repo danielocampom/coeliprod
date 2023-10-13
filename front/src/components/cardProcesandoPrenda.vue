@@ -26,7 +26,7 @@
             <vs-button block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
             <vs-button v-if="data.idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.idHist)"> Autorizar </vs-button>
             <vs-button v-if="data.idEstado != 10" block flat danger @click="terminar(data.idHist)"> Terminar </vs-button>
-            <vs-button v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' " block flat danger @click="cancel()"> Cancelar Prendra </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
                     <h4 class="not-margin">

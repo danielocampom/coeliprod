@@ -5,7 +5,7 @@
     
         <b-container fluid class="mt-5">
             <template>
-                <b-tabs content-class="mt-3" align="center">
+                <b-tabs content-class="mt-3" align="center"  @click="updatePage(200)">
                     <b-tab title="Por Procesar" active>
                         <!-- <b-container class="bv-example-row"> -->
                             <b-row>
@@ -20,7 +20,7 @@
                             </vs-alert>
                         <!-- </b-container> -->
                     </b-tab>
-                    <b-tab title="Procesando">
+                    <b-tab title="Procesando"  @click="updatePage(200)" >
                         <!-- <b-container class="bv-example-row"> -->
                             <b-row>
                                 <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cp, i) in consultasProcesando" :key="i">

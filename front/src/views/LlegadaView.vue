@@ -56,14 +56,7 @@
                                                         </b-col>
                                                     </b-row>
                                                 </b-list-group-item>
-                                                <b-list-group-item>
-                                                    <div class="center" v-if="prendas.length > 0">
-                                                        <vs-button block @click="add()">
-                                                            <box-icon name='save' color='#fbfbfb' ></box-icon> Guardar
-                                                        </vs-button>
-                                                    </div>
-                                                </b-list-group-item>
-            
+                                                            
                                             </b-list-group>
                                         </b-card>
                                     </b-col>
@@ -100,6 +93,11 @@
                                                         No hay Prendas Asignadas
                                                     </template>
                                                 </vs-alert>
+                                            </div>
+                                            <div class="center" v-if="prendas.length > 0">
+                                                <vs-button block @click="add()">
+                                                    <box-icon name='save' color='#fbfbfb' ></box-icon> Guardar
+                                                </vs-button>
                                             </div>
                                         </b-card>
                                     </b-col>
