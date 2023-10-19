@@ -3,14 +3,11 @@
         <HeaderComponent/>
         <br>
     
-        <b-container fluid class="mt-3">
+        <b-container fluid class="mt-3 container">
             <template>
-
-                
-<!-- /urvina/coeli/orden/findByIdOrdenLavado/{idOrdenLavado} -->
                 <b-row  class="mt-5">
-                    <b-col lg="6" md="6" sm="12">
-                        <b-card  style="max-width: 400px;" class="mb-4 mx-auto" >
+                    <b-col md="6" sm="12">
+                        <b-card class="mb-4" >
                             <b-row class="mt-1">
                                 <b-col lg="8" md="8" sm="12"  class="p-1">
                                     <vs-input state="dark" dark v-model="buscarTxt" placeholder="Buscar Ordenes">
@@ -51,6 +48,16 @@
                     </v-timeline-item>
                 </v-timeline>
             </v-container>
+            <v-container v-else>
+                <div class="center">
+                    <vs-alert color="danger">
+                        <template #title>
+                            Sin datos, ingrese un numero de orden correspondiente
+                        </template>
+                    </vs-alert>
+                </div>
+            </v-container>
+
         </template>
 
         <div v-if="activarReboot">

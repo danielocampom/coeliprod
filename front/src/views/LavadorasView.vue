@@ -3,8 +3,8 @@
         <HeaderComponent/>
         <br>
     
-        <b-container fluid class="container">
-                <b-row  class="mt-3">
+        <b-container fluid class="mt-5 container">
+                <b-row  class="align-items-end">
                     
                     <b-col md="4" sm="6">
                         <b-form-group
@@ -29,8 +29,10 @@
                         </b-input-group>
                         </b-form-group>
                     </b-col>
+                    <b-col md="8" sm="12"></b-col>
+
                     <b-col md="8" sm="12">
-                        <b-row class="mt-5">
+                        <b-row>
                             <b-col class="p-1">
                                 <vs-button flat block icon @click="activeModal=!activeModal">
                                     <box-icon name='wind' color="#195bff" ></box-icon> Agregar Lavadora

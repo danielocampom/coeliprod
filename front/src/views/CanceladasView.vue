@@ -18,6 +18,8 @@
                                     type="date"
                                     v-model="fechFinal"
                                     label-placeholder="Fecha Final"
+                                    :min="fechInicio"
+
                                 />
                             </b-col>
                             <b-col class="mt-3">

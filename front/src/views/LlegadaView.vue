@@ -264,6 +264,8 @@ export default {
             if(this.error.length == 0){
                 this.prendas.push(prenda)
                 this.contador++
+                this.cantidad = ''
+                this.SelectPrenda = ''
             }else{
                 this.openNotification(`Error: En los campos`, `${this.error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }

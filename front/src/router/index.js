@@ -158,6 +158,13 @@ const routes = [
   },
   
   {
+    path: '/busqueda',
+    name: 'busqueda',
+    component: () => import('../views/busquedaQR.vue'),
+    meta: {requireAuth: true}
+  },
+  
+  {
     path: '/access-denied',
     name: 'access-denied',
     component: () => import('../views/accessDeniedView.vue'),

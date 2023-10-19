@@ -12,7 +12,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vuesax/dist/vuesax.css'
-import 'boxicons'
+// import 'boxicons.js'
+import boxicons from '@/assets/js/boxicons.js';
 
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'

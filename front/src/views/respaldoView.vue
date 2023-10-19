@@ -6,11 +6,11 @@
         <b-container fluid class="mt-3">
             <template>
                 <b-row  class="mt-5">
-                    <b-col lg="4" md="6" sm="12">
-                        <b-card  style="max-width: 400px;" class="mb-4 mx-auto" >
+                    <b-col lg="6" md="6" sm="12">
+                        <b-card style="max-width: 400px;" class="mx-auto">
                             <b-row class="mt-1">
                                 <b-col lg="8" md="8" sm="12"  class="p-1">
-                                    <vs-input state="dark" @keyup="searchWasher()" dark v-model="buscarTxt" label-placeholder="Buscar Lavadora">
+                                    <vs-input state="dark" dark v-model="buscarTxt" @keyup="searchWasher()" label-placeholder="Buscar Prenda">
                                         <template #icon>
                                             <box-icon name='wind' dark></box-icon>
                                         </template>
@@ -18,9 +18,7 @@
                                 </b-col>
                                 <b-col lg="4" md="4" sm="12"  class="p-1">
                                     <vs-button
-                                        primary 
-                                        flat
-                                        block 
+                                        transparent 
                                         :active="btnBuscar == 1"
                                         @click="searchWasher()"
                                     >
@@ -30,66 +28,10 @@
                             </b-row>
                         </b-card>
                     </b-col>
-                    <b-col lg="4" md="6" sm="12">
-                        <b-card style="max-width: 400px;" class="mb-4 mx-auto" >
+                    <b-col lg="6" md="6" sm="12">
+                        <b-card style="max-width: 400px;" class="mx-auto">
                             <b-row class="mt-1">
-                                <b-col lg="6" md="6" sm="12" class="p-1"> 
-                                    <modalListCapacidades></modalListCapacidades>
-                                </b-col>
-                                <b-col lg="6" md="6" sm="12" class="p-1">
-                                    <vs-button flat block icon @click="activeModalAddLavado=!activeModalAddLavado">
-                                        <box-icon name='clipboard' color="#195bff" ></box-icon> Agregar Capacidades 
-                                    </vs-button>
-                                    <vs-dialog v-model="activeModalAddLavado">
-                                        <template #header>
-                                        <h4 class="not-margin">
-                                            Registrar <b>Capacidad</b>
-                                        </h4>
-                                        </template>
-                            
-                                        <div class="con-form">
-                                            <vs-input success class="mt-3" type="text" v-model="nomLavado" label-placeholder="nombre">
-                                                <template #icon>
-                                                    <box-icon name='rename'></box-icon>
-                                                </template>
-                                            </vs-input>
-                                            <vs-input success class="mt-3" type="text" v-model="desLavado" label-placeholder="descripcion">
-                                                <template #icon>
-                                                    <box-icon name='rename'></box-icon>
-                                                </template>
-                                            </vs-input>
-    
-                                            <vs-input success class="mt-3" type="text" v-model="canMin" label-placeholder="Cantidad Minima">
-                                                <template #icon>
-                                                    <box-icon name='dialpad-alt' ></box-icon>
-                                                </template>
-                                            </vs-input>
-                                            <vs-input success class="mt-3" type="text" v-model="canMax" label-placeholder="Cantidad Maxima">
-                                                <template #icon>
-                                                    <box-icon name='dialpad-alt' ></box-icon>
-                                                </template>
-                                            </vs-input>
-                                        </div>
-                                        <br>
-                                        <template #footer>
-                                            <div class="footer-dialog">
-                                                <vs-button block success
-                                                    flat
-                                                    :btnGuardar="btnGuardar == 1"
-                                                    @click="addCapacidad()">
-                                                    Guardar
-                                                </vs-button>
-                                            </div>
-                                        </template>
-                                    </vs-dialog>
-                                </b-col>
-                            </b-row>
-                        </b-card>
-                    </b-col>
-                    <b-col lg="4" md="6" sm="12">
-                        <b-card style="max-width: 400px;" class="mb-4 mx-auto">
-                            <b-row class="mt-1">
-                                <b-col lg="6" md="6" sm="12" class="p-1">
+                                <b-col class="p-1">
                                     <vs-switch class="mt-3" v-model="buscarAct" @click="mostrarActInact()">
                                         <template #off>
                                             <box-icon name='check'></box-icon> Activos
@@ -99,89 +41,57 @@
                                         </template>
                                     </vs-switch>
                                 </b-col>
-                                <b-col lg="6" md="6" sm="12" class="p-1">
-                                    <vs-button flat block icon @click="activeModal=!activeModal">
-                                        <box-icon name='wind' color="#195bff" ></box-icon> Agregar Lavadora
+                                <b-col class="p-1">
+                                    <vs-button flat icon @click="activeModal=!activeModal">
+                                        <box-icon name='wind' color="#195bff"></box-icon> Agregar Prendas
                                     </vs-button>
-                                    
-                                    <b-modal size="xl" centered v-model="activeModal">
-                                        <template #modal-header="{ close }">
-                                            <h5>Agregar Lavadora</h5>
-                                            <vs-button circle icon floating danger @click="close()">
-                                                <box-icon name='x' color="#fff"></box-icon>
-                                            </vs-button>
-                                        </template>
-                                        <template>
-                                            <div class="con-form">
-                                                <b-card>
-                                                    <b-row>
-                                                        <b-col class="mt-4" lg="6" md="6" sm="12">
-                                                            <vs-input success type="text" v-model="nombreLav" placeholder="Lavadora">
-                                                                <template #icon>
-                                                                    <box-icon name='wind'></box-icon>
-                                                                </template>
-                                                            </vs-input>
-                                                        </b-col>
-                                                        <b-col class="mt-5" lg="6" md="6" sm="12">
-                                                            <div class="con-selects">
-                                                                <vs-select placeholder="Tipo de Lavado" color="success"  v-model="tipoLavado" >
-                                                                    <vs-option  v-for="(lavado, i) in tiposLavado" :key="i" :label="lavado.nombre" :value="lavado.id">
-                                                                        {{lavado.nombre}}
-                                                                    </vs-option>
-                                                                </vs-select>
-                                                            </div>
-                                                        </b-col>
-                                                    </b-row>
-                                                </b-card>
-                                                <b-row>
-                                                    <b-col class="mt-4" lg="8" md="6" sm="12">
-                                                        <b-card title="Capacidades" sub-title="puedes seleccionar multiples capacidades">
-                                                            <b-row>
-                                                                <b-col class="mt-2" lg="8" md="8" sm="10">
-                                                                    <vs-select placeholder="Tipo de Lavado" color="success"  v-model="progLavado" >
-                                                                        <vs-option  v-for="(it, i) in capacidades" :key="i" :label="it.nombre" :value="it.id">
-                                                                            {{it.nombre}}
-                                                                        </vs-option>
-                                                                    </vs-select>
-                                                                </b-col>
-                                                                <b-col class="mt-2" lg="4" md="4" sm="2">
-                                                                    <vs-button class="float-right" circle icon floating @click="add(progLavado)">
-                                                                        <box-icon name='plus' color='#fbfbfb' ></box-icon>
-                                                                    </vs-button>
-                                                                </b-col>
-                                                            </b-row>
-                                                        </b-card>
-                                                    </b-col>
-                                                    <b-col class="mt-2" lg="4" md="6" sm="12" v-for="(pl, i) in programasLavado" :key="i">
-                                                        <b-card :title="pl.nombre">
-                                                            <b-list-group>
-                                                                <b-list-group-item>Descipción: {{ pl.descripcion }}</b-list-group-item>
-                                                                <b-list-group-item>Capacidad Minima: {{ pl.cantidadMinima }}</b-list-group-item>
-                                                                <b-list-group-item>Capacidad Maxima: {{ pl.cantidadMaxima }}</b-list-group-item>
-                                                                <vs-button
-                                                                        danger
-                                                                        size="small"
-                                                                        @click="elim(pl.id)"
-                                                                    >
-                                                                        <box-icon name='trash' color="#FFF"></box-icon> Eliminar
-                                                                </vs-button>
-                                                            </b-list-group>
-                                                        </b-card>
-                                                    </b-col>
-                                                </b-row>
-                                            </div>
+                                    <vs-dialog v-model="activeModal">
+                                        <template #header>
+                                        <h4 class="not-margin">
+                                            Registrar <b>Prendas</b>
+                                        </h4>
                                         </template>
                             
-                                        <template #modal-footer="{ ok }">
-                                            <vs-button primary @click="addWasher()">
-                                                <box-icon name='save' color="#fff"></box-icon> Guardar
-                                            </vs-button>
-                                            <vs-button danger @click="ok()">
-                                                <box-icon name='exit' color="#fff"></box-icon> Salir
-                                            </vs-button>
+                                        <div class="con-form">
+                                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
+                                                <template #icon>
+                                                    <box-icon name='wind'></box-icon>
+                                                </template>
+                                            </vs-input>
+                                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
+                                                <template #icon>
+                                                    <box-icon name='wind'></box-icon>
+                                                </template>
+                                            </vs-input>
+                                            <div class="con-selects">
+                                                <b-skeleton class="mt-4" type="input" v-if="clientes.length == 0"></b-skeleton>
+                                                <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
+                                                    <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
+                                                        {{cli.nombre}}
+                                                    </vs-option>
+                                                </vs-select>
+                                            </div>
+                                            <div class="con-selects">
+                                                <b-skeleton class="mt-5" type="input" v-if="tiposProceso.length == 0"></b-skeleton>
+                                                <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
+                                                    <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
+                                                        {{proceso.nombre}}
+                                                    </vs-option>
+                                                </vs-select>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <template #footer>
+                                            <div class="footer-dialog">
+                                                <vs-button block success
+                                                    flat
+                                                    :btnGuardar="btnGuardar == 1"
+                                                    @click="addPrenda()">
+                                                    Guardar
+                                                </vs-button>
+                                            </div>
                                         </template>
-                                        
-                                    </b-modal>
+                                    </vs-dialog>
                                 </b-col>
                             </b-row>
                         </b-card>
@@ -192,13 +102,13 @@
         <br>
         <b-container class="bv-example-row">
             <b-row>
-                <b-col class="mt-4" lg="3" md="6" sm="12" v-for="(lavadora, i) in lavadoras" :key="i">
-                    <CardLavadoraComponent @updatePage="updatePage" :dataWasher="{nombre: lavadora.lavadora, estado: lavadora.idEstado, clave: lavadora.tipoLavado, id: lavadora.idLavadora, capacidad: lavadora.capacidad, programas: lavadora.programasLavado}" />
+                <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(prenda, i) in prendas" :key="i">
+                    <CardPrendaComponent @updatePage="updatePage" :data="{nombre: prenda.nombre, cantidadBolsa: prenda.cantidadBolsa, usuario: prenda.usuario, estado: prenda.estado, proceso: prenda.proceso, cliente: prenda.cliente, id: prenda.id}" />
                 </b-col>
-            </b-row>
-            <vs-alert v-if="sinData" shadow danger>
+            </b-row>            
+            <vs-alert v-if="sinData" shadow danger class="mt-5">
                 <template #title>
-                    No se han encontrado coincidencias
+                    No se han encontrado datos
                 </template>
             </vs-alert>
         </b-container>
@@ -211,30 +121,22 @@
 
 <script>
 import HeaderComponent from '@/components/Header.vue';
-import CardLavadoraComponent from '@/components/cardLavadora.vue'
-import modalListCapacidades from '@/components/modal_List_Capacidades.vue'
+import CardPrendaComponent from '@/components/cardPrenda.vue'
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 
 export default {
-    name:"RespaldoView",
+    name:"respaldoView",
     data: () => ({
-        capacidades: [],
-       
-        lavadoras: [],
-        programasLavado: [],
-        contador: 0,
-        tiposLavado: [],
+        prendas: [],
+        tiposProceso: [],
+        clientes: [],
         sinData: false,
         activeModal: false,
-        activeModalAddLavado: false,
-        nombreLav: '',
-        tipoLavado: '',
-        progLavado: '',
-        nomLavado: '',
-        desLavado: '',
-        canMax: '',
-        canMin: '',
+        nombre: '',
+        cantidadBolsa: '',
+        tipoProceso: '',
+        cliente: '',
         btnGuardar: 0,
         buscarAct: false,
         buscarTxt: '',
@@ -246,8 +148,7 @@ export default {
     }),
     components: {
         HeaderComponent,
-        CardLavadoraComponent,
-        modalListCapacidades,
+        CardPrendaComponent,
         loginComponent
     },
     created(){
@@ -256,11 +157,10 @@ export default {
             this.$session.set('token', data.datos.token)
         })
     },
-    mounted(){   
+    mounted(){    
         this.mostraActivos()
-        this.mostraTipoLavado()
-        this.mostrarTodosLavados()
-    
+        this.mostraProceso()
+        this.mostraClientes()
     },
     methods: {
         refresh(){
@@ -269,103 +169,61 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-        add(id){
-            if(id){
-                this.contador++
-                fetchApi(this.url+`lavadora/programa/findById/${id}`, 'GET', this.$session.get('token'))
-                .then(data => {
-                    if(data.status == 401){ this.activarReboot = true }
-                    if(data.status == 200){
-                        let pl = data.datos
-                        this.programasLavado.push({"id": this.contador, "nombre": pl.nombre, "descripcion": pl.descripcion, "cantidadMinima": pl.cantidadMinima, "cantidadMaxima": pl.cantidadMaxima, "idPrograma": pl.id })
-                    }else{
-                        this.openNotification(`Error: inesperado al asignar una capacidad`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-                    }
-                })
-            }else{
-                this.openNotification('Ocurrio un error', `Es requerido seleccionar algun programa de lavado`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-            }
-        },
-        elim(id){
-            this.programasLavado = this.programasLavado.filter(dt => dt.id != id)
-        },
-        
-        
-        async mostraTipoLavado(){
-            this.tiposLavado = []
-            fetchApi(this.url+'tipoLavado/findAll', 'GET', this.$session.get('token'))
+    
+        async mostraProceso(){
+            fetchApi(this.url+'proceso/findAll', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.tiposLavado = data.datos
+                    this.tiposProceso = data.datos
                 }else{
-                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.tiposProceso = [{"id": 0, "nombre": 'Sin Procesos'}]
+
+                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
-        async mostrarTodos(){
-            fetchApi(this.url+'lavadora/findAll', 'GET', this.$session.get('token'))
+        async mostraClientes(){
+            fetchApi(this.url+'cliente/findByEstado/1', 'GET', this.$session.get('token'))
             .then(data => {
-                this.lavadoras = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.lavadoras = data.datos
-                    if(this.lavadoras.length == 0){
-                        this.sinData = true
-                    }
-                    this.sinData = false
+                    this.clientes = data.datos
                 }else{
-                    this.sinData = true
+                    this.clientes = [{"id": 0, "nombre": 'Sin Clientes'}]
+
+                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
         async mostraActivos(){
-            fetchApi(this.url+'lavadora/findByEstado/1', 'GET', this.$session.get('token'))
+            fetchApi(this.url+'prenda/findByEstado/1', 'GET', this.$session.get('token'))
             .then(data => {
-                this.lavadoras = []
+                this.prendas = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.lavadoras = data.datos
-                    if(this.lavadoras.length == 0){
-                        this.sinData = true
+                    this.prendas = data.datos
+                    if(this.prendas.length == 0){
+                        this.sinData == true
                     }
-                    this.sinData = false
                 }else{
                     this.sinData = true
-    
-                }
-            })
-        },
-        async mostrarTodosLavados(){
-            this.capacidades = []
-            fetchApi(this.url+'lavadora/programa/findByAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    data.datos.forEach( val => {
-                        this.capacidades.push({ maxCant: val.cantidadMaxima, minCant: val.cantidadMinima, descripcion: val.descripcion, nombre: val.nombre, id: val.id },)
-                    })
-                    this.totalRows = this.capacidades.length 
-
-                }else{
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
         async mostraInactivos(){
 
-            fetchApi(this.url+'lavadora/findByEstado/7', 'GET', this.$session.get('token'))
+            fetchApi(this.url+'prenda/findByEstado/5', 'GET', this.$session.get('token'))
             .then(data => {
-                this.lavadoras = []
+                this.prendas = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.lavadoras = data.datos
-                    if(this.lavadoras.length == 0){
-                        this.sinData = true
+                    this.prendas = data.datos
+                    if(this.prendas.length == 0){
+                        this.sinData == true
+                    }else{
+                        this.sinData = false
                     }
-                    this.sinData = false
                 }else{
                     this.sinData = true
                 }
@@ -374,17 +232,16 @@ export default {
         mostrarActInact(){
             this.buscarAct ? this.mostraActivos() : this.mostraInactivos()
         },
-        
-        async addCapacidad(){
+        async addPrenda(){
             let token = this.$session.get('token')
 
             let json = {
-                "nombre": this.nomLavado,
-                "descripcion": this.desLavado,
-                "cantidadMinima": this.canMin,
-                "cantidadMaxima": this.canMax
+                "nombre": this.nombre,
+                "idProceso": this.tipoProceso,
+                "idCliente": this.cliente,
+                "cantidadBolsa": this.cantidadBolsa,
             };
-            let res = await fetch(this.url+"lavadora/programa/save",{
+            let res = await fetch(this.url+"prenda/register",{
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -398,96 +255,22 @@ export default {
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
                 this.refresh()
-                this.activeModal = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
-                this.mostraTipoLavado()
-
-                this.canMax = ''
-                this.canMin = ''
-                this.desLavado = ''
-                this.nomLavado = ''
-            }else{
-                this.openNotification(`Error: inesperado al registrar las capacidades`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-            }
-        },
-        async addWasher(){
-            let token = this.$session.get('token')
-            let pogramLav = []
-            this.programasLavado.forEach( pl => {
-                pogramLav.push(pl.idPrograma)
-            })
-            let json = {
-                "lavadora": this.nombreLav,
-                "idTipoLavado": this.tipoLavado,
-                "programasLavado": pogramLav
-            };
-            let res = await fetch(this.url+"lavadora/register",{
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*",
-                    'Authorization': token
-                },
-                body: JSON.stringify(json)
-            })
-            let data = await res.json()
-
-            if(data.status == 401){ this.activarReboot = true }
-            if(data.status == 200){
-                this.refresh()
-                this.programasLavado = []
                 //se actualiza token
-                this.nombreLav = ''
-                this.tipoLavado = ''
-                this.progLavado = ''
+                this.tipoProceso = ''
+                this.cliente = ''
+                this.cantidadBolsa = ''
+                this.nombre = ''
                 this.activeModal = false
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostraActivos()
             }else{
-                this.openNotification(`Error: inesperado al registrar la lavadora`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
+                console.warn(data)
+                this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
-        },
-        async searchWasher(){
-
-            this.lavadoras = []
-
-            if(this.buscarTxt != ''){
-                let token = this.$session.get('token')
-
-                let json = {
-                    "criterio": this.buscarTxt,
-                    "estado": ""
-                };
-                let res = await fetch(this.url+"lavadora/find",{
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': "*",
-                        'Authorization': token
-                    },
-                    body: JSON.stringify(json)
-                })
-                let data = await res.json()
-
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.lavadoras = data.datos
-
-                }else{
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-                }
-            }else{
-                this.mostrarTodos()
-            }
-
         },
         async updatePage(status){
             if(status == 200){
                 this.mostraActivos()
-                this.mostraTipoLavado()
             }
         },
         openNotification( title, text, color, position = null, icon) {
@@ -509,22 +292,15 @@ body {
     height: 100vh;
     background: #f1f1f1 !important;
 }
-.card{
-    border-radius: 1rem;
-    min-height: 7rem; 
-    min-width: 12rem;
-}
 input {
     width: 100%;
+}
+.vs-select .vs-select--state-null{
+    max-width: 100% !important;
 }
 .ml-5 .vs-card{
     margin-left: auto!important
 }
-#per-page-select{
-    background: #fff;
-    border-radius: 0.5rem;
-    padding: 4px;
-  }
 </style>
 <style lang="stylus">
   getColor(vsColor, alpha = 1)
@@ -579,13 +355,13 @@ input {
     display: grid;
     place-items: center;
 }
+
 .card{
     border-radius: 1rem;
-    min-height: 6rem; 
-    min-width: 12rem;
 }
 .vs-input{
     width: 100%;
 }
+
 
 </style>

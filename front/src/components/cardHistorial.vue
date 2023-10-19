@@ -1,26 +1,20 @@
 <template>
     <div>
-        <b-card style="max-width: 500px;" class="mb-4 p-2" v-if="render">
-            <b-row>
-                <b-col cols="9">
-                    <div class='badge bg-primary text-wrap float-end' >
-                        {{ fecha(dataClient.fechaEntrega) }}
-                    </div>
-                    <h4 class="mb-5 ">
-                        {{ dataClient.nombreCliente }}
-                    </h4>
-                    
-                </b-col>
-            </b-row>
+        <b-card class="mb-4 p-2" v-if="render">
+            <div class='badge bg-danger text-wrap float-end mb-2' >
+                {{ dataClient.ordenPrenda.nombreEstado }}
+            </div>
+            <h4 class="mb-1 ">
+                {{ dataClient.nombreCliente }}
+            </h4>
+            <strong>{{ fecha(dataClient.fechaEntrega) }}</strong>
             <b-row>
                 <b-col cols="12">
-                    <div class='badge bg-danger text-wrap float-end mb-2' >
-                        {{ dataClient.ordenPrenda.nombreEstado }}
-                    </div>
-                    <h5 class="mb-5 ">
-                        {{ nombrePrenda }} <br>
-                        Cantidad: {{ dataClient.ordenPrenda.cantidad }} unidades
+                    <h5 class="mb-3 mt-2">
+                        {{ nombrePrenda }} 
                     </h5>
+                    <br>
+                    Cantidad: {{ dataClient.ordenPrenda.cantidad }} 
                 </b-col>
             </b-row>
             <vs-button success flat block @click="modalShowDetail = !modalShowDetail">
@@ -142,10 +136,6 @@ export default {
 
 .vs-input{
     width: 95%;
-}
-.vs-select--state-null{
-    width: 100%;
-    margin-bottom: 1rem;
 }
 </style>
 <style lang="stylus">

@@ -1,0 +1,81 @@
+<template>
+    <div>
+        <HeaderComponent/>
+        <br>
+    
+        <b-container fluid class="mt-5 container">
+            holq munndo lector QR
+        </b-container>
+        <br>
+        <div v-if="activarReboot">
+            <loginComponent :login="activarReboot"></loginComponent>
+        </div>
+
+    </div>
+</template>
+
+<script>
+import HeaderComponent from '@/components/Header.vue';
+import { refreshSession } from "@/service/service.js"
+import loginComponent from '@/components/cardLogin.vue';
+
+export default {
+    name:"ClientesView",
+    data: () => ({
+
+        url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
+    }),
+    components: {
+        HeaderComponent,
+        loginComponent
+    },
+    created(){
+        refreshSession(this.url ,this.$session.get('token')).then( data => {
+            this.$session.start()
+            this.$session.set('token', data.datos.token)
+        })
+    },
+    mounted(){
+    },
+    methods: {
+        
+        refresh(){
+            refreshSession(this.url ,this.$session.get('token')).then( data => {
+                this.$session.start()
+                this.$session.set('token', data.datos.token)
+            }) 
+        },
+        
+        async updatePage(status){
+            if(status == 200){
+                this.mostraClientes()
+            }
+        },
+        openNotification( title, text, color, position = null, icon) {
+          this.$vs.notification({
+            progress: 'auto',
+            icon,
+            color,
+            position,
+            title: title,
+            text: text
+          })
+        }
+    }
+}
+</script>
+
+
+.centerAll{
+    display: grid;
+    place-items: center;
+}
+
+.card{
+    border-radius: 1rem;
+}
+.vs-input{
+    width: 100%;
+}
+
+</style>

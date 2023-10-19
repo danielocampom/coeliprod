@@ -169,7 +169,7 @@ export default {
         this.mostraCliDetail()
         setTimeout(() => {
             this.render = false
-        }, 1000)   
+        }, 100)   
     },
     methods: {
         refresh(){

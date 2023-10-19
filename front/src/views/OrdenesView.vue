@@ -3,11 +3,11 @@
         <HeaderComponent/>
         <br>
     
-        <b-container fluid class="mt-5">
+        <b-container fluid class="mt-5 container">
             <template>
                 <b-row>
-                    <b-col>
-                        <b-card style="max-width: 600px;" class="mb-4 p-2" >
+                    <b-col md="6" sm="12">
+                        <b-card style="min-width: 600px;" class="mb-4 p-2" >
                             <b-row>
                                 <b-col lg="4" md="6" sm="12"  class="mt-4 p-0">
                                     <vs-input
@@ -21,6 +21,7 @@
                                         type="date"
                                         v-model="fechFinal"
                                         label-placeholder="Fecha Final"
+                                        :min="fechInicio"
                                     />
                                 </b-col>
                                 <b-col lg="4" md="6" sm="12"  class="mt-4 p-0">
@@ -35,33 +36,14 @@
                                     </vs-button>
                                 </b-col>
                             </b-row>
-                            <!-- <b-row>
-                                <b-col lg="8" md="6" sm="12"  class="mt-4 p-0">
-                                    <vs-input state="dark" @keyup="buscar()" dark v-model="buscarNombre" label-placeholder="Buscar por nombre">
-                                        <template #icon>
-                                            <box-icon name='map-pin' dark></box-icon> 
-                                        </template>
-                                    </vs-input>
-                                </b-col>
-                                <b-col lg="4" md="6" sm="12"  class="mt-4 p-0">
-                                    <vs-button
-                                        class="p-0"
-                                        block
-                                        flat
-                                        primary 
-                                    >
-                                        <box-icon name='search-alt-2' color="#195bff"></box-icon> Buscar
-                                    </vs-button>
-                                </b-col>
-                            </b-row> -->
                         </b-card>
                     </b-col>
                 </b-row>
             </template>
         </b-container>
-        <b-container fluid class="mt-5">
-            <b-row class="mt-3" v-if="render">
-                <b-col lg="3" md="6" sm="12" class="mt-4" v-for="(orden, i) in dataOrden" :key="i"  >
+        <b-container fluid class="mt-2 container">
+            <b-row v-if="render">
+                <b-col md="4" sm="6" v-for="(orden, i) in dataOrden" :key="i"  >
                     <CardHistorialComponent @updatePage="updatePage" :dataClient="{nombreCliente: orden.nombreCliente, fechaEntrega: orden.fechaEntrega, ordenPrenda: orden.ordenPrenda, idOrden: orden.idOrdenLavado, fecha: `2023-05-01T00:00:00.000+00:00`, historial: orden.historial}"></CardHistorialComponent>
                 </b-col>
             </b-row>
@@ -165,12 +147,6 @@ export default {
                 "idCliente": ""
             };
             
-            // let json = {
-            //     "fechaInicio": "",
-            //     "fechaFin": "",
-            //     "idPrenda": "3",
-            //     "idCliente": ""
-            // };
             try {
                 let res = await fetch(this.url+"orden/ordenPrenda/buscar",{
                     method: "POST",
@@ -189,10 +165,6 @@ export default {
                 if(data.status == 200){
                     this.dataOrden = data.datos 
                     this.render = true
-
-                }else{
-                    this.render = false
-                    this.openNotification('Ooops! Error.', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             } catch (error ) {
                 this.fechaI = fechaIn
@@ -201,7 +173,6 @@ export default {
                 this.render = false
                 
                 console.log(error)        
-                // this.openNotification('Ooops! Error.', `la fecha ${fechaIn} al ${fechaFi} no tiene datos que mostrar`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
 
 

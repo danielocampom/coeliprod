@@ -151,7 +151,7 @@ export default {
         this.date = this.calcularTiempoTranscurrido(fecha);
         setTimeout(() => {
             this.render = false
-        }, 1000)   
+        }, 100)   
     },
     methods: {
         refresh(){

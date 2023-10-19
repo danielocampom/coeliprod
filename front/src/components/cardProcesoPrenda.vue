@@ -242,7 +242,7 @@ export default {
         setTimeout(() => {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda, this.data.cantidadPrendas)
-        }, 1000)  
+        }, 100)  
     },
     methods: {
         refresh(){

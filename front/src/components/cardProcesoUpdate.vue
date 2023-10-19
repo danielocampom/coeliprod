@@ -7,7 +7,6 @@
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2"></b-skeleton>
-            <b-skeleton type="input" class="mt-2"></b-skeleton>
         </b-card>        
         <b-card v-else >
             <div class="d-flex flex-row bd-highlight">
@@ -214,10 +213,10 @@
                     </vs-button>
                 </template>
             </b-modal>
-            <vs-button primary block class="mt-2" @click="activarProceso">
+            <vs-button v-if="dataProceso.estado != 1" primary block class="mt-2" @click="activarProceso">
                 <box-icon name='play' color="#fff"></box-icon> Activar
             </vs-button>
-            <vs-button danger block class="mt-2"  @click="deleteProceso">
+            <vs-button danger v-else block class="mt-2"  @click="deleteProceso">
                 <box-icon name='trash' color="#fff"></box-icon> Eliminar
             </vs-button>
         </b-card>

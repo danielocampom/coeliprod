@@ -83,23 +83,36 @@
         </router-link>
       </vs-sidebar-item>
       
-      <vs-sidebar-item :class="{ 'active': isActive('/registroLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="registroLavado">
-        <template #icon>
-          <box-icon type='solid' name='file-plus'></box-icon>
+      <vs-sidebar-group>
+        <template #header>
+          <vs-sidebar-item arrow>
+            <template #icon>
+              <box-icon name='folder-open'></box-icon>
+            </template>
+            Procesos
+          </vs-sidebar-item>
         </template>
-        <router-link to="/registroLavado" class="nav-link">
-          Registrar Proceso de Lavado
-        </router-link>
-      </vs-sidebar-item>
 
-      <vs-sidebar-item :class="{ 'active': isActive('/procesoLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="procesoLavado">
-        <template #icon>
-          <box-icon type='solid' name='file-plus'></box-icon>
-        </template>
-        <router-link to="/procesoLavado" class="nav-link">
-          Proceso de Lavado
-        </router-link>
-      </vs-sidebar-item>
+        <vs-sidebar-item :class="{ 'active': isActive('/registroLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="registroLavado">
+          <template #icon>
+            <box-icon type='solid' name='file-plus'></box-icon>
+          </template>
+          <router-link to="/registroLavado" class="nav-link">
+            Registrar Proceso de Lavado
+          </router-link>
+        </vs-sidebar-item>
+  
+        <vs-sidebar-item :class="{ 'active': isActive('/procesoLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="procesoLavado">
+          <template #icon>
+            <box-icon type='solid' name='file-plus'></box-icon>
+          </template>
+          <router-link to="/procesoLavado" class="nav-link">
+            Proceso de Lavado
+          </router-link>
+        </vs-sidebar-item>
+
+      </vs-sidebar-group>
+
 
       <vs-sidebar-item :class="{ 'active': isActive('/prendas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PRENDA'].includes(role))" id="prendas">
         <template #icon>
@@ -109,60 +122,84 @@
           Prendas
         </router-link>
       </vs-sidebar-item>
-        
-      <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="ordenes">
-        <template #icon>
-          <box-icon name='folder-open'></box-icon>
-        </template>
-        <router-link to="/ordenes" class="nav-link">
-          Historial ordenes
-        </router-link>
-      </vs-sidebar-item>
-
-      <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="rastreo" >
-        <template #icon>
-          <box-icon name='book-reader'></box-icon>
-        </template>
-        <router-link to="/historico" class="nav-link">
-            Historico de Ordenes
-        </router-link>
-      </vs-sidebar-item>
-
-      <vs-sidebar-item :class="{ 'active': isActive('/canceladas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="canceladas">
-        <template #icon>
-          <box-icon name='folder-minus'></box-icon>
-        </template>
-        <router-link to="/canceladas" class="nav-link">
-            Ordenes canceladas
-        </router-link>
-      </vs-sidebar-item>
-
-
-      <vs-sidebar-item :class="{ 'active': isActive('/roles') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ROLES'].includes(role))" id="roles" >
-        <template #icon>
-          <box-icon name='toggle-right' ></box-icon>
-        </template>
-        <router-link to="/roles" class="nav-link">
-            Roles de usuario
-        </router-link>
-      </vs-sidebar-item>
       
-      <vs-sidebar-item :class="{ 'active': isActive('/rastreo') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'RASTREO'].includes(role))" id="rastreo" >
-        <template #icon>
-          <box-icon name='map-pin'></box-icon>
-        </template>
-        <router-link to="/rastreo" class="nav-link">
-            Rastreo de Ordenes
-        </router-link>
-      </vs-sidebar-item>
+      
+      
+      <vs-sidebar-group>
+          <template #header>
+            <vs-sidebar-item arrow>
+              <template #icon>
+                <box-icon name='folder-open'></box-icon>
+              </template>
+              ordenes
+            </vs-sidebar-item>
+          </template>
 
+          <vs-sidebar-item :class="{ 'active': isActive('/rastreo') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'RASTREO'].includes(role))" id="rastreo" >
+            <template #icon>
+              <box-icon name='map-pin'></box-icon>
+            </template>
+            <router-link to="/rastreo" class="nav-link">
+                Rastreo Ordenes
+            </router-link>
+          </vs-sidebar-item>
 
-      <vs-sidebar-item  :active="activeModal == 'cambioNip'" id="cambioNip" >
-        <template #icon>
-          <box-icon name='dialpad-alt' @click="activeModal=!activeModal"></box-icon>
-        </template>
-        Cambio de NIP
-      </vs-sidebar-item>
+          <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="ordenes">
+            <template #icon>
+              <box-icon name='folder-open'></box-icon>
+            </template>
+            <router-link to="/ordenes" class="nav-link">
+              Historial ordenes
+            </router-link>
+          </vs-sidebar-item>
+
+          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="rastreo" >
+            <template #icon>
+              <box-icon name='book-reader'></box-icon>
+            </template>
+            <router-link to="/historico" class="nav-link">
+                Historico de Ordenes
+            </router-link>
+          </vs-sidebar-item>
+          
+          <vs-sidebar-item :class="{ 'active': isActive('/canceladas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="canceladas">
+            <template #icon>
+              <box-icon name='folder-minus'></box-icon>
+            </template>
+            <router-link to="/canceladas" class="nav-link">
+                Ordenes canceladas
+            </router-link>
+          </vs-sidebar-item>
+      </vs-sidebar-group>
+
+      <vs-sidebar-group>
+          <template #header>
+            <vs-sidebar-item arrow>
+              <template #icon>
+                <box-icon name='cog'></box-icon>
+              </template>
+              Herramientas
+            </vs-sidebar-item>
+          </template>
+
+          <vs-sidebar-item :class="{ 'active': isActive('/roles') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ROLES'].includes(role))" id="roles" >
+            <template #icon>
+              <box-icon name='toggle-right' ></box-icon>
+            </template>
+            <router-link to="/roles" class="nav-link">
+                Roles de usuario
+            </router-link>
+          </vs-sidebar-item>
+    
+          <vs-sidebar-item  :active="activeModal == 'cambioNip'" id="cambioNip" >
+            <template #icon>
+              <box-icon name='dialpad-alt' @click="activeModal=!activeModal"></box-icon>
+            </template>
+            Cambio de NIP
+          </vs-sidebar-item>
+          
+      </vs-sidebar-group>
+
 
       <vs-dialog prevent-close v-model="activeModal">
         <template #header>
@@ -305,7 +342,6 @@ export default {
   }
 }
 </script>
-
 <style lang="stylus">
 getColor(vsColor, alpha = 1)
     unquote("rgba(var(--vs-"+vsColor+"), "+alpha+")")

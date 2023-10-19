@@ -1,7 +1,9 @@
 <template>
     <div>
-
-        <b-container class="bv-example-row">
+        <vs-button circle icon floating primary  @click="active=!active">
+            <box-icon name='edit' color="#fff"></box-icon>
+        </vs-button>
+        <!-- <b-container class="bv-example-row">
             <b-card v-if="!proceso.nombre" style="height: 9rem;">
                 <b-skeleton animation="throb" class="mt-3" width="85%"></b-skeleton>
                 <b-skeleton animation="throb" class="mt-3" width="100%"></b-skeleton>
@@ -31,7 +33,7 @@
                     </p>
                 </div>
             </b-card>
-        </b-container>
+        </b-container> -->
 
         <vs-dialog blur v-model="active">
             <template #header>
@@ -153,15 +155,15 @@ export default {
     },
     mounted(){
         setTimeout(() => {
-            this.estado = this.data.estado == 1 ? true : false
+            this.estado = this.data.row.item.estado == 1 ? true : false
             this.mostraCliente()
             this.mostraProceso()
             this.mostraTipoProceso()
             this.mostraTipoClientes()
-            this.selectProceso = this.data.proceso
-            this.selectCliente = this.data.cliente
-            this.nombre = this.data.nombre
-            this.cantidadBolsa = this.data.cantidadBolsa
+            this.selectProceso = this.data.row.item.proceso.id
+            this.selectCliente = this.data.row.item.idCliente
+            this.nombre = this.data.row.item.nombre
+            this.cantidadBolsa = this.data.row.item.cantidadBolsa
         }, 1500)
     },
     methods: {
@@ -174,28 +176,22 @@ export default {
     
         async mostraCliente(){
 
-            fetchApi(this.url+`cliente/findById/${this.data.cliente}`, 'GET', this.$session.get('token'))
+            fetchApi(this.url+`cliente/findById/${this.data.row.item.idCliente}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.cliente = data.datos
-                }else{
-                    console.warn(data)
-                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 
         },
         async mostraProceso(){
 
-            fetchApi(this.url+`proceso/findById/${this.data.proceso}`, 'GET', this.$session.get('token'))
+            fetchApi(this.url+`proceso/findById/${this.data.row.item.proceso.id}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.proceso = data.datos
-                }else{
-                    console.warn(data)
-                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 
@@ -207,10 +203,6 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.procesoSelect = data.datos
-
-                }else{
-                    console.warn(data)
-                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -221,16 +213,13 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.clienteSelect = data.datos
-                }else{
-                    console.warn(data)
-                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
         async deletePrenda(status){
             if(status == 200){
                 let token = this.$session.get('token')
-                const res = await fetch(this.url+`prenda/delete/${this.data.id}`,{
+                const res = await fetch(this.url+`prenda/delete/${this.data.row.item.id}`,{
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json',
@@ -255,7 +244,7 @@ export default {
         },
         async activar(){
             let token = this.$session.get('token')
-            const res = await fetch(this.url+`lavadora/activate/${this.data.id}`,{
+            const res = await fetch(this.url+`lavadora/activate/${this.data.row.item.id}`,{
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -281,7 +270,7 @@ export default {
             let json = {
                 "idCliente": this.selectCliente,
                 "nombre": this.nombre,
-                "idPrenda": this.data.id,
+                "idPrenda": this.data.row.item.id,
                 "idProceso": this.selectProceso,
                 "cantidadBolsa": this.cantidadBolsa,
             };

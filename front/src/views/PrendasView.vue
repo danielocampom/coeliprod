@@ -3,115 +3,157 @@
         <HeaderComponent/>
         <br>
     
-        <b-container fluid class="mt-3">
-            <template>
-                <b-row  class="mt-5">
-                    <b-col lg="6" md="6" sm="12">
-                        <b-card style="max-width: 400px;" class="mx-auto">
-                            <b-row class="mt-1">
-                                <b-col lg="8" md="8" sm="12"  class="p-1">
-                                    <vs-input state="dark" dark v-model="buscarTxt" @keyup="searchWasher()" label-placeholder="Buscar Prenda">
-                                        <template #icon>
-                                            <box-icon name='wind' dark></box-icon>
-                                        </template>
-                                    </vs-input>
-                                </b-col>
-                                <b-col lg="4" md="4" sm="12"  class="p-1">
-                                    <vs-button
-                                        transparent 
-                                        :active="btnBuscar == 1"
-                                        @click="searchWasher()"
-                                    >
-                                        <box-icon name='search-alt-2' color="#195bff"></box-icon> Buscar
-                                    </vs-button>
-                                </b-col>
-                            </b-row>
-                        </b-card>
-                    </b-col>
-                    <b-col lg="6" md="6" sm="12">
-                        <b-card style="max-width: 400px;" class="mx-auto">
-                            <b-row class="mt-1">
-                                <b-col class="p-1">
-                                    <vs-switch class="mt-3" v-model="buscarAct" @click="mostrarActInact()">
-                                        <template #off>
-                                            <box-icon name='check'></box-icon> Activos
-                                        </template>
-                                        <template #on>
-                                            <box-icon name='x' color="#fff"></box-icon> Inactivos
-                                        </template>
-                                    </vs-switch>
-                                </b-col>
-                                <b-col class="p-1">
-                                    <vs-button flat icon @click="activeModal=!activeModal">
-                                        <box-icon name='wind' color="#195bff"></box-icon> Agregar Prendas
-                                    </vs-button>
-                                    <vs-dialog v-model="activeModal">
-                                        <template #header>
-                                        <h4 class="not-margin">
-                                            Registrar <b>Prendas</b>
-                                        </h4>
-                                        </template>
-                            
-                                        <div class="con-form">
-                                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
-                                                <template #icon>
-                                                    <box-icon name='wind'></box-icon>
-                                                </template>
-                                            </vs-input>
-                                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
-                                                <template #icon>
-                                                    <box-icon name='wind'></box-icon>
-                                                </template>
-                                            </vs-input>
-                                            <div class="con-selects">
-                                                <b-skeleton class="mt-4" type="input" v-if="clientes.length == 0"></b-skeleton>
-                                                <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
-                                                    <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
-                                                        {{cli.nombre}}
-                                                    </vs-option>
-                                                </vs-select>
-                                            </div>
-                                            <div class="con-selects">
-                                                <b-skeleton class="mt-5" type="input" v-if="tiposProceso.length == 0"></b-skeleton>
-                                                <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
-                                                    <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
-                                                        {{proceso.nombre}}
-                                                    </vs-option>
-                                                </vs-select>
-                                            </div>
-                                        </div>
-                                        <br>
-                                        <template #footer>
-                                            <div class="footer-dialog">
-                                                <vs-button block success
-                                                    flat
-                                                    :btnGuardar="btnGuardar == 1"
-                                                    @click="addPrenda()">
-                                                    Guardar
-                                                </vs-button>
-                                            </div>
-                                        </template>
-                                    </vs-dialog>
-                                </b-col>
-                            </b-row>
-                        </b-card>
-                    </b-col>
-                </b-row>
+        <b-container fluid class="mt-3 container">
+            
+            <b-row class="align-items-end">
+                
+                <b-col md="6" sm="6">
+                    <b-form-group
+                    label="Buscar"
+                    label-for="filter-input"
+                    label-cols-sm="3"
+                    label-align-sm="right"
+                    label-size="sm"
+                    class="mb-0"
+                    >
+                    <b-input-group size="sm">
+                        <b-form-input
+                        id="filter-input"
+                        v-model="filter"
+                        type="search"
+                        placeholder="Buscar"
+                        ></b-form-input>
+
+                        <b-input-group-append>
+                        <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    </b-form-group>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <b-pagination
+                        v-model="currentPage"
+                        :total-rows="totalRows"
+                        :per-page="perPage"
+                        align="fill"
+                        size="sm"
+                        class="my-0 mb-3"
+                    ></b-pagination>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <vs-button flat icon @click="activeModal=!activeModal">
+                        <box-icon name='wind' color="#195bff"></box-icon> Agregar Prendas
+                    </vs-button>
+                    <vs-dialog v-model="activeModal">
+                        <template #header>
+                        <h4 class="not-margin">
+                            Registrar <b>Prendas</b>
+                        </h4>
+                        </template>
+            
+                        <div class="con-form">
+                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
+                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
+                            <div class="con-selects">
+                                <b-skeleton class="mt-4" type="input" v-if="clientes.length == 0"></b-skeleton>
+                                <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
+                                    <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
+                                        {{cli.nombre}}
+                                    </vs-option>
+                                </vs-select>
+                            </div>
+                            <div class="con-selects">
+                                <b-skeleton class="mt-5" type="input" v-if="tiposProceso.length == 0"></b-skeleton>
+                                <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
+                                    <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
+                                        {{proceso.nombre}}
+                                    </vs-option>
+                                </vs-select>
+                            </div>
+                        </div>
+                        <br>
+                        <template #footer>
+                            <div class="footer-dialog">
+                                <vs-button block success
+                                    flat
+                                    :btnGuardar="btnGuardar == 1"
+                                    @click="addPrenda()">
+                                    Guardar
+                                </vs-button>
+                            </div>
+                        </template>
+                    </vs-dialog>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <b-form-group
+                        label="registros"
+                        label-for="per-page-select"
+                        label-cols-sm="6"
+                        label-cols-md="4"
+                        label-cols-lg="3"
+                        label-align-sm="right"
+                        label-size="sm"
+                        class="mb-0"
+                        >
+                        <b-form-select label="registros"
+                            class="custom-select"
+                            id="per-page-select"
+                            v-model="perPage"
+                            :options="pageOptions"
+                            size="sm"
+                        ></b-form-select>
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-table
+                class="table table-bordered table-hover"
+                :items="items"
+                :fields="fields"
+                :current-page="currentPage"
+                :per-page="perPage"
+                :filter="filter"
+                :filter-included-fields="filterOn"
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                :sort-direction="sortDirection"
+                label-sort-asc=""
+                label-sort-desc=""
+                label-sort-clear=""
+                stacked="md"
+                show-empty
+                small
+                @filtered="onFiltered"
+            >
+            <template #cell(estado)="row">
+                <div class="d-flex justify-content-center">
+                    <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
+                </div>
             </template>
+            <template #cell(actions)="row">
+                <div class="d-flex justify-content-center">
+                    <btnUpdatePrenda @updatePage="updatePage" :data="{row}" />
+                </div>
+            </template>
+
+            <template #row-details="row">
+                <b-card>
+                <ul>
+                    <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                </ul>
+                </b-card>
+            </template>
+            </b-table>
         </b-container>
         <br>
-        <b-container class="bv-example-row">
-            <b-row>
-                <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(prenda, i) in prendas" :key="i">
-                    <CardPrendaComponent @updatePage="updatePage" :data="{nombre: prenda.nombre, cantidadBolsa: prenda.cantidadBolsa, usuario: prenda.usuario, estado: prenda.estado, proceso: prenda.proceso, cliente: prenda.cliente, id: prenda.id}" />
-                </b-col>
-            </b-row>            
-            <vs-alert v-if="sinData" shadow danger class="mt-5">
-                <template #title>
-                    No se han encontrado datos
-                </template>
-            </vs-alert>
-        </b-container>
+        
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
         </div>
@@ -121,13 +163,37 @@
 
 <script>
 import HeaderComponent from '@/components/Header.vue';
-import CardPrendaComponent from '@/components/cardPrenda.vue'
+import btnUpdatePrenda from '@/components/btn_Update_Prendas.vue'
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 
 export default {
     name:"PrendasView",
     data: () => ({
+        items: [],
+        fields: [
+            { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
+            { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
+            { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadBolsa', label: 'cantidad Bolsa', sortable: true, sortDirection: 'desc' },
+            { key: 'actions', label: 'Acciones' }
+        ],
+        
+        totalRows: 1,
+        currentPage: 1,
+        perPage: 5,
+        pageOptions: [5, 10, 15, { value: 100, text: "mostrar Todo" }],
+        sortBy: '',
+        sortDesc: false,
+        sortDirection: 'asc',
+        filter: null,
+        filterOn: [],
+        infoModal: {
+          id: 'info-modal',
+          title: '',
+          content: ''
+        },
+
         prendas: [],
         tiposProceso: [],
         clientes: [],
@@ -148,7 +214,7 @@ export default {
     }),
     components: {
         HeaderComponent,
-        CardPrendaComponent,
+        btnUpdatePrenda,
         loginComponent
     },
     created(){
@@ -169,7 +235,11 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-    
+        onFiltered(filteredItems) {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            this.totalRows = filteredItems.length
+            this.currentPage = 1
+        },
         async mostraProceso(){
             fetchApi(this.url+'proceso/findAll', 'GET', this.$session.get('token'))
             .then(data => {
@@ -179,7 +249,6 @@ export default {
                 }else{
                     this.tiposProceso = [{"id": 0, "nombre": 'Sin Procesos'}]
 
-                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -192,46 +261,27 @@ export default {
                 }else{
                     this.clientes = [{"id": 0, "nombre": 'Sin Clientes'}]
 
-                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
         async mostraActivos(){
+            this.items = []
             fetchApi(this.url+'prenda/findByEstado/1', 'GET', this.$session.get('token'))
             .then(data => {
                 this.prendas = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.prendas = data.datos
-                    if(this.prendas.length == 0){
-                        this.sinData == true
-                    }
+                    console.log(data)
+                    data.datos.forEach( val => {
+                        this.items.push(val)
+                    })
+                    this.totalRows = this.items.length
                 }else{
                     this.sinData = true
                 }
             })
         },
-        async mostraInactivos(){
-
-            fetchApi(this.url+'prenda/findByEstado/5', 'GET', this.$session.get('token'))
-            .then(data => {
-                this.prendas = []
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.prendas = data.datos
-                    if(this.prendas.length == 0){
-                        this.sinData == true
-                    }else{
-                        this.sinData = false
-                    }
-                }else{
-                    this.sinData = true
-                }
-            })
-        },
-        mostrarActInact(){
-            this.buscarAct ? this.mostraActivos() : this.mostraInactivos()
-        },
+        
         async addPrenda(){
             let token = this.$session.get('token')
 
@@ -267,43 +317,6 @@ export default {
                 console.warn(data)
                 this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
-        },
-        async searchWasher(){
-
-            this.prendas = []
-
-            if(this.buscarTxt != ''){
-                let token = this.$session.get('token')
-
-                let json = {
-                    "criterio": this.buscarTxt,
-                };
-                let res = await fetch(this.url+"prenda/find",{
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': "*",
-                        'Authorization': token
-                    },
-                    body: JSON.stringify(json)
-                })
-                let data = await res.json()
-
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.prendas = data.datos
-                    if(this.prendas.length == 0){
-                        this.sinData == true
-                    }
-
-                }else{
-                    console.warn(data)
-                    this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-                }
-            }else{
-                this.mostraActivos()
-            }
-
         },
         async updatePage(status){
             if(status == 200){
