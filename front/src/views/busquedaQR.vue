@@ -20,7 +20,7 @@ import { refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 
 export default {
-    name:"ClientesView",
+    name:"QRView",
     data: () => ({
 
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
@@ -65,17 +65,3 @@ export default {
 }
 </script>
 
-
-.centerAll{
-    display: grid;
-    place-items: center;
-}
-
-.card{
-    border-radius: 1rem;
-}
-.vs-input{
-    width: 100%;
-}
-
-</style>
