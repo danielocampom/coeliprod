@@ -1,19 +1,9 @@
 <template>
     <div>
-        <b-card v-if="render">
-            <b-skeleton animation="throb" width="100%"></b-skeleton>
-        </b-card>
 
-        <b-card v-else @click="active=!active" >
-            <div class="d-flex flex-row bd-highlight">
-                <div class="p-1 bd-highlight">
-                    <box-icon name='radio-circle-marked' color="#32ff00" ></box-icon>
-                </div>
-                <div class="p-1 bd-highlight">
-                    {{dataTypeWasher.nombre}} 
-                </div>
-            </div>
-        </b-card>
+        <vs-button circle icon floating primary  @click="active=!active">
+            <box-icon name='edit' color="#fff"></box-icon>
+        </vs-button>
         <vs-dialog blur v-model="active">
             <template #header>
                 <h4 class="not-margin">
@@ -39,7 +29,7 @@
                     <vs-button success
                         flat
                         :btnActualizar="btnActualizar == 1"
-                        @click="update(dataTypeWasher.id)">
+                        @click="update()">
                         Actualizar
                     </vs-button>
                 </div>
@@ -67,7 +57,7 @@ import loginComponent from './cardLogin.vue';
 import { refreshSession } from "@/service/service.js"
 
 export default {
-    name: 'CardTipoLavadoraComponent',
+    name: 'btnTipoLavado',
     props: {
         dataTypeWasher: Object,
     },
@@ -80,7 +70,6 @@ export default {
         nombreUp: '',
         btnElimina: 0,
         btnActualizar: 0,
-        render: true,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     components: {
@@ -88,10 +77,8 @@ export default {
         loginComponent
     },
     mounted(){
-        setTimeout(() => {
-            this.render = false
-            this.nombreUp = this.dataTypeWasher.nombre
-        }, 1500)
+        this.nombreUp = this.dataTypeWasher.row.item.nombre
+        
     },
     methods: {
         refresh(){
@@ -104,7 +91,7 @@ export default {
         async deleteWasher(status){
             if(status == 200){
                 let token = this.$session.get('token')
-                const res = await fetch(this.url+`tipoLavado/delete/${this.dataTypeWasher.id}`,{
+                const res = await fetch(this.url+`tipoLavado/delete/${this.dataTypeWasher.row.item.id}`,{
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json',
@@ -132,7 +119,7 @@ export default {
 
             let json = {
                 "tipoLavado": this.nombreUp,
-                "idTipoLavado": this.dataTypeWasher.id,
+                "idTipoLavado": this.dataTypeWasher.row.item.id,
             };
             let res = await fetch(this.url+"tipoLavado/update",{
                 method: "POST",

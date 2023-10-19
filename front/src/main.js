@@ -22,7 +22,9 @@ Vue.config.productionTip = false
 
 Vue.use(VueApexCharts)
 Vue.use(Vuetify)
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue,{
+  locale: 'es'
+})
 Vue.use(IconsPlugin)
 Vue.use(VueSweetalert2);
 Vue.use(VueSession)

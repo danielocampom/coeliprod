@@ -1,6 +1,6 @@
 <template>
   <div class="hidden">
-    <vs-navbar shadow square center-collapsed v-model="active">
+    <vs-navbar shadow square v-model="active">
       <template #left>
         <vs-button @click="activeSidebar = !activeSidebar" flat icon>
           <box-icon name='menu'></box-icon>

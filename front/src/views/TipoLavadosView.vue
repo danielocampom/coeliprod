@@ -3,77 +3,131 @@
         <HeaderComponent/>
         <br>
     
-        <b-container fluid class="mt-3">
-            <template>
-                <b-row  class="mt-5">
-                    <b-col lg="6" md="6" sm="12">
-                        <b-card style="max-width: 400px;" class="mb-4 mx-auto" >
-                            <b-row class="mt-1">
-                                <b-col lg="8" md="8" sm="12"  class="p-2">
-                                    <vs-input state="dark" dark v-model="buscarTxt" @keyup="searchTypeWasher()" label-placeholder="Buscar Tipo de Lavado">
-                                        <template #icon>
-                                            <box-icon name='wind' dark ></box-icon>
-                                        </template>
-                                    </vs-input>
-                                </b-col>
-                                <b-col lg="4" md="4" sm="12"  class="p-2">
-                                    <vs-button
-                                        primary 
-                                        flat
-                                        block
-                                        :active="btnBuscar == 1"
-                                        @click="searchTypeWasher()"
-                                    >
-                                        <box-icon name='search-alt-2' color="#195bff"></box-icon> Buscar
-                                    </vs-button>
-                                </b-col>
-                            </b-row>
-                            <vs-button block flat icon @click="activeModal=!activeModal">
-                                <box-icon name='wind' color="#195bff"></box-icon> Agregar Tipo de Lavado
-                            </vs-button>
-                            <vs-dialog v-model="activeModal">
-                                <template #header>
-                                <h4 class="not-margin">
-                                    Registrar <b>Tipo de Lavado</b>
-                                </h4>
+        <b-container fluid class="mt-5 container">
+
+            <b-row class="align-items-end">
+                
+                <b-col md="6" sm="6">
+                    <b-form-group
+                    label="Buscar"
+                    label-for="filter-input"
+                    label-cols-sm="3"
+                    label-align-sm="right"
+                    label-size="sm"
+                    class="mb-0"
+                    >
+                    <b-input-group size="sm">
+                        <b-form-input
+                        id="filter-input"
+                        v-model="filter"
+                        type="search"
+                        placeholder="Buscar"
+                        ></b-form-input>
+
+                        <b-input-group-append>
+                        <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                    </b-form-group>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <b-pagination
+                        v-model="currentPage"
+                        :total-rows="totalRows"
+                        :per-page="perPage"
+                        align="fill"
+                        size="sm"
+                        class="my-0 mb-3"
+                    ></b-pagination>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <vs-button flat icon @click="activeModal=!activeModal">
+                        <box-icon name='wind' color="#195bff"></box-icon> Agregar Tipo de Lavado
+                    </vs-button>
+                    <vs-dialog v-model="activeModal">
+                        <template #header>
+                        <h4 class="not-margin">
+                            Registrar <b>Tipo de Lavado</b>
+                        </h4>
+                        </template>
+            
+                        <div class="con-form">
+                            <vs-input success type="text" v-model="nombreLavado" placeholder="Nombre Del Lavado">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
                                 </template>
-                    
-                                <div class="con-form">
-                                    <vs-input success type="text" v-model="nombreLavado" placeholder="Nombre Del Lavado">
-                                        <template #icon>
-                                            <box-icon name='wind'></box-icon>
-                                        </template>
-                                    </vs-input>
-                                </div>
-                                <br>
-                                <template #footer>
-                                    <div class="footer-dialog">
-                                        <vs-button block success
-                                            flat
-                                            :btnGuardar="btnGuardar == 1"
-                                            @click="addTypeWasher()">
-                                            Guardar
-                                        </vs-button>
-                                    </div>
-                                </template>
-                            </vs-dialog>
-                        </b-card>
-                    </b-col>
-                </b-row>
-            </template>
-        </b-container>
-        <br>
-        <b-container class="bv-example-row">
-            <b-row>
-                <b-col class="mt-4" lg="3" md="6" sm="12" v-for="(tipoLavado, i) in tiposLavado" :key="i">
-                    <CardTipoLavadoraComponent @updatePage="updatePage" :dataTypeWasher="{nombre: tipoLavado.nombre, id: tipoLavado.id}" />
+                            </vs-input>
+                        </div>
+                        <br>
+                        <template #footer>
+                            <div class="footer-dialog">
+                                <vs-button block success
+                                    flat
+                                    :btnGuardar="btnGuardar == 1"
+                                    @click="addTypeWasher()">
+                                    Guardar
+                                </vs-button>
+                            </div>
+                        </template>
+                    </vs-dialog>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <b-form-group
+                        label="registros"
+                        label-for="per-page-select"
+                        label-cols-sm="6"
+                        label-cols-md="4"
+                        label-cols-lg="3"
+                        label-align-sm="right"
+                        label-size="sm"
+                        class="mb-0"
+                        >
+                        <b-form-select label="registros"
+                            class="custom-select"
+                            id="per-page-select"
+                            v-model="perPage"
+                            :options="pageOptions"
+                            size="sm"
+                        ></b-form-select>
+                    </b-form-group>
                 </b-col>
             </b-row>
-            <vs-alert v-if="sinData" shadow danger>
-                <template #title>
-                    No se han encontrado datos
-                </template>
-            </vs-alert>
+
+            <!-- Main table element -->
+            <b-table
+                class="table table-bordered table-hover"
+                :items="items"
+                :fields="fields"
+                :current-page="currentPage"
+                :per-page="perPage"
+                :filter="filter"
+                :filter-included-fields="filterOn"
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                :sort-direction="sortDirection"
+                label-sort-asc=""
+                label-sort-desc=""
+                label-sort-clear=""
+                stacked="md"
+                show-empty
+                small
+                @filtered="onFiltered"
+            >
+            <template #cell(actions)="row">
+                <div class="d-flex justify-content-center">
+                    <btnTipoLavadoraComponent @updatePage="updatePage" :dataTypeWasher="{row}" />
+                </div>
+            </template>
+
+            <template #row-details="row">
+                <b-card>
+                <ul>
+                    <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                </ul>
+                </b-card>
+            </template>
+            </b-table>
+
         </b-container>
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
@@ -84,7 +138,7 @@
 
 <script>
 import HeaderComponent from '@/components/Header.vue';
-import CardTipoLavadoraComponent from '@/components/cardTipoLavado.vue'
+import btnTipoLavadoraComponent from '@/components/btn_Tipo_Lavado.vue'
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 
@@ -93,6 +147,28 @@ import loginComponent from '@/components/cardLogin.vue';
 export default {
     name:"tipoLavadosView",
     data: () => ({
+
+        items: [],
+        fields: [
+            { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
+            { key: 'actions', label: 'Acciones' }
+        ],
+        
+        totalRows: 1,
+        currentPage: 1,
+        perPage: 5,
+        pageOptions: [5, 10, 15, { value: 100, text: "mostrar Todo" }],
+        sortBy: '',
+        sortDesc: false,
+        sortDirection: 'asc',
+        filter: null,
+        filterOn: [],
+        infoModal: {
+          id: 'info-modal',
+          title: '',
+          content: ''
+        },
+
         tiposLavado: [],
         sinData: false,
         activeModal: false,
@@ -108,7 +184,7 @@ export default {
     }),
     components: {
         HeaderComponent,
-        CardTipoLavadoraComponent,
+        btnTipoLavadoraComponent,
         loginComponent
     },
     created(){
@@ -127,16 +203,24 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-    
+        onFiltered(filteredItems) {
+            // Trigger pagination to update the number of buttons/pages due to filtering
+            this.totalRows = filteredItems.length
+            this.currentPage = 1
+        },
+        
         async mostraTipoLavado(){
+            this.items = []
             fetchApi(this.url+'tipoLavado/findAll', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.tiposLavado = data.datos
-                    this.sinData = false
-                }else{
-                    this.sinData = true
+
+                    data.datos.forEach( val => {
+                        this.items.push({ clave: val.clave, nombre: val.nombre, estado: val.estado, id: val.id})
+                    })
+                    this.totalRows = this.items.length 
                 }
             })
         },

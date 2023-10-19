@@ -1,12 +1,8 @@
 <template>
     <div>
-        <vs-card type="3" @click="active=!active" >
-            <template #img>
-                <p class="m-3">
-                    {{dataUser.nombre}} {{dataUser.paterno}} {{dataUser.materno}} 
-                </p>
-            </template>
-        </vs-card>
+        <vs-button circle icon floating primary  @click="active=!active">
+            <box-icon name='edit' color="#fff"></box-icon>
+        </vs-button>
         <b-modal size="xl" centered v-model="active">
             <template #modal-header="{ close }">
                 <h5>Editar <b>Usuario</b></h5>
@@ -63,7 +59,7 @@
                     <box-icon name='save' color="#fff"></box-icon> Guardar
                 </vs-button>
                 <div v-if="mostrarBtn">
-                    <vs-button warn @click="updatePass(dataUser.id)">
+                    <vs-button warn @click="updatePass(dataUser.row.item.id)">
                         <box-icon name='lock' color="#fff"></box-icon> Cambiar Contraseña
                     </vs-button>
                 </div>
@@ -84,7 +80,7 @@
         <vs-dialog width="550px" not-center v-model="activeupdatePass">
         <template #header>
           <h4 class="not-margin">
-            Contraseña Actualizada<b> {{dataUser.username}}</b>
+            Contraseña Actualizada<b> {{dataUser.row.item.username}}</b>
           </h4>
         </template>
 
@@ -97,7 +93,7 @@
 
         <template #footer>
           <div class="con-footer">
-            <vs-button @click="active=false" transparent>
+            <vs-button @click="cerrarUpdate" transparent>
               Ok
             </vs-button>
           </div>
@@ -113,7 +109,7 @@ import ConfirmComponent from '@/components/confirm.vue'
 import { fetchApi } from "@/service/service.js"
 
 export default {
-    name: 'CardUsrComponent',
+    name: 'btnUpdateUsr',
     props: {
         dataUser: Object,
     },
@@ -140,14 +136,14 @@ export default {
         ConfirmComponent,
     },
     async mounted(){
-        if(this.$session.get('roles').includes("SISTEMAS") || this.$session.get('roles').includes("ADMIN")){
+        if(this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))){
             this.mostrarBtn = true
         }
         this.mostraRoles()
-        this.nombre = this.dataUser.nombre
-        this.paterno = this.dataUser.paterno
-        this.materno = this.dataUser.materno
-        this.dataUser.roles.forEach( rol => {
+        this.nombre = this.dataUser.row.item.nombre
+        this.paterno = this.dataUser.row.item.paterno
+        this.materno = this.dataUser.row.item.materno
+        this.dataUser.row.item.roles.forEach( rol => {
             this.optionsRoles.push(rol.id) 
         });
     },
@@ -157,8 +153,6 @@ export default {
             .then(data => {
                 if(data.status == 200){
                     this.allRoles = data.datos
-                }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -166,7 +160,7 @@ export default {
             let token = this.$session.get('token')
 
             let json = {
-                "idUsuario": this.dataUser.id,
+                "idUsuario": this.dataUser.row.item.id,
                 "nombre": this.nombre,
                 "paterno": this.paterno,
                 "materno": this.maternos,
@@ -189,7 +183,7 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.$emit('updatePage', '200')
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al actualizar el Usuario`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },
@@ -209,13 +203,12 @@ export default {
             if(data.status == 200){
                 //se actualiza token
                 this.active = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Contraseña Actualizada`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.activeupdatePass = true
+                this.openNotification(`Exito: ${data.mensaje}`, `Contraseña Actualizada`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.newPass = data.datos.password
 
-                this.$emit('updatePage', '200')
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al actualizar la contraseña`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },
@@ -223,7 +216,7 @@ export default {
         async deleteUsuario(status){
             if(status == 200){
                 let token = this.$session.get('token')
-                const res = await fetch(this.url+`cliente/delete/${this.dataUser.id}`,{
+                const res = await fetch(this.url+`cliente/delete/${this.dataUser.row.item.id}`,{
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json',
@@ -243,6 +236,11 @@ export default {
 
                 }
             }
+        },
+        cerrarUpdate(){
+            this.active=false
+            this.$emit('updatePage', '200')
+
         },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({

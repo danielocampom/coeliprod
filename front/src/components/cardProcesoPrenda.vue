@@ -6,7 +6,7 @@
             <b-skeleton animation="throb" width="70%"></b-skeleton>
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2"></b-skeleton>
-            <b-skeleton type="input" class="mt-2" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
+            <b-skeleton type="input" class="mt-2" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"></b-skeleton>
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.nomCliente" :sub-title="data.prenda">
             <strong>{{ data.descripcionEstado }}</strong>

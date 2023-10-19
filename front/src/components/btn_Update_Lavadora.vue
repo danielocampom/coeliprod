@@ -1,20 +1,8 @@
 <template>
     <div>
-        <b-card v-if="render">
-            <b-skeleton animation="throb" width="100%"></b-skeleton>
-        </b-card>
-
-        <b-card v-else @click="active=!active" >
-            <div class="d-flex flex-row bd-highlight">
-                <div class="p-1 bd-highlight">
-                    <box-icon name='radio-circle-marked' :color="dataWasher.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
-                </div>
-                <div class="p-1 bd-highlight">
-                    {{dataWasher.nombre}}
-                </div>
-                <br>
-            </div>
-        </b-card>
+        <vs-button circle icon floating primary  @click="active=!active">
+            <box-icon name='edit' color="#fff"></box-icon>
+        </vs-button>
         <b-modal size="xl" centered v-model="active">
             <template #modal-header="{ close }">
                 <h5>Editar Lavadora</h5>
@@ -91,14 +79,14 @@
                 <vs-button success
                     flat
                     :btnActualizar="btnActualizar == 1"
-                    @click="update(dataWasher.id)">
+                    @click="update(dataWasher.row.item.id)">
                     Actualizar
                 </vs-button>
-                <div v-if="(dataWasher.estado == 1)" class="">
+                <div v-if="(dataWasher.row.item.estado == 1)" class="">
                     <vs-button danger
                         flat
                         :btnActualizar="btnElimina == 1"
-                        @click="active2=!active2">
+                        @click="desactivar()">
                         Desactivar
                     </vs-button>
                 </div>
@@ -116,63 +104,6 @@
             </template>
             
         </b-modal>
-        <!-- <vs-dialog blur v-model="active">
-            <template #header>
-                <h4 class="not-margin">
-                    Editar <b>Lavadora</b>
-                </h4>
-            </template>
-
-
-            <div class="con-form">
-                <template>
-                    <div class="center content-inputs">
-                        <vs-input success type="text" v-model="nombreUp" placeholder="Lavadora">
-                            <template #icon>
-                                <box-icon name='wind' dark></box-icon>
-                            </template>
-                        </vs-input>
-                    </div>
-                        <div class="con-selects">
-                            <b-skeleton type="input" v-if="tiposLavado.length == 0"></b-skeleton>
-                            <vs-select v-else placeholder="Tipo de Lavado" color="success" v-model="tipoLavado">
-                                <vs-option  v-for="(lavado, i) in tiposLavado" :key="i" :label="lavado.nombre" :value="lavado.id">
-                                    {{lavado.nombre}}
-                                </vs-option>
-                                   
-                            </vs-select>
-                        </div>
-                </template>
-            </div>
-
-            <template #footer>
-                <div class="con-footer mt-4">
-                    <vs-button success
-                        flat
-                        :btnActualizar="btnActualizar == 1"
-                        @click="update(dataWasher.id)">
-                        Actualizar
-                    </vs-button>
-                    <div v-if="(dataWasher.estado == 1)" class="">
-                        <vs-button danger
-                            flat
-                            :btnActualizar="btnElimina == 1"
-                            @click="active2=!active2">
-                            Desactivar
-                        </vs-button>
-                    </div>
-                    <div v-else>
-                        <vs-button success
-                            flat
-                            :btnActualizar="btnElimina == 1"
-                            @click="activar()">
-                            Activar
-                        </vs-button>
-                    </div>
-                </div>
-            </template>
-        </vs-dialog> -->
-        
         <vs-dialog v-model="active2">
             <template #header>
                 <h4 class="not-margin">
@@ -196,7 +127,7 @@ import { refreshSession, fetchApi } from "@/service/service.js"
 
 
 export default {
-    name: 'CardLavadoraComponent',
+    name: 'btnUpdateLavadora',
     props: {
         dataWasher: Object,
     },
@@ -204,6 +135,8 @@ export default {
         estado: '',
         contador: 0,
         programasItems: [],
+        programasLavado: [],
+
         tiposLavado: [],
         programas: [],
         active: false,
@@ -221,15 +154,12 @@ export default {
         loginComponent
     },
     mounted(){
-        this.mostraProgramas()
         this.mostrarTodosLavados()
-        setTimeout(() => {
-            this.render = false
-            this.estado = this.dataWasher.estado == 1 ? true : false
-            this.tipoLavado = this.dataWasher.clave
-            this.nombreUp = this.dataWasher.nombre
-            this.mostraTipoLavado()
-        }, 1500)
+        this.mostraTipoLavado()
+        this.estado = this.dataWasher.row.item.estado == 1 ? true : false
+        this.tipoLavado = this.dataWasher.row.item.tipoLavado
+        this.nombreUp = this.dataWasher.row.item.nombre
+        this.programas = this.dataWasher.row.item.programasLavado
     },
     methods: {
         refresh(){
@@ -237,6 +167,10 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        desactivar(){
+            this.active = false
+            this.active2 = true
         },
         add(id){
             if(id){
@@ -259,24 +193,7 @@ export default {
         elim(id){
             this.programas = this.programas.filter(dt => dt.id != id)
         },
-        async mostraProgramas(){
-            this.contador++
-
-            this.dataWasher.programas.forEach(programa => {
-                fetchApi(this.url+`lavadora/programa/findById/${programa}`, 'GET', this.$session.get('token'))
-                .then(data => {
-                    this.tiposLavado = []
-                    if(data.status == 401){ this.activarReboot = true }
-                    if(data.status == 200){
-                        this.programas.push({"id": this.contador, "nombre": data.datos.nombre, "descripcion": data.datos.descripcion, "cantidadMinima": data.datos.cantidadMinima, "cantidadMaxima": data.datos.cantidadMaxima, "idPrograma": data.datos.id })
-
-                    }else{
-                        this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-                    }
-                })
-            });
-        },
+        
         async mostraTipoLavado(){
             fetchApi(this.url+'tipoLavado/findAll', 'GET', this.$session.get('token'))
             .then(data => {
@@ -284,9 +201,6 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.tiposLavado = data.datos
-                }else{
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-
                 }
             })
         },
@@ -298,16 +212,13 @@ export default {
                     data.datos.forEach( val => {
                         this.programasItems.push({ maxCant: val.cantidadMaxima, minCant: val.cantidadMinima, descripcion: val.descripcion, nombre: val.nombre, id: val.id },)
                     })
-
-                }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
         async deleteWasher(status){
             if(status == 200){
                 let token = this.$session.get('token')
-                const res = await fetch(this.url+`lavadora/delete/${this.dataWasher.id}`,{
+                const res = await fetch(this.url+`lavadora/delete/${this.dataWasher.row.item.id}`,{
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json',
@@ -325,14 +236,14 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
                 }else{
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado al eliminarlo`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
 
                 }
             }
         },
         async activar(){
             let token = this.$session.get('token')
-            const res = await fetch(this.url+`lavadora/activate/${this.dataWasher.id}`,{
+            const res = await fetch(this.url+`lavadora/activate/${this.dataWasher.row.item.id}`,{
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -349,7 +260,7 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al activarlo`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },
@@ -362,7 +273,7 @@ export default {
             let json = {
                 "lavadora": this.nombreUp,
                 "idTipoLavado": this.tipoLavado,
-                "idLavadora": this.dataWasher.id,
+                "idLavadora": this.dataWasher.row.item.id,
                 "programasLavado": pogramLav
             };
             let res = await fetch(this.url+"lavadora/update",{

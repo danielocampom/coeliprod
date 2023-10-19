@@ -1,19 +1,11 @@
 <template>
     <div>
-        <b-card v-if="render">
-            <b-skeleton animation="throb" width="100%"></b-skeleton>
-        </b-card>
-
-        <b-card v-else @click="active=!active" >
-            <div class="d-flex flex-row bd-highlight">
-                <div class="p-1 bd-highlight">
-                    <box-icon name='radio-circle-marked' :color="dataCli.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
-                </div>
-                <div class="p-1 bd-highlight">
-                    {{dataCli.nombre}}
-                </div>
-            </div>
-        </b-card>
+        
+        
+        <vs-button circle icon floating primary  @click="active=!active">
+            <box-icon name='edit' color="#fff"></box-icon>
+        </vs-button>
+        
         <vs-dialog blur v-model="active">
             <template #header>
                 <h4 class="not-margin">
@@ -46,10 +38,10 @@
                     <vs-button success
                         flat
                         :btnActualizar="btnActualizar == 1"
-                        @click="updateCliente(dataCli.id)">
+                        @click="updateCliente()">
                         Actualizar
                     </vs-button>
-                    <div v-if="(dataCli.estado == 1)" class="">
+                    <div v-if="(dataCli.row.item.estado == 1)" class="">
                         <vs-button danger
                             flat
                             :btnActualizar="btnElimina == 1"
@@ -91,7 +83,7 @@ import loginComponent from './cardLogin.vue';
 import { refreshSession } from "@/service/service.js"
 
 export default {
-    name: 'CardClienteComponent',
+    name: 'btnUpdateCliente',
     props: {
         dataCli: Object,
     },
@@ -112,12 +104,9 @@ export default {
         loginComponent
     },
     mounted(){
-        setTimeout(() => {
-            this.render = false
-            this.estado = this.dataCli.estado == 1 ? true : false
-            this.claveUp = this.dataCli.clave
-            this.nombreUp = this.dataCli.nombre
-        }, 1500);
+        this.estado = this.dataCli.row.item.estado == 1 ? true : false
+        this.claveUp = this.dataCli.row.item.clave
+        this.nombreUp = this.dataCli.row.item.nombre
     },
     methods: {
         refresh(){
@@ -130,7 +119,7 @@ export default {
         async deleteCliente(status){
             if(status == 200){
                 let token = this.$session.get('token')
-                const res = await fetch(this.url+`cliente/delete/${this.dataCli.id}`,{
+                const res = await fetch(this.url+`cliente/delete/${this.dataCli.row.item.id}`,{
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json',
@@ -148,14 +137,14 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
                 }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al querer eliminar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                     
                 }
             }
         },
         async activarCliente(){
             let token = this.$session.get('token')
-            const res = await fetch(this.url+`cliente/activate/${this.dataCli.id}`,{
+            const res = await fetch(this.url+`cliente/activate/${this.dataCli.row.item.id}`,{
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -172,7 +161,7 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al querer activar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 
             }
         },
@@ -182,7 +171,7 @@ export default {
             let json = {
                 "nombre": this.nombreUp,
                 "clave": this.claveUp,
-                "idCliente": this.dataCli.id,
+                "idCliente": this.dataCli.row.item.id,
             };
             let res = await fetch(this.url+"cliente/update",{
                 method: "POST",
@@ -203,7 +192,7 @@ export default {
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.$emit('updatePage', '200')
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al actualizar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 
             }
         },
