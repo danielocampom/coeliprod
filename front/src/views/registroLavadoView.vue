@@ -251,57 +251,46 @@ export default {
             this.pasos = this.pasos.filter(paso => paso.id != id)
         },
         async addPaso(){
-            // this.lavadoras.forEach(lvd => {
-            //     if (lvd.selectedPrograma !== null) {
-            //         this.programasLavadoSelected.push({idLavadora:lvd.idLavadora, idPrograma:selectedPrograma})
-            //     }
-            // });
-            // this.resultados.forEach((resultado, index) => {
-            //     if (resultado !== undefined) {
-            //         // this.programasLavadoSelected.push({idLavadora:lvd.idLavadora, idPrograma:selectedPrograma})
-            //         console.log(resultado);
-            //     }
-            // });
-            // let error = []
-            // if(this.descripcion == ''){
-            //     error.push("<br>Es Requerido el campo Descripción")
-            // }
-            // if(this.nombre == ''){
-            //     error.push("<br>Es Requerido el campo Nombre")
-            // }
-            // if(this.optionsRoles.length == 0){
-            //     error.push("<br>Es Requerido seleccionar un Rol")
-            // }
             
-            // if(this.lavado == ''){
-            //     error.push("<br>Es Requerido seleccionar un Lavado")
-            // }
+            this.resultados.forEach( resultado => {
+                this.programasLavadoSelected.push({idLavadora:resultado.idLavadora, idPrograma:resultado.idPrograma})
+            });
+            let error = []
+            if(this.descripcion == ''){
+                error.push("<br>Es Requerido el campo Descripción")
+            }
+            if(this.nombre == ''){
+                error.push("<br>Es Requerido el campo Nombre")
+            }
+            if(this.optionsRoles.length == 0){
+                error.push("<br>Es Requerido seleccionar un Rol")
+            }
+            
 
-            // if(this.programasLavadoSelected.length == 0){
-            //     error.push("<br>Es Requerido seleccionar una lavadora con su capacidad correspondiente")
-            // }
-            // let pasos = {
-            //     "id": this.contador,
-            //     "programaLavadora": this.programasLavadoSelected, 
-            //     "idTipoLavado": this.tipoLavado.id,
-            //     "nombre": this.nombre,
-            //     "descripcion": this.descripcion,
-            //     "orden": this.orden++,
-            //     "rolesCambio": this.optionsRoles,
-            // }
-            // if(error.length == 0){
-            //     this.pasos.push(pasos)
-            //     this.contador++
-            //     this.descripcion = ''
-            //     this.nombre = ''
-            //     this.optionsRoles = []
-            //     this.lavado = ''
-            //     this.tipoLavado = ''
-            //     this.lavadoras = []
+            if(this.programasLavadoSelected.length == 0){
+                error.push("<br>Es Requerido seleccionar una lavadora con su capacidad correspondiente")
+            }
+            let pasos = {
+                "id": this.contador,
+                "programaLavadora": this.programasLavadoSelected, 
+                "idTipoLavado": this.tipoLavado.id,
+                "nombre": this.nombre,
+                "descripcion": this.descripcion,
+                "orden": this.orden++,
+                "rolesCambio": this.optionsRoles,
+            }
+            if(error.length == 0){
+                this.pasos.push(pasos)
+                this.contador++
+                this.descripcion = ''
+                this.nombre = ''
+                this.optionsRoles = []
+                this.tipoLavado = ''
+                this.lavadoras = []
 
-            // }else{
-            //     this.openNotification(`Error: Al agregar un Paso`, `${error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-            // }
+            }else{
+                this.openNotification(`Error: Al agregar un Paso`, `${error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
 
         },
         async addProceso(){
