@@ -198,11 +198,9 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    data.datos.forEach( b64 => {
-                        objbuilder += `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${b64.base64}'>`
-                    });
-                    let win = window.open("about:blank", "hello", "width=900px,height=600px");
-                    let title = "my tab title";
+                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
+                    let win = window.open("about:blank", "Entrega", "width=900px,height=600px");
+                    let title = "Entrega";
                     win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
                     win.document.write(objbuilder);
                     win.document.write('</body></html>');
@@ -219,7 +217,7 @@ export default {
                     if(data.status == 401){ this.activarReboot = true }
                     if(data.status == 200){
                         let t = this
-                        fetchApi(this.url+`proceso/findById/${data.datos.proceso}`, 'GET', this.$session.get('token'))
+                        fetchApi(this.url+`proceso/findById/${data.datos.proceso.id}`, 'GET', this.$session.get('token'))
                         .then(dt => {
                             if(dt.status == 200){
                                 t.prendas.push({"prenda": data.datos.nombre, "detalle": dt.datos, "cantidad": prenda.cantidad, "nombreEstado": prenda.nombreEstado, "idOrdenPrena": prenda.idOrdenPrena})

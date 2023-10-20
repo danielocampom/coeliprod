@@ -2,9 +2,9 @@
     <div>
         <HeaderComponent/>
         <br>
-        <b-container fluid class="mt-3">
+        <b-container fluid class="mt-3 container">
             <template>
-                    <b-card  style="max-width: 540px;" class="mt-5">
+                    <b-card  style="max-width: 540px;" class="mt-2">
                         <b-row>
                             <b-col class="mt-3">
                                 <vs-input
@@ -37,11 +37,11 @@
             </template>
         </b-container>
     
-        <b-container fluid class="mt-5">
+        <b-container fluid class="mt-5 container">
             <template>
-                <b-row cols="1"  v-if="dataOrden.length > 0" cols-sm="12" cols-md="8" cols-lg="4">
+                <b-row v-if="dataOrden.length > 0" lg="3" md="4" sm="6">
                         <b-col class="mt-4" v-for="(orden, i) in dataOrden" :key="i" >
-                            <CardOrdenCanceladasComponent @updatePage="updatePage" :dataClient="{id: orden.id, nombrePrenda: orden.nombrePrenda, nombreCliente: orden.nombreCliente, idUsuario: orden.idUsuario, descripcion: orden.descripcion, cantidadAnterior: orden.cantidadAnterior, cantidadActual: orden.cantidadActual}"></CardOrdenCanceladasComponent>
+                            <CardOrdenCanceladasComponent @updatePage="updatePage" :dataClient="{id: orden.id, nombrePrenda: orden.nombrePrenda, nombreCliente: orden.nombreCliente, idUsuario: orden.idUsuario, descripcion: orden.descripcion, cantidadAnterior: orden.cantidadAnterior, cantidadActual: orden.cantidadActual, idOrdenLavado:orden.idOrdenLavado}"></CardOrdenCanceladasComponent>
                         </b-col>
                 </b-row>
                 <vs-alert v-else danger>
@@ -128,7 +128,8 @@ export default {
 
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
-                this.dataOrden = data.datos 
+                console.log(data) 
+                this.dataOrden = data.datos
                 console.log(data.datos)
             }else{
                 this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)

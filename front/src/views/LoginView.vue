@@ -12,8 +12,8 @@
 
         <form v-on:submit.prevent="login()">
           <input type="text" id="usuario" class="fadeIn second" name="usuario"  autocomplete="off" placeholder="usuario" v-model="usuario">
-          <input type="password" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password">
-          <!-- <input type="password" pattern="[0-9]*" inputmode="numeric" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password"> -->
+          <!-- <input type="password" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password"> -->
+          <input type="password" pattern="[0-9]*" inputmode="numeric" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password">
           <input type="submit" class="fadeIn fourth btnLog">
         </form>
 

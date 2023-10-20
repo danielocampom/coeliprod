@@ -5,6 +5,7 @@
             <div>
                 <p class="fw-bold fs-4">{{ dataClient.nombrePrenda }} </p> 
                 <p class="fw-semibold">{{ dataClient.nombreCliente }}</p>
+                <p class="fw-semibold">Numero Orden {{ dataClient.idOrdenLavado }}</p>
             </div>
             <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
             <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>

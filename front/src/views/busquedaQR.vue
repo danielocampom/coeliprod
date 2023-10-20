@@ -2,66 +2,118 @@
     <div>
         <HeaderComponent/>
         <br>
-    
-        <b-container fluid class="mt-5 container">
-            holq munndo lector QR
-        </b-container>
-        <br>
-        <div v-if="activarReboot">
-            <loginComponent :login="activarReboot"></loginComponent>
+        <div id="camera-container" class="mt-5 container">
+            <video id="video" autoplay></video>
+            <div v-if="showDetectionBox" :style="detectionBoxStyle" class="detection-box"></div>
         </div>
-
     </div>
 </template>
-
+  
 <script>
-import HeaderComponent from '@/components/Header.vue';
-import { refreshSession } from "@/service/service.js"
-import loginComponent from '@/components/cardLogin.vue';
+    import HeaderComponent from '@/components/Header.vue';
 
-export default {
-    name:"QRView",
-    data: () => ({
+    import Quagga from 'quagga';
 
-        url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
-    }),
-    components: {
-        HeaderComponent,
-        loginComponent
-    },
-    created(){
-        refreshSession(this.url ,this.$session.get('token')).then( data => {
-            this.$session.start()
-            this.$session.set('token', data.datos.token)
-        })
-    },
-    mounted(){
-    },
-    methods: {
-        
-        refresh(){
-            refreshSession(this.url ,this.$session.get('token')).then( data => {
-                this.$session.start()
-                this.$session.set('token', data.datos.token)
-            }) 
+    export default {
+        data() {
+            return {
+                showDetectionBox: false,
+                detectionBoxStyle: {
+                    left: '0px',
+                    top: '0px',
+                    width: '0px',
+                    height: '0px',
+                },
+            };
         },
-        
-        async updatePage(status){
-            if(status == 200){
-                this.mostraClientes()
-            }
+        components: {
+            HeaderComponent,
         },
-        openNotification( title, text, color, position = null, icon) {
-          this.$vs.notification({
-            progress: 'auto',
-            icon,
-            color,
-            position,
-            title: title,
-            text: text
-          })
-        }
-    }
-}
+        methods: {
+            requestCameraAccess() {
+                const videoElement = document.getElementById('video');
+        
+                navigator.mediaDevices
+                .getUserMedia({ video: true })
+                .then((stream) => {
+                    videoElement.srcObject = stream;
+                    this.startDetection();
+                })
+                .catch((error) => {
+                    console.error('Error al acceder a la cámara:', error);
+                });
+            },
+            startDetection() {
+                Quagga.init(
+                {
+                    inputStream: {
+                    name: 'Live',
+                    type: 'LiveStream',
+                    target: document.querySelector('#video'),
+                    },
+                    frequency: 10, // Ajusta la frecuencia según sea necesario
+                    decoder: {
+                    readers: ['code_128_reader', 'ean_reader', 'ean_8_reader'],
+                    },
+                },
+                (err) => {
+                    if (err) {
+                    console.error(err);
+                    return;
+                    }
+                    Quagga.start();
+                }
+                );
+        
+                Quagga.onDetected((result) => {
+                this.showDetectionBox = true;
+                const { codeResult, line } = result;
+        
+                const topLeft = line.reduce((acc, point) => {
+                    return {
+                    x: (point.x < acc.x) ? point.x : acc.x,
+                    y: (point.y < acc.y) ? point.y : acc.y,
+                    };
+                }, { x: Infinity, y: Infinity });
+        
+                const bottomRight = line.reduce((acc, point) => {
+                    return {
+                    x: (point.x > acc.x) ? point.x : acc.x,
+                    y: (point.y > acc.y) ? point.y : acc.y,
+                    };
+                }, { x: 0, y: 0 });
+        
+                this.detectionBoxStyle = {
+                    left: `${300+topLeft.x}px`,
+                    top: `${topLeft.y}px`,
+                    width: `${bottomRight.x - topLeft.x}px`,
+                    height: `${bottomRight.y - topLeft.y}px`,
+                };
+        
+                // También puedes tomar medidas adicionales, como mostrar el valor del código de barras detectado.
+                console.log(`Código de barras detectado: ${codeResult.code}`);
+                });
+            },
+        },
+        mounted() {
+        this.requestCameraAccess();
+        },
+    };
 </script>
-
+  
+  <style scoped>
+  #camera-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .detection-box {
+    position: absolute;
+    border: 8px solid #6c3 ;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+  </style>
+  

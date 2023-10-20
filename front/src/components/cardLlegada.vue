@@ -20,7 +20,9 @@
             </p>
         
         </b-card-text>
-        
+        <vs-button primary block @click="imprimitPapeleta(idOrdenPrenda)">
+            imprimir papeleta
+        </vs-button>
         <vs-button primary block @click="enviarDatos(data.idOrden)">
             Enviar
         </vs-button>
@@ -35,7 +37,7 @@
                 </vs-button>
             </template>
             <template >
-                <b-card v-if="prendas.length == 0">
+                <b-card v-if="detail.length == 0">
                     <div class="d-flex flex-row bd-highlight mb-3">
                         <div class="p-2 bd-highlight">
                             <b-skeleton animation="wave" width="85%"></b-skeleton>
@@ -81,34 +83,32 @@
 
                 </b-card>
                 <div v-else>
-                    <div v-for="(prenda, i) in prendas" :key="i">
-                        <hr v-if="i>0">
-                        <b-card>
-                            <div class="d-flex flex-row bd-highlight mb-3">
-                                <div class="p-2 bd-highlight">
-                                    <h4 class="mt-2">{{ prenda.prenda.nombre }}</h4>
-                                </div>
+                    <b-card>
+                        <div class="d-flex flex-row bd-highlight mb-3">
+                            <div class="p-2 bd-highlight">
+                                <h4 class="mt-2">{{ detail.cliente }}</h4>
+                                <strong>{{ detail.nombre }}</strong>
                             </div>
-                            cantidad: <b>{{ prenda.cantidad }}</b> <br>
-                            tipo de lavado:<b> {{prenda.detalle.nombre}} ({{ prenda.detalle.codigo }})</b> 
-                            <br>
-                            <strong class="mt-5">Pasos:</strong>
-                            <hr>
-                            <b-row align-h="start">
-                                    <b-col class="mt-4" v-for="(paso, i) in prenda.detalle.pasos" :key="i">
-                                        <div class="d-flex flex-row bd-highlight mb-3">
-                                            <div class="bd-highlight">
-                                                <b-card :title="paso.nombre" :sub-title="paso.descripcion">
-                                                </b-card>
-                                            </div>
-                                            <div v-if="prenda.detalle.pasos.length != i+1" class="bd-highlight">
-                                                <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
-                                            </div>
-                                        </div>
-                                    </b-col>
-                            </b-row>
-                        </b-card>
-                    </div>
+                        </div>
+                        cantidad: <b>{{ detail.cantidad }}</b> <br>
+                        tipo de lavado:<b> {{detail.proceso.nombre}} ({{ detail.proceso.codigo}})</b> 
+                        <br>
+                        <strong class="mt-5">Pasos:</strong>
+                        <hr>
+                        <b-row align-h="start">
+                            <b-col class="mt-4" v-for="(paso, i) in detail.proceso.pasos" :key="i">
+                                <div class="d-flex flex-row bd-highlight mb-3">
+                                    <div class="bd-highlight">
+                                        <b-card :title="paso.nombre" :sub-title="paso.descripcion">
+                                        </b-card>
+                                    </div>
+                                    <div v-if="detail.proceso.pasos.length != i+1" class="bd-highlight">
+                                        <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
+                                    </div>
+                                </div>
+                            </b-col>
+                        </b-row>
+                    </b-card>
                 </div>
             </template>
 
@@ -141,6 +141,9 @@ export default {
         nomCliente: '',
         render: true,
         prendas: [],
+        detail: [],
+        cantidadPrendas: '',
+        idOrdenPrenda: '',
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     
@@ -148,13 +151,16 @@ export default {
         loginComponent
     },
     mounted(){   
+
         this.dataCliente()
         setTimeout(() => {
             this.render = false
             this.data.prendas.forEach( value => {
-                this.mostrarDataPrenda(value.idPrenda, value.cantidad, value.idOrdenPrena)
+                this.mostrarDetailPrendas(value.idPrenda, value.cantidad)
+                this.cantidadPrendas =  value.cantidad
+                this.idOrdenPrenda =  value.idOrdenPrena
             })
-        }, 1500)
+        },500)
     },
     methods: {
         fecha(fecha){
@@ -166,6 +172,21 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        async imprimitPapeleta(id){
+            let objbuilder = ``
+            fetchApi(this.url+`orden/reportes/prenda/card/${id}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
+                    let win = window.open("about:blank", "Hoja Ruta", "width=900px,height=600px");
+                    let title = "my tab title";
+                    win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                    win.document.write(objbuilder);
+                    win.document.write('</body></html>');
+                }
+            })
         },
         async dataCliente(){
             fetchApi(this.url+`cliente/findById/${this.data.idCiente}`, 'GET', this.$session.get('token'))
@@ -179,10 +200,8 @@ export default {
             })
         },
         async enviarDatos(idOrden){
-
             let ordenPrendas = []
-
-            this.prendas.forEach( pr => {
+            this.data.prendas.forEach( pr => {
                 ordenPrendas.push({"idOrdenPrenda": pr.idOrdenPrena, "cantidad": pr.cantidad})
             })
             
@@ -191,8 +210,6 @@ export default {
                 "idOrdenLavado": idOrden,
                 "ordenPrendas": ordenPrendas,
             };
-            
-            // console.log(json)
             
             let token = this.$session.get('token')
             const res = await fetch(this.url+`orden/confirmaOrden`,{
@@ -216,21 +233,18 @@ export default {
                 this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
-        mostrarDataPrenda(id, cantidad, idOrdenPrena){
-            this.prendas = []
-            fetchApi(this.url+`prenda/findById/${id}`, 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    let t = this
-                    fetchApi(this.url+`proceso/findById/${data.datos.proceso}`, 'GET', this.$session.get('token'))
-                    .then(dt => {
-                        if(dt.status == 200){
-                            t.prendas.push({"prenda": data.datos, "detalle": dt.datos, "cantidad": cantidad, "id": id, "idOrdenPrena": idOrdenPrena})
-                        }
-                    })
-                }
-            })
+        async mostrarDetailPrendas(id, cantidad){
+            this.detail = []
+            if(id){
+                fetchApi(this.url+`prenda/findById/${id}`, 'GET', this.$session.get('token'))
+                .then(data => {
+                    if(data.status == 401){ this.activarReboot = true }
+                    if(data.status == 200){
+                        this.detail = data.datos
+                        this.detail.cantidad = cantidad
+                    }
+                })
+            }
         },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
@@ -252,7 +266,11 @@ export default {
 .modal-xl{
     margin-top: 2rem;
 }
-
+.card{
+    border-radius: 1rem;
+    min-height: 9rem; 
+    min-width: 12rem;
+}
 .vs-input{
     width: 95%;
 }

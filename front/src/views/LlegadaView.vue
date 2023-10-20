@@ -200,10 +200,8 @@ export default {
                         this.sinData = true
                     }
                 }else{
-                    console.log(data)
 
                     this.sinData = true
-                    // this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -220,8 +218,6 @@ export default {
                     })
                 }else{
                     this.getClientes = [{"value": "null", "text": "Sin clientes"}]
-
-                    // this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },

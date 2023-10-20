@@ -36,7 +36,7 @@
                     </b-card>
                     <b-row>
                         <b-col class="mt-4" lg="8" md="6" sm="12">
-                            <b-card title="Programas de Lavado" sub-title="Capacidad y programas de lavado">
+                            <b-card title="Capacidades" sub-title="puedes seleccionar multiples capacidades">
                                 <b-row>
                                     <b-col class="mt-2" lg="8" md="8" sm="10">
                                         <label for="floatingSelect">Selecciona tipo de programa</label>
@@ -159,7 +159,10 @@ export default {
         this.estado = this.dataWasher.row.item.estado == 1 ? true : false
         this.tipoLavado = this.dataWasher.row.item.tipoLavado
         this.nombreUp = this.dataWasher.row.item.nombre
-        this.programas = this.dataWasher.row.item.programasLavado
+        this.dataWasher.row.item.programasLavado.forEach(element => {
+            this.add(element)
+        });
+
     },
     methods: {
         refresh(){

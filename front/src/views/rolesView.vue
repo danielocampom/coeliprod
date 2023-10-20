@@ -139,8 +139,6 @@
               .then(data => {
                   if(data.status == 200){
                       this.allRoles = data.datos
-                  }else{
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                   }
               })
           },
@@ -169,7 +167,7 @@
                 this.mostraRoles()
                 this.refresh()
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al registrar el Roll`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },

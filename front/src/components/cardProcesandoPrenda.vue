@@ -147,7 +147,7 @@ export default {
         loginComponent
     },
     mounted(){
-        let fecha=new Date(this.data.fechaIngreso);
+        let fecha=new Date(this.data.fechaInicio);
         this.date = this.calcularTiempoTranscurrido(fecha);
         setTimeout(() => {
             this.render = false
@@ -281,7 +281,7 @@ export default {
             if(status == 200){
                 let token = this.$session.get('token')
 
-                let prenEliminadas = parseInt(this.data.cantidadPrendas)-parseInt(this.cantidadElim)
+                let prenEliminadas = parseInt(this.data.cantidad)-parseInt(this.cantidadElim)
 
                 if(prenEliminadas < 0){
                     this.openNotification( `No puedes Eliminar mas prendas de la cantidad asignada `, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
@@ -290,7 +290,9 @@ export default {
                     let json = {
                         "mensaje": this.motivoElim,
                         "nuevaCantidad": prenEliminadas,
-                        "idOrdenPrenda": this.data.idOrdenPrenda
+                        "idOrdenPrenda": this.data.idOrdenPrenda,
+                        "idHist": this.data.idHist
+
                     };
                     
     
@@ -313,7 +315,7 @@ export default {
                         this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                         this.$emit('updatePage', '200')
                     }else{
-                        this.openNotification( `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                        this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                     }
                 }
             }

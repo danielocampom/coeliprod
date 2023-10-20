@@ -49,6 +49,15 @@
                     </v-timeline-item>
                 </v-timeline>
             </v-container>
+            <v-container v-else>
+                <div class="center">
+                    <vs-alert color="danger">
+                        <template #title>
+                            Sin datos, ingrese un numero de orden correspondiente
+                        </template>
+                    </vs-alert>
+                </div>
+            </v-container>
         </template>
 
         <div v-if="activarReboot">

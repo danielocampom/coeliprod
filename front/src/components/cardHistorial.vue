@@ -10,8 +10,11 @@
             <strong>{{ fecha(dataClient.fechaEntrega) }}</strong>
             <b-row>
                 <b-col cols="12">
-                    <h5 class="mb-3 mt-2">
-                        {{ nombrePrenda }} 
+                    <h5 class="mb-1 mt-2">
+                        {{ nombrePrenda }}
+                    </h5>
+                    <h5 class="mb-1">
+                       Numero Orden {{ dataClient.idOrden }} 
                     </h5>
                     <br>
                     Cantidad: {{ dataClient.ordenPrenda.cantidad }} 
