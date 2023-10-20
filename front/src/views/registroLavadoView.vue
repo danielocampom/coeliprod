@@ -131,7 +131,6 @@ export default {
     name:"PrendasView",
     data: () => ({
         allRoles: [],
-        lavadoras:[],
         lavados: [],
         lavadoras: [],
         tipoLavados: [],
@@ -257,12 +256,12 @@ export default {
             //         this.programasLavadoSelected.push({idLavadora:lvd.idLavadora, idPrograma:selectedPrograma})
             //     }
             // });
-            this.resultados.forEach((resultado, index) => {
-                if (resultado !== undefined) {
-                    // this.programasLavadoSelected.push({idLavadora:lvd.idLavadora, idPrograma:selectedPrograma})
-                    console.log(resultado);
-                }
-            });
+            // this.resultados.forEach((resultado, index) => {
+            //     if (resultado !== undefined) {
+            //         // this.programasLavadoSelected.push({idLavadora:lvd.idLavadora, idPrograma:selectedPrograma})
+            //         console.log(resultado);
+            //     }
+            // });
             // let error = []
             // if(this.descripcion == ''){
             //     error.push("<br>Es Requerido el campo Descripción")
