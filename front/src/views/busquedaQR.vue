@@ -2,10 +2,18 @@
     <div>
         <HeaderComponent/>
         <br>
-        <div id="camera-container" class="mt-5 container">
-            <video id="video" autoplay></video>
-            <div v-if="showDetectionBox" :style="detectionBoxStyle" class="detection-box"></div>
-        </div>
+
+        <b-row class="container">
+            <b-col md="6" sm="6">
+                <div id="camera-container" class="mt-5 container">
+                    <video id="video" autoplay></video>
+                    <div v-if="showDetectionBox" :style="detectionBoxStyle" class="detection-box"></div>
+                </div>
+            </b-col>                
+            <b-col md="6" sm="6" class="mt-5 container p-3">
+                <b-card title="ejemplo" sub-title="data"></b-card>
+            </b-col>
+        </b-row>
     </div>
 </template>
   
@@ -84,7 +92,7 @@
                 }, { x: 0, y: 0 });
         
                 this.detectionBoxStyle = {
-                    left: `${300+topLeft.x}px`,
+                    left: `${topLeft.x}px`,
                     top: `${topLeft.y}px`,
                     width: `${bottomRight.x - topLeft.x}px`,
                     height: `${bottomRight.y - topLeft.y}px`,

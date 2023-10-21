@@ -41,6 +41,8 @@ export default {
   created(){
     this.$session.set('roles', ["DEFAULT"])
   },
+  mounted(){   
+  },
   methods:{
     enter(){
       if(this.usuario != ''){
@@ -74,12 +76,15 @@ export default {
         this.$session.set('username', data.datos.username)
         this.$session.set('idUsuario', data.datos.idUsuario)
         this.$router.push("dashboard")
+        this.toggleFullscreen()
+        
       }else{
         this.toastTopEnd("error", data.mensaje)
         this.password = ''
       }
       
     },
+    
 
     toastTopEnd(icon, title) {
       this.$swal({
@@ -96,7 +101,23 @@ export default {
         }
       });
     },
+    toggleFullscreen() {
+      const element = document.documentElement; 
 
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+          element.webkitRequestFullscreen();
+        }
+      }
+    }
   }
   
 }

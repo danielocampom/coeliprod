@@ -121,7 +121,8 @@
                             </b-row>
                         </b-card>
                         
-                        <draggable class="row" v-model="pasos" @change="onDragEnd">
+                        <draggable class="row" v-model="pasos" @change="onDragEnd"></draggable>
+                        <div class="row" >
                             <div class="col-lg-4 col-md-6 col-sm-12 mt-3 mb-3" lg="4" md="6" sm="6" v-for="(paso, i) in pasos" :key="i">
                                 <b-card :title="paso.nombre" tag="article" class="mb-2">
                                     <b-card-text>
@@ -154,7 +155,7 @@
                                     </vs-button>  
                                 </b-card>
                             </div>
-                        </draggable>
+                        </div>
                     </b-container>
                 </div>
                 <br>
@@ -546,7 +547,7 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.tipoLavados.push({"value": 0, "text": "No Aplica"})
+                    this.tipoLavados.push({"value": {id: "0", nombre: "No Aplica" }, "text": "No Aplica"})
                     data.datos.forEach( value => {
                         this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
                     })
