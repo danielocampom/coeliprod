@@ -73,7 +73,7 @@
                                 <div class="con-switch mt-5">
                                     <b-row>
                                         <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
-                                            <vs-switch  :val="rol.id" v-model="optionsRoles">
+                                            <vs-switch  :val="''+rol.id" v-model="optionsRoles">
                                                 {{ rol.nombre }}
                                             </vs-switch>
                                         </b-col>

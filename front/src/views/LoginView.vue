@@ -13,7 +13,7 @@
         <form v-on:submit.prevent="login()">
           <input type="text" id="usuario" class="fadeIn second" name="usuario"  autocomplete="off" placeholder="usuario" v-model="usuario">
           <!-- <input type="password" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password"> -->
-          <input type="password" pattern="[0-9]*" inputmode="numeric" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password">
+          <input type="password" pattern="[0-9]*" inputmode="numeric" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password" @keyup="enter">
           <input type="submit" class="fadeIn fourth btnLog">
         </form>
 
@@ -38,7 +38,17 @@ export default {
       error_msg: ""
     }
   },
+  created(){
+    this.$session.set('roles', ["DEFAULT"])
+  },
   methods:{
+    enter(){
+      if(this.usuario != ''){
+        if(this.password.length == 4){
+          this.login()
+        }
+      }
+    },
     async login(){
       let json = {
         "username": this.usuario,
@@ -57,6 +67,7 @@ export default {
       .catch(err => {console.warn(err); this.toastTopEnd("error", "Oops! Error inesperado, pongase en contacto con el administrador")})
       let data = await res.json()
       if(data.status == 200){
+        data.datos.roles.push("DEFAULT")
         this.$session.start()
         this.$session.set('token', data.datos.token)
         this.$session.set('roles', data.datos.roles)
@@ -65,6 +76,7 @@ export default {
         this.$router.push("dashboard")
       }else{
         this.toastTopEnd("error", data.mensaje)
+        this.password = ''
       }
       
     },

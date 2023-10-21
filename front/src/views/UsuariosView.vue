@@ -105,7 +105,7 @@
                             <div class="con-switch">
                                 <b-row>
                                 <b-col class="mt-3" cols="2" v-for="(rol, i) in allRoles" :key="i">
-                                    <vs-switch  :val="rol.id" v-model="optionsRoles">
+                                    <vs-switch  :val="''+rol.id" v-model="optionsRoles">
                                     {{ rol.nombre }}
                                     </vs-switch>
                                 </b-col>
@@ -162,6 +162,7 @@
                 label-sort-clear=""
                 stacked="md"
                 show-empty
+                empty-text="No hay datos disponibles"
                 small
                 @filtered="onFiltered"
             >

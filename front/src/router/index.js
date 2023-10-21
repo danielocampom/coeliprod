@@ -21,6 +21,7 @@ const ROLES = {
   ALMACENENTREGA: 'ALMACEN ENTREGA',
   CANCELACION: 'CANCELACION',
   ROLES: 'ROLES',
+  DEFAULT: 'DEFAULT'
 }
 
 const routes = [
@@ -29,14 +30,14 @@ const routes = [
     path: '/',
     name: '',
     component: login,
-    meta: {requireAuth: false}
+    meta: {requireAuth: false, roles:[ROLES.DEFAULT]}
 
   },
   {
     path: '/login',
     name: 'login',
     component: login,
-    meta: {requireAuth: false}
+    meta: {requireAuth: false, roles:[ROLES.DEFAULT]}
 
   },
   {
@@ -44,14 +45,14 @@ const routes = [
     name: 'comentLog',
     component: () => import('../views/comentLogView.vue'),
 
-    meta: {requireAuth: false}
+    meta: {requireAuth: false, roles:[ROLES.DEFAULT]}
 
   },
   {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('../views/Dashboard.vue'),
-    meta: {requireAuth: true }
+    meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
   },
   
   {
@@ -161,20 +162,20 @@ const routes = [
     path: '/busqueda',
     name: 'busqueda',
     component: () => import('../views/busquedaQR.vue'),
-    meta: {requireAuth: true}
+    meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
   },
   
   {
     path: '/access-denied',
     name: 'access-denied',
     component: () => import('../views/accessDeniedView.vue'),
-    meta: {requireAuth: true}
+    meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
   },
   {
     path: '/ejemplo',
     name: 'ejemplo',
     component: () => import('../views/ejemploView.vue'),
-    meta: {requireAuth: true}
+    meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
   },
 ]
 

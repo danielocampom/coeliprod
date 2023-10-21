@@ -5,18 +5,16 @@
     
         <b-container fluid class="mt-5">
             <template>
-                <b-card style="max-width: 400px;" class="mx-auto">
-                    <b-col class="p-1">
-                        <vs-switch class="mt-3" v-model="buscar" @click="mostrarAct()">
-                            <template #off>
-                                <box-icon name='check'></box-icon> ordenes Concluidas
-                            </template>
-                            <template #on>
-                                <box-icon name='x' color="#fff"></box-icon> Prendas Concluidas
-                            </template>
-                        </vs-switch>
-                    </b-col>
-                </b-card>
+                <div style="max-width: 350px;" class="mx-auto p-1">
+                    <vs-switch class="mt-3" v-model="buscar" @click="mostrarAct()">
+                        <template #off>
+                            <box-icon name='check'></box-icon> Ordenes Concluidas
+                        </template>
+                        <template #on>
+                            <box-icon name='x' color="#fff"></box-icon> Prendas Concluidas
+                        </template>
+                    </vs-switch>
+                </div>
                 <b-row v-if="procesando">
                     <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
                         <ProcesandoComponent @updatePage="updatePage" :data="{nomCliente:dt.nomCliente, idOrden: dt.idOrden, prenda:dt.prenda, fechaAlta:dt.fechaAlta, estado:dt.estado, cantidad:dt.cantidad}"></ProcesandoComponent>
@@ -177,5 +175,12 @@ input {
 .vs-card{
     padding: 0.5rem;
 }
-
+.vs-component--primary{
+    height: 2rem !important;
+    background: radial-gradient(#939393, transparent);
+}
+.vs-switch__circle{
+    height: 1.5rem;
+    width: 1.5rem;
+}
 </style>

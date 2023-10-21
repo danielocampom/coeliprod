@@ -115,6 +115,7 @@
                 label-sort-clear=""
                 stacked="md"
                 show-empty
+                empty-text="No hay datos disponibles"
                 small
                 @filtered="onFiltered"
             >
@@ -157,6 +158,7 @@ export default {
     name:"ClientesView",
     data: () => ({
 
+        itemPrueba: [],
         items: [],
         fields: [
             { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },

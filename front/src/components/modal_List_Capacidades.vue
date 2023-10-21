@@ -87,6 +87,7 @@
                     label-sort-clear=""
                     stacked="md"
                     show-empty
+                    empty-text="No hay datos disponibles"
                     small
                     @filtered="onFiltered"
                     >

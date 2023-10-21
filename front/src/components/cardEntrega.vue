@@ -15,15 +15,8 @@
                 <p class="fw-light text-muted">Clave Cliente {{ claveCli }}</p>
                 <p class="fw-light text-muted">Id Orden {{ data.idOrden }}</p>
                 <p class="fw-light text-muted">Fecha Entrega {{ date }}</p>
-
-                <!-- <div class="d-flex flex-row bd-highlight mb-3"> -->
-                    <!-- <div class="p-2 bd-highlight"> -->
-                        <vs-button block primary @click="entregar(data.idOrden)"> Entregar </vs-button>
-                    <!-- </div> -->
-                    <!-- <div class="p-2 bd-highlight"> -->
-                        <vs-button block success @click="modalShowDetail=!modalShowDetail"> Ver Detalles </vs-button>
-                    <!-- </div> -->
-                <!-- </div> -->
+                <vs-button block primary @click="entregar(data.idOrden)"> Entregar </vs-button>
+                <vs-button block success @click="modalShowDetail=!modalShowDetail"> Ver Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
                     <template #modal-header="{ close }">
                         <h5>Detalles {{ nomCli }} <p class="fw-light">clave cliente{{ claveCli }}.</p></h5>
@@ -185,8 +178,6 @@ export default {
                 if(data.status == 200){
                     this.nomCli = data.datos.nombre
                     this.claveCli = data.datos.clave
-                }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -205,7 +196,7 @@ export default {
                     win.document.write(objbuilder);
                     win.document.write('</body></html>');
                 }else{
-                    this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -246,7 +237,7 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `La prenda se ha entregado`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: Inesperado al realizar la entrega`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
 
                 }
             })

@@ -20,7 +20,7 @@
                 </div>
             </div>
             <!-- {{ dataProceso.pasos }} -->
-            <vs-button primary block class="mt-2"  @click="activeDetalles=!activeDetalles">
+            <vs-button primary block class="mt-2"  @click="modalDetalles">
                 <box-icon name='detail' color="#fff"></box-icon> Mostrar Detalles
             </vs-button>
             <b-modal centered v-model="activeDetalles">
@@ -225,7 +225,7 @@
                                 <div class="con-switch mt-5">
                                     <b-row>
                                         <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
-                                            <vs-switch  :val="rol.id" v-model="optionsRoles">
+                                            <vs-switch  :val="''+rol.id" v-model="optionsRoles">
                                                 {{ rol.nombre }}
                                             </vs-switch>
                                         </b-col>
@@ -314,7 +314,7 @@
                                 <div class="con-switch mt-5">
                                     <b-row>
                                         <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
-                                            <vs-switch  :val="rol.id" v-model="optionsRolesAdd">
+                                            <vs-switch  :val="''+rol.id" v-model="optionsRolesAdd">
                                                 {{ rol.nombre }}
                                             </vs-switch>
                                         </b-col>
@@ -446,6 +446,10 @@ export default {
                 rolesCambio: paso.rolesCambio,
             }));
         },
+        modalDetalles(){
+            this.activeDetalles = true
+            this.$forceUpdate();
+        },
         editarPaso(id){
             let dataPaso = this.pasos.find(objeto => objeto.id === id)
             this.activeEditar = true
@@ -537,6 +541,7 @@ export default {
         },  
         
         mostrarTipoLavados(){
+            this.tipoLavados = []
             fetchApi(this.url+'tipoLavado/findAll', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
@@ -629,12 +634,14 @@ export default {
                 if(data.status == 200){
                     this.refresh()
                     //se actualiza token
+                    this.pasos.push(pasos)
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.updatePage(200)
-                    this.activeEditar = false
-                    setTimeout(function() {
-                        location.reload();
-                    }, 3000)
+                    this.nombreAdd = ''
+                    this.descripcionAdd = ''
+                    this.tipoLavadoAdd = ''
+                    this.optionsRolesAdd = []
+                    this.activeAddPaso = false
                 }else{
                     console.warn(data)
                     this.openNotification(`Error Inesperado al Registar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)

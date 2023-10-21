@@ -14,11 +14,12 @@
                 <box-icon name='user'></box-icon>
             </template>
           </vs-input>
-          <vs-input type="password" v-model="password" placeholder="Password">
+          <vs-input type="password" pattern="[0-9]*" v-model="password" placeholder="Password">
             <template #icon>
               <box-icon name='lock-alt' ></box-icon>
             </template>
           </vs-input>
+
         </div>
 
         <template #footer>
