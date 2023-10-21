@@ -27,19 +27,23 @@
                 </template>
 
                 <div class="con-form">
+                    <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
+
+                    <vs-input
+                        class="mt-3"
+                        v-model="cantidad"
+                        label-placeholder="cantidad a ingresar"
+                    />
                     <div class="con-selects" v-if="data.idTipoLavado">
                         <b-skeleton class="mt-3" type="input" v-if="lavadorasAll.length == 0"></b-skeleton>
                         <vs-select style="max-width:100%!important;"  class="mt-3" v-else success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
                             <vs-option  v-for="(lavadora, i) in lavadorasAll" :key="i" :label="lavadora.lavadora" :value="lavadora.idLavadora">
-                                {{lavadora.lavadora}}
+                                {{lavadora.lavadora}}  Max.: {{ lavadora.maxima }}  Min.: {{ lavadora.minima }}
                             </vs-option>
                         </vs-select>
+                        
                     </div>
-                    <vs-input
-                        class="mt-3"
-                        v-model="cantidad"
-                        label-placeholder="cantidad"
-                    />
+                    
                 </div>
                 <template #footer>
                     <div class="footer-dialog">
@@ -236,7 +240,7 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     data.datos.forEach(element => {
-                        this.lavadorasAll.push({"idLavadora": element.idLavadora, "lavadora": element.nombreLvd})
+                        this.lavadorasAll.push({"idLavadora": element.idLavadora, "lavadora": element.nombreLvd, maxima: element.programasLavado[0].cantidadMaxima, minima: element.programasLavado[0].cantidadMinima})
                     });
                 }else{
                     this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]

@@ -137,7 +137,7 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
 
                 }else{
-                this.openNotification(`Error: inesperado al querer eliminar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado al querer eliminar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                     
                 }
             }

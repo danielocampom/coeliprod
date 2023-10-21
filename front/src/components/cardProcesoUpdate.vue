@@ -109,82 +109,18 @@
                                         </template>
                                     </vs-input>
                                 </b-col>
-                            </b-row>
-                        </b-card>
-                        <b-card class="mt-4" title="Asignación de Pasos">
-                            <b-row class="mt-4">
-                                
-                                <b-col class="mt-2" lg="6" md="6" sm="12">
-                                    <vs-input state="primary" primary v-model="nombre" label-placeholder="Nombre del Proceso">
-                                        <template #icon>
-                                            <box-icon name='rename'></box-icon>
-                                        </template>
-                                    </vs-input>
-                                </b-col>
-                                <b-col class="mt-2" lg="6" md="6" sm="12">
-                                    <vs-input state="primary" primary v-model="descripcion" label-placeholder="Descripción del Proceso">
-                                        <template #icon>
-                                            <box-icon name='rename'></box-icon>
-                                        </template>
-                                    </vs-input>
-                                </b-col>
-                                
-                                <b-col class="mt-4" lg="6" md="6" sm="12">
-                                    <div class="con-selects">
-                                        <label for="floatingSelect">Selecciona el tipo de Lavado</label>
-                                        <div class="form-floating">
-                                            <b-form-select style="height: 1rem;" class="form-select"  v-model="tipoLavado" :options="tipoLavados"  size="sm"></b-form-select>
-                                            <label for="floatingSelect">Selecciona una Opción</label>
-                                        </div>
-                                    </div>
-                                    <b-card v-if="tipoLavado != ''" :title="tipoLavado.nombre" tag="article" class="mb-2 mt-3">
-                                    </b-card> 
-                                </b-col>
-                                <b-col class="mt-4" lg="6" md="6" sm="12">
-                                    <div class="con-selects">
-                                        <label for="floatingSelect">Selecciona el tipo de Programa</label>
-                                        <div class="form-floating">
-                                            <b-form-select style="height: 1rem;" class="form-select"  v-model="lavado" :options="lavados"  size="sm"></b-form-select>
-                                            <label for="floatingSelect">Selecciona una Opción</label>
-                                        </div>
-                                    </div>
-                                    <b-card v-if="lavado != ''" :title="lavado.nombre" tag="article" class="mb-2 mt-3">
-                                        <b-card-text>
-                                            <b-row>
-                                                <b-col>
-                                                    <p class="fw-bold">{{lavado.descripcion}}</p>
-                                                </b-col>
-                                                <b-col>
-                                                    <b>Capacidad:</b>
-                                                    <ul class="list-group list-group-horizontal">
-                                                        <li class="list-group-item">Minima: {{ lavado.minima }}</li>
-                                                        <li class="list-group-item">Maxima: {{ lavado.maxima }}</li>
-                                                    </ul>
-                                                </b-col>
-                                            </b-row>
-                                        </b-card-text>
-                                    </b-card> 
-                                </b-col>
-                                <div class="con-switch mt-5">
-                                    <b-row>
-                                        <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
-                                            <vs-switch  :val="rol.id" v-model="optionsRoles">
-                                                {{ rol.nombre }}
-                                            </vs-switch>
-                                        </b-col>
-                                    </b-row>
-                                </div>
-                                <b-container class="mt-3">
+                                <b-col class="mt-2" lg="2" md="4" sm="12">
                                     <vs-button
-                                        success
-                                        :active="Agregar == 1"
-                                        @click="addPaso()"
+                                        primary
+                                        block
+                                        @click="EditarNomProceso()"
                                     >
-                                    <box-icon name='plus' color="#fff"></box-icon > Asignar Paso
+                                        <box-icon name='edit' color="#fff"></box-icon>Editar
                                     </vs-button>
-                                </b-container>
+                                </b-col>
                             </b-row>
                         </b-card>
+                        
                         <draggable class="row" v-model="pasos" @change="onDragEnd">
                             <div class="col-lg-4 col-md-6 col-sm-12 mt-3 mb-3" lg="4" md="6" sm="6" v-for="(paso, i) in pasos" :key="i">
                                 <b-card :title="paso.nombre" tag="article" class="mb-2">
@@ -196,8 +132,26 @@
                                         block
                                         @click="deletePaso(paso.id)"
                                     >
-                                    <box-icon name='minus' color="#fff"></box-icon >Eliminar
+                                        <box-icon name='minus' color="#fff"></box-icon >Eliminar
                                     </vs-button>
+                                    <vs-button
+                                        primary
+                                        block
+                                        @click="editarPaso(paso.id)"
+                                    >
+                                        <box-icon name='edit' color="#fff"></box-icon >Editar
+                                    </vs-button>
+                                </b-card>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 mt-3 mb-3">
+                                <b-card  tag="article" class="mb-2">
+                                    <vs-button
+                                        primary
+                                        block
+                                        @click="AddPaso()"
+                                    >
+                                        <box-icon name='edit' color="#fff"></box-icon >Agregar Paso
+                                    </vs-button>  
                                 </b-card>
                             </div>
                         </draggable>
@@ -205,7 +159,175 @@
                 </div>
                 <br>
                 <template #modal-footer="{ ok }">
+                     <!-- <vs-button success size="large" @click="updateProceso()">
+                        <box-icon name='save' color="#fff"></box-icon > Guardar Registro
+                    </vs-button> -->
+                    <vs-button danger @click="ok()">
+                        <box-icon name='exit' color="#fff"></box-icon> Salir
+                    </vs-button>
+                </template>
+            </b-modal>
+            <b-modal size="xl" centered v-model="activeEditarPaso">
+                <template #modal-header="{ close }">
+                    <h5>Editar <b>Paso</b></h5>
+                    <vs-button circle icon floating danger @click="close()">
+                        <box-icon name='x' color="#fff"></box-icon>
+                    </vs-button>
+                </template>
+                <div class="con-form">
+                    <b-container class="bv-example-row">
+                        
+                        <b-card class="mt-4" title="Editar de Pasos">
+                            <b-row class="mt-2 align-items-end">
+                                <b-col class="mt-2" lg="4" md="4" sm="12">
+                                    <vs-input state="primary" primary v-model="nombre" label-placeholder="Nombre del Proceso">
+                                        <template #icon>
+                                            <box-icon name='rename'></box-icon>
+                                        </template>
+                                    </vs-input>
+                                </b-col>
+                                <b-col class="mt-2" lg="4" md="4" sm="12">
+                                    <vs-input state="primary" primary v-model="descripcion" label-placeholder="Descripción del Proceso">
+                                        <template #icon>
+                                            <box-icon name='rename'></box-icon>
+                                        </template>
+                                    </vs-input>
+                                </b-col>
+                                
+                                <b-col lg="4" md="4" sm="12">
+                                    <div class="con-selects">
+                                        <div class="form-floating">
+                                            <select class="form-select" v-model="tipoLavado"  @change="mostrarLavadoras">
+                                                <option value="" selected>Selecciona una Opcion</option>
+                                                <option v-for="(lav, j) in tipoLavados" :key="j" :value="lav.value.id">{{ lav.value.nombre }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </b-col>
+                                
+                                <b-col class="mt-4" lg="12" md="12" sm="12" v-if="tipoLavado != ''">
+                                    <b-row>
+                                       <b-col lg="4" md="6" sm="12" v-for="(lvd, i) in lavadoras" :key="i">
+                                            <div class="con-selects">
+                                                <label for="floatingSelect">{{lvd.nombreLvd}}</label>
+                                                <div class="form-floating">
+                                                    <select class="form-select" @change="guardarResultado(i,  $event.target.value, lvd.idLavadora)">
+                                                        <option value="" selected>Selecciona La Cantidad Correspondiente</option>
+                                                        <option v-for="(prog, j) in lvd.programasLavado" :key="j" :value="prog.idPrograma">{{ prog.nombreProgramaLavado }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </b-col>
+                                    </b-row>
+                                    
+                                </b-col>
+                                <div class="con-switch mt-5">
+                                    <b-row>
+                                        <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
+                                            <vs-switch  :val="rol.id" v-model="optionsRoles">
+                                                {{ rol.nombre }}
+                                            </vs-switch>
+                                        </b-col>
+                                    </b-row>
+                                </div>
+                                <!-- <b-container class="mt-3">
+                                    <vs-button
+                                        success
+                                        flat
+                                        :active="Agregar == 1"
+                                        @click="addNewPaso()"
+                                    >
+                                        Asignar Paso
+                                    </vs-button>
+                                </b-container> -->
+                            </b-row>
+                        </b-card>
+                    </b-container>
+                </div>
+                <br>
+                <template #modal-footer="{ ok }">
                      <vs-button success size="large" @click="updateProceso()">
+                        <box-icon name='save' color="#fff"></box-icon > Guardar Registro
+                    </vs-button>
+                    <vs-button danger @click="ok()">
+                        <box-icon name='exit' color="#fff"></box-icon> Salir
+                    </vs-button>
+                </template>
+            </b-modal>
+            
+            <b-modal size="xl" centered v-model="activeAddPaso">
+                <template #modal-header="{ close }">
+                    <h5>Agregar <b>Paso</b></h5>
+                    <vs-button circle icon floating danger @click="close()">
+                        <box-icon name='x' color="#fff"></box-icon>
+                    </vs-button>
+                </template>
+                <div class="con-form">
+                    <b-container class="bv-example-row">
+                        
+                        <b-card class="mt-4" title="Agregar de Pasos">
+                            <b-row class="mt-2 align-items-end">
+                                <b-col class="mt-2" lg="4" md="4" sm="12">
+                                    <vs-input state="primary" primary v-model="nombreAdd" label-placeholder="Nombre del Proceso">
+                                        <template #icon>
+                                            <box-icon name='rename'></box-icon>
+                                        </template>
+                                    </vs-input>
+                                </b-col>
+                                <b-col class="mt-2" lg="4" md="4" sm="12">
+                                    <vs-input state="primary" primary v-model="descripcionAdd" label-placeholder="Descripción del Proceso">
+                                        <template #icon>
+                                            <box-icon name='rename'></box-icon>
+                                        </template>
+                                    </vs-input>
+                                </b-col>
+                                
+                                <b-col lg="4" md="4" sm="12">
+                                    <div class="con-selects">
+                                        <div class="form-floating">
+                                            <select class="form-select" v-model="tipoLavadoAdd"  @change="mostrarLavadoras(1)">
+                                                <option value="" selected>Selecciona una Opcion</option>
+                                                <option v-for="(lav, j) in tipoLavados" :key="j" :value="lav.value.id">{{ lav.value.nombre }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </b-col>
+                                
+                                <b-col class="mt-4" lg="12" md="12" sm="12" v-if="tipoLavadoAdd != ''">
+                                    <b-row>
+                                       <b-col lg="4" md="6" sm="12" v-for="(lvd, i) in lavadoras" :key="i">
+                                            <div class="con-selects">
+                                                <label for="floatingSelect">{{lvd.nombreLvd}}</label>
+                                                <div class="form-floating">
+                                                    <select class="form-select" @change="guardarResultado(i,  $event.target.value, lvd.idLavadora)">
+                                                        <option value="" selected>Selecciona La Cantidad Correspondiente</option>
+                                                        <option v-for="(prog, j) in lvd.programasLavado" :key="j" :value="prog.idPrograma">{{ prog.nombreProgramaLavado }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </b-col>
+                                    </b-row>
+                                    
+                                </b-col>
+                                <div class="con-switch mt-5">
+                                    <b-row>
+                                        <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
+                                            <vs-switch  :val="rol.id" v-model="optionsRolesAdd">
+                                                {{ rol.nombre }}
+                                            </vs-switch>
+                                        </b-col>
+                                    </b-row>
+                                </div>
+                                
+                            </b-row>
+                        </b-card>
+                    </b-container>
+                </div>
+                <br>
+                <template #modal-footer="{ ok }">
+                     <vs-button success size="large" @click="addNewPaso()">
                         <box-icon name='save' color="#fff"></box-icon > Guardar Registro
                     </vs-button>
                     <vs-button danger @click="ok()">
@@ -220,7 +342,7 @@
                 <box-icon name='trash' color="#fff"></box-icon> Eliminar
             </vs-button>
         </b-card>
-       
+        
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
         </div>
@@ -243,7 +365,10 @@ export default {
     data: () => ({
         
         elementos: [],
-
+        nombreAdd: '',
+        descripcionAdd: '',
+        tipoLavadoAdd: '',
+        optionsRolesAdd: [],
         allRoles: [],
         lavados: [],
         tipoLavados: [],
@@ -258,9 +383,15 @@ export default {
         optionsRoles: [],
         pasos: [],
         Agregar: 0,
-
+        active2: false,
+        resultados: [],
+        programasLavadoSelected: [],
+        lavadoras: [],
+        select : '',
         activeDetalles: false,
         activeEditar: false,
+        activeEditarPaso: false,
+        activeAddPaso: false,
         render: true,
         pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
@@ -277,13 +408,14 @@ export default {
     },
     mounted(){
         this.contador = this.dataProceso.pasos.length
+        console.log(this.dataProceso)
         this.pasos = this.dataProceso.pasos.map((paso) => ({
             id: paso.id,
             descripcion: paso.descripcion,
             nombre: paso.nombre,
             orden: paso.orden,
             rolesCambio: paso.roles,
-            idProgramaLavado: paso.idProgramaLavado, 
+            programaLavadora: paso.programas, 
             idTipoLavado: paso.idTipoLavado,
         }));
         this.nombreProceso = this.dataProceso.nombre
@@ -306,7 +438,7 @@ export default {
         onDragEnd() {
             this.pasos = this.pasos.map((paso, index) => ({
                 id: paso.id,
-                idProgramaLavado: paso.idProgramaLavado, 
+                programaLavadora: paso.programaLavadora, 
                 idTipoLavado: paso.idTipoLavado,
                 nombre: paso.nombre,
                 orden: index+1,
@@ -314,15 +446,80 @@ export default {
                 rolesCambio: paso.rolesCambio,
             }));
         },
+        editarPaso(id){
+            let dataPaso = this.pasos.find(objeto => objeto.id === id)
+            this.activeEditar = true
+            this.activeEditarPaso = true
+            this.nombre = dataPaso.nombre
+            this.descripcion = dataPaso.descripcion
+            this.tipoLavado = dataPaso.idTipoLavado
+            this.mostrarLavadoras()
+            
+            dataPaso.programaLavadora.forEach( dt => {
+                this.resultados.push({idLavadora: dt.idLavadora, idPrograma: dt.programa.id})
+            });
+            
+            this.optionsRoles = dataPaso.rolesCambio
+        },
+        async mostrarLavadoras( add = ''){
+            let lavado = ''
+            if(add != ''){
+                lavado = this.tipoLavadoAdd
+            }else{
+                lavado = this.tipoLavado
+            }
+            this.lavadoras = []
+            fetchApi(this.url+`lavadora/findByTipoLavado/${lavado}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                this.lavadoras = []
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.lavadoras = data.datos
+                    this.lavadoras.selectedPrograma = null
+                }
+            })
+        },
+        guardarResultado(index, valorSeleccionado, lavadora) {
+            this.resultados[index] = {idPrograma: valorSeleccionado, idLavadora: lavadora};
+        },
+        async EditarNomProceso(){
+            let token = this.$session.get('token')
+
+            let json = {
+                "idProceso": this.dataProceso.id,
+                "nombreProceso": this.nombreProceso,
+                "codigo": this.codigoProceso,
+            };
+            
+            let res = await fetch(this.url+"proceso/update/proceso",{
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
+            })
+            let data = await res.json()
+
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                //se actualiza token
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.updatePage(200)
+                this.activeEditar = false
+            }else{
+                console.warn(data)
+                this.openNotification(`Error Inesperado al actualizar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
+        },
         async mostraRoles(){
             fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.allRoles = data.datos
-                }else{
-                    console.warn(data)
-                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -335,9 +532,6 @@ export default {
                     data.datos.forEach( value => {
                         this.lavados.push({"value": {id: value.id, nombre: value.nombre, descripcion: value.descripcion, maxima: value.cantidadMaxima, minima: value.cantidadMinima}, "text": value.nombre})
                     })
-                }else{
-                    console.warn(data)
-                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },  
@@ -351,48 +545,100 @@ export default {
                     data.datos.forEach( value => {
                         this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
                     })
-                }else{
-                    console.warn(data)
-                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
-        },  
-        deletePaso(id){
-            this.pasos = this.pasos.filter(paso => paso.id != id)
+        }, 
+        AddPaso(){
+            this.activeAddPaso = true
+            this.resultados = []
         },
-        async addPaso(){
+        async deletePaso(id){
+
+            this.pasos = this.pasos.filter(paso => paso.id != id)
+
+            let token = this.$session.get('token')
+            const res = await fetch(this.url+`proceso/delete/paso/${id}`,{
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+            })
+            const data = await res.json();
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.active2 = false
+                this.active = false
+                this.$emit('updatePage', '200')
+                this.updatePage(200)
+
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+
+            }else{
+                this.openNotification(`Error: inesperado al querer eliminar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                
+            }
+        },
+        async addNewPaso(){
+            
+            this.resultados.forEach( resultado => {
+                this.programasLavadoSelected.push({idLavadora:resultado.idLavadora, idPrograma:resultado.idPrograma})
+            });
             let error = []
-            if(this.descripcion == ''){
+            if(this.descripcionAdd == ''){
                 error.push("<br>Es Requerido el campo Descripción")
             }
-            if(this.nombre == ''){
+            if(this.nombreAdd == ''){
                 error.push("<br>Es Requerido el campo Nombre")
             }
-            if(this.optionsRoles.length == 0){
+            if(this.optionsRolesAdd.length == 0){
                 error.push("<br>Es Requerido seleccionar un Rol")
             }
-            
-            if(this.lavado == ''){
-                error.push("<br>Es Requerido seleccionar un Lavado")
+
+            if(this.programasLavadoSelected.length == 0){
+                error.push("<br>Es Requerido seleccionar una lavadora con su capacidad correspondiente")
             }
             let pasos = {
-                "id": this.contador,
-                "idProgramaLavado": this.lavado.id, 
-                "idTipoLavado": this.tipoLavado.id,
-                "nombre": this.nombre,
-                "descripcion": this.descripcion,
+                "descripcion": this.descripcionAdd,
+                "nombre": this.nombreAdd,
                 "orden": this.orden++,
-                "rolesCambio": this.optionsRoles,
+                "rolesCambio": this.optionsRolesAdd,
+                "idTipoLavado": this.tipoLavadoAdd.id,
+                "programaLavadora": this.programasLavadoSelected, 
+                "id": this.contador,
+                "idProceso": this.dataProceso.id
             }
             if(error.length == 0){
-                this.pasos.push(pasos)
-                this.contador++
-                this.descripcion = ''
-                this.nombre = ''
-                this.optionsRole = []
-                this.lavado = ''
-                this.tipoLavado = ''
+                
+                let token = this.$session.get('token')
 
+                let res = await fetch(this.url+"proceso/add/paso",{
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': "*",
+                        'Authorization': token
+                    },
+                    body: JSON.stringify(pasos)
+                })
+                let data = await res.json()
+
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.refresh()
+                    //se actualiza token
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.updatePage(200)
+                    this.activeEditar = false
+                    setTimeout(function() {
+                        location.reload();
+                    }, 3000)
+                }else{
+                    console.warn(data)
+                    this.openNotification(`Error Inesperado al Registar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
             }else{
                 this.openNotification(`Error: Al agregar un Paso`, `${error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
@@ -408,6 +654,7 @@ export default {
                 "codigo": this.codigoProceso,
                 "pasos": pasosFiltrados,
             };
+            
             let res = await fetch(this.url+"proceso/update",{
                 method: "PUT",
                 headers: {
@@ -428,7 +675,7 @@ export default {
                 this.activeEditar = false
             }else{
                 console.warn(data)
-                this.openNotification(`Error Inesperado`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error Inesperado al actualizar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
 
@@ -451,7 +698,7 @@ export default {
 
             }else{
                 console.warn(data)
-                this.openNotification(`Error Inesperado`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error Inesperado al desactivar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async activarProceso(){
@@ -474,10 +721,21 @@ export default {
             }else{
             
                 console.warn(data)
-                this.openNotification(`Error Inesperado`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error Inesperado al activar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
-       
+        async updatePage(status){
+            if(status == 200){
+                this.$emit('updatePage', '200')
+                this.mostraRoles()
+                this.mostrarLavados()
+                this.mostrarTipoLavados()
+                setTimeout(() => {
+                    this.render = false
+
+                }, 1000) 
+            }
+        },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
             progress: 'auto',

@@ -289,7 +289,7 @@ export default {
                 }else{
                     let json = {
                         "mensaje": this.motivoElim,
-                        "nuevaCantidad": prenEliminadas,
+                        "cantidadCancela": this.cantidadElim,
                         "idOrdenPrenda": this.data.idOrdenPrenda,
                         "idHist": this.data.idHist
 

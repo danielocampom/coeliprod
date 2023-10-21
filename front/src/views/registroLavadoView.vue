@@ -54,11 +54,10 @@
                                 </b-col>
                                 
                                 <b-col class="mt-4" lg="12" md="12" sm="12" v-if="tipoLavado != ''">
-                                    <ul v-for="(lvd, i) in lavadoras" :key="i">
-                                        <li>
-                                            
-                                            {{ lvd.nombreLvd }}
+                                    <b-row>
+                                       <b-col lg="4" md="6" sm="12" v-for="(lvd, i) in lavadoras" :key="i">
                                             <div class="con-selects">
+                                                <label for="floatingSelect">{{lvd.nombreLvd}}</label>
                                                 <div class="form-floating">
                                                     <select class="form-select" @change="guardarResultado(i,  $event.target.value, lvd.idLavadora)">
                                                         <option value="" selected>Selecciona La Cantidad Correspondiente</option>
@@ -66,8 +65,10 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </li>
-                                    </ul>
+
+                                        </b-col>
+                                    </b-row>
+                                    
                                 </b-col>
                                 <div class="con-switch mt-5">
                                     <b-row>
@@ -196,7 +197,6 @@ export default {
                 this.lavadoras = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    // console.log(data.datos)
                     this.lavadoras = data.datos
                     this.lavadoras.selectedPrograma = null
                 }
@@ -208,10 +208,6 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.allRoles = data.datos
-                }else{
-                    console.warn(data)
-                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-                
                 }
             })
         },
@@ -224,10 +220,6 @@ export default {
                     data.datos.forEach( value => {
                         this.lavados.push({"value": {id: value.id, nombre: value.nombre, descripcion: value.descripcion, maxima: value.cantidadMaxima, minima: value.cantidadMinima}, "text": value.nombre})
                     })
-                }else{
-                    console.warn(data)
-                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
-                
                 }
             })
         },  
@@ -241,9 +233,6 @@ export default {
                     data.datos.forEach( value => {
                         this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
                     })
-                }else{
-                    console.warn(data)
-                    this.openNotification('Ocurrio un error al obtener los datos', `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },  
@@ -287,6 +276,9 @@ export default {
                 this.optionsRoles = []
                 this.tipoLavado = ''
                 this.lavadoras = []
+                this.programasLavadoSelected = []
+                this.resultados = []
+                pasos = {}
 
             }else{
                 this.openNotification(`Error: Al agregar un Paso`, `${error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
@@ -322,7 +314,7 @@ export default {
                 this.updatePage(200)
             }else{
                 console.warn(data)
-                this.openNotification(`Error Inesperado`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error Inesperado al agregar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async updatePage(status){
