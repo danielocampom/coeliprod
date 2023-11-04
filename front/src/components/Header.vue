@@ -65,6 +65,15 @@
         </router-link>
       </vs-sidebar-item>
 
+      <vs-sidebar-item :class="{ 'active': isActive('/busqueda') }" id="busqueda">
+        <template #icon>
+          <box-icon name='search-alt-2' ></box-icon>
+        </template>
+        <router-link to="/busqueda" class="nav-link">
+          Busqueda Rutas
+        </router-link>
+      </vs-sidebar-item>
+
       <vs-sidebar-item :class="{ 'active': isActive('/tipoLavados') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'LAVADORA'].includes(role))" id="tipoLavados">
         <template #icon>
           <box-icon name='water'></box-icon>

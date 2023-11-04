@@ -176,8 +176,8 @@ input {
     padding: 0.5rem;
 }
 .vs-component--primary{
-    height: 2rem !important;
-    background: radial-gradient(#939393, transparent);
+    /* height: 2rem !important; */
+    /* background: radial-gradient(#939393, transparent); */
 }
 .vs-switch__circle{
     height: 1.5rem;

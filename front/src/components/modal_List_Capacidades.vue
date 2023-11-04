@@ -95,6 +95,10 @@
                         <vs-button circle icon floating danger @click="eliminarLavado(row.item.id)">
                             <box-icon name='trash' color="#fff"></box-icon>
                         </vs-button>
+                        <vs-button circle floating primary icon @click="modalEdit(row.item)">
+                            <box-icon name='edit-alt' color="#fff"></box-icon>
+                        </vs-button>
+                        
                     </template>
 
                     <template #row-details="row">
@@ -116,7 +120,48 @@
             </template>
             
         </b-modal>
+        <vs-dialog v-model="activeModalEditLavado">
+            <template #header>
+            <h4 class="not-margin">
+                Editar <b>Capacidad</b>
+            </h4>
+            </template>
 
+            <div class="con-form">
+                <vs-input class="d-none" v-model="id" ></vs-input>
+                <vs-input success class="mt-3" type="text" v-model="nombre" label-placeholder="nombre">
+                    <template #icon>
+                        <box-icon name='rename'></box-icon>
+                    </template>
+                </vs-input>
+                <vs-input success class="mt-3" type="text" v-model="descripcion" label-placeholder="descripcion">
+                    <template #icon>
+                        <box-icon name='rename'></box-icon>
+                    </template>
+                </vs-input>
+
+                <vs-input success class="mt-3" type="text" v-model="minima" label-placeholder="Cantidad Minima">
+                    <template #icon>
+                        <box-icon name='dialpad-alt' ></box-icon>
+                    </template>
+                </vs-input>
+                <vs-input success class="mt-3" type="text" v-model="maxima" label-placeholder="Cantidad Maxima">
+                    <template #icon>
+                        <box-icon name='dialpad-alt' ></box-icon>
+                    </template>
+                </vs-input>
+            </div>
+            <br>
+            <template #footer>
+                <div class="footer-dialog">
+                    <vs-button block success
+                        flat
+                        @click="editarLavado()">
+                        Guardar
+                    </vs-button>
+                </div>
+            </template>
+        </vs-dialog>
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
         </div>
@@ -133,6 +178,13 @@ export default {
     props: {
     },
     data:() => ({
+        nombre: '',
+        id: '',
+        descripcion: '',
+        maxima: '',
+        minima: '',
+        activeModalEditLavado: false,
+
         items: [],
         fields: [
           { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
@@ -210,6 +262,52 @@ export default {
                     this.totalRows = this.items.length 
                 }
             })
+        },
+        modalEdit(data){
+            this.activeModalEditLavado = true
+            this.activeModalListLavado = false
+            this.nombre = data.nombre
+            this.descripcion = data.descripcion
+            this.minima = data.minCant
+            this.maxima = data.maxCant
+            this.id = data.id
+        },
+        async editarLavado(){
+            let token = this.$session.get('token')
+
+            let json = {
+                "idPrograma": this.id,
+                "nombre": this.nombre,
+                "descripcion": this.descripcion,
+                "cantidadMaxima": this.maxima,
+                "cantidadMinima": this.minima,
+            };
+            let res = await fetch(this.url+"lavadora/programa/update",{
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
+            })
+            let data = await res.json()
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.activeModalListLavado = false
+                this.totalRows = this.items.length 
+                this.activeModalEditLavado = false
+
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.mostrarTodosLavados()
+                this.$emit('updatePage', '200')
+
+            }else{
+                this.openNotification(`Error: inesperado al actualizar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                
+            }
+            
         },
         eliminarLavado(data){
             let token = this.$session.get('token')

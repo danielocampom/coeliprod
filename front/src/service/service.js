@@ -15,7 +15,7 @@ export const fetchApi = async (url, metod, token) => {
             "mensaje": "Sin  que mostrar",
             "status": 204,
          }
-        console.log(error)        
+        // console.log(error)        
         return resuesta
     }
 }

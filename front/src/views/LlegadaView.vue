@@ -88,7 +88,7 @@
                                                 </b-list-group>
                                             </div>
                                             <div v-else>
-                                                <vs-alert shadow>
+                                                <vs-alert shadow >
                                                     <template #title>
                                                         No hay Prendas Asignadas
                                                     </template>

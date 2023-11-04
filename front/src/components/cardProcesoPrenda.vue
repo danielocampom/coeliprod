@@ -30,7 +30,7 @@
                     <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
 
                     <vs-input
-                        class="mt-3"
+                        class="mt-5"
                         v-model="cantidad"
                         label-placeholder="cantidad a ingresar"
                     />
