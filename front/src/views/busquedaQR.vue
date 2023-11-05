@@ -209,13 +209,13 @@
                         }else{
                             this.mostrarInfo = false;
 
-                            this.openNotification(`Ooops!:`, `No existes coincidencias`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                            this.openNotification(`Ooops!:`, `No existes coincidencias`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                         }
                     })
                 }else{
                     this.mostrarInfo = false;
 
-                    this.openNotification(`Ooops! Error:`, `Es requerido un dato`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Ooops! Error:`, `Es requerido un dato`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
 
             

@@ -299,12 +299,12 @@ export default {
                 this.totalRows = this.items.length 
                 this.activeModalEditLavado = false
 
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostrarTodosLavados()
                 this.$emit('updatePage', '200')
 
             }else{
-                this.openNotification(`Error: inesperado al actualizar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al actualizar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 
             }
             
@@ -326,13 +326,13 @@ export default {
                 if(data.status == 200){
                     this.refresh()
                     this.activeModalListLavado = false
-                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Eliminado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Eliminado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.mostrarTodosLavados()
                     this.$emit('updatePage', '200')
                     
                     this.totalRows = this.items.length 
                 }else{
-                    this.openNotification(`Error: Inesperado al eliminar`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: Inesperado al eliminar`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 

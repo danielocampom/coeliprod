@@ -8,7 +8,11 @@ export const fetchApi = async (url, metod, token) => {
                 'Authorization': token
             },
         })
-        return await res.json()
+        if(!res.ok){
+            throw new Error("Respuesta erronea")
+        }else{
+            return await res.json()
+        }
     } catch (error) {
         let resuesta = {
             "datos": [],

@@ -329,11 +329,11 @@ export default {
                         let pl = data.datos
                         this.programasLavado.push({"id": this.contador, "nombre": pl.nombre, "descripcion": pl.descripcion, "cantidadMinima": pl.cantidadMinima, "cantidadMaxima": pl.cantidadMaxima, "idPrograma": pl.id })
                     }else{
-                        this.openNotification(`Error: inesperado al asignar una capacidad`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                        this.openNotification(`Error: inesperado al asignar una capacidad`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                     }
                 })
             }else{
-                this.openNotification('Ocurrio un error', `Es requerido seleccionar algun programa de lavado`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification('Ocurrio un error', `Es requerido seleccionar algun programa de lavado`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },
@@ -404,7 +404,7 @@ export default {
             if(data.status == 200){
                 this.refresh()
                 this.activeModal = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostraTipoLavado()
 
                 this.canMax = ''
@@ -413,7 +413,7 @@ export default {
                 this.nomLavado = ''
                 this.updatePage(200)
             }else{
-                this.openNotification(`Error: inesperado al registrar las capacidades`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al registrar las capacidades`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },
@@ -448,11 +448,11 @@ export default {
                 this.tipoLavado = ''
                 this.progLavado = ''
                 this.activeModal = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostrarTodos()
                 this.updatePage(200)
             }else{
-                this.openNotification(`Error: inesperado al registrar la lavadora`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al registrar la lavadora`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },

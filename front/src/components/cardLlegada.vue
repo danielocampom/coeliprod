@@ -225,12 +225,12 @@ export default {
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
                 this.refresh()
-                this.openNotification(`Exito: Orden procesada`, `Se ha Enviado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: Orden procesada`, `Se ha Enviado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 ordenPrendas = []
                 this.$emit('updatePage', '200')
             }else{
                 console.warn(data)
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async mostrarDetailPrendas(id, cantidad){

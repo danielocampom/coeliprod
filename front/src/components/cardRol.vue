@@ -63,7 +63,7 @@ export default {
                     this.active2 = false
                     this.active = false
                     this.$emit('updatePage', '200')
-                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Desactivado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
 
                 }
             }

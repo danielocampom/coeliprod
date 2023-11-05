@@ -234,18 +234,22 @@ export default {
             }
         },
         async mostraLavadoras(){
-            fetchApi(this.url+`lavadora/findByTipoLavado/${this.data.idTipoLavado}`, 'GET', this.$session.get('token'))
-            // fetchApi(this.url+`lavadora/findByEstado/1`, 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    data.datos.forEach(element => {
-                        this.lavadorasAll.push({"idLavadora": element.idLavadora, "lavadora": element.nombreLvd, maxima: element.programasLavado[0].cantidadMaxima, minima: element.programasLavado[0].cantidadMinima})
-                    });
-                }else{
-                    this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]
-                }
-            })
+            if(this.data.idTipoLavado){
+                fetchApi(this.url+`lavadora/findByTipoLavado/${this.data.idTipoLavado}`, 'GET', this.$session.get('token'))
+                // fetchApi(this.url+`lavadora/findByEstado/1`, 'GET', this.$session.get('token'))
+                .then(data => {
+                    if(data.status == 401){ this.activarReboot = true }
+                    if(data.status == 200){
+                        data.datos.forEach(element => {
+                            this.lavadorasAll.push({"idLavadora": element.idLavadora, "lavadora": element.nombreLvd, maxima: element.programasLavado[0].cantidadMaxima, minima: element.programasLavado[0].cantidadMinima})
+                        });
+                    }else{
+                        this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]
+                    }
+                })
+            }else{
+                this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]
+            }
         },
         async iniciar(){
             let token = this.$session.get('token')
@@ -271,12 +275,12 @@ export default {
             if(data.status == 200){
                 this.refresh()
                 this.modalIniciar = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostrarDetailPrendas(this.data.idPrenda)
                 this.$emit('updatePage', '200')
 
             }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         },

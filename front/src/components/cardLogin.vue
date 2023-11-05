@@ -67,13 +67,14 @@ export default {
             let data = await res.json()
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
+                data.datos.roles.push("DEFAULT")
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
                 this.$session.set('roles', data.datos.roles)
                 this.$session.set('username', data.datos.username)
                 this.$router.push("dashboard")
             }else{
-                this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
         

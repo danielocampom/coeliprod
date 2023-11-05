@@ -51,7 +51,7 @@ export default {
                 this.$session.set('token', data.datos.token)
                 this.$emit('confirm', '200')
             }else{
-                this.openNotification( `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification( `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         openNotification( text, color, position = null, icon) {

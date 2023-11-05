@@ -336,11 +336,11 @@
                 this.nombreUsr = `${data.datos.nombre} ${data.datos.materno} ${data.datos.materno}`
                 this.passUsr = data.datos.password
                 this.usr = data.datos.username
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostrarUsuarios()
                 this.refresh()
             }else{
-                this.openNotification(`Error: inesperado al agregar un nuevo usuario`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado al agregar un nuevo usuario`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         

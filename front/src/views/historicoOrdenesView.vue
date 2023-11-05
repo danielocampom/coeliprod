@@ -120,7 +120,7 @@ export default {
                     this.busqueda = data.datos
                     this.refresh()
                 }else{
-                    this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                     this.busqueda = []
                 }
             })

@@ -281,7 +281,7 @@ export default {
                 pasos = {}
 
             }else{
-                this.openNotification(`Error: Al agregar un Paso`, `${error}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: Al agregar un Paso`, `${error}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
 
         },
@@ -310,11 +310,11 @@ export default {
             if(data.status == 200){
                 this.refresh()
                 
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.updatePage(200)
             }else{
                 console.warn(data)
-                this.openNotification(`Error Inesperado al agregar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error Inesperado al agregar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async updatePage(status){

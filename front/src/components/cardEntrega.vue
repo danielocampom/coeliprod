@@ -196,7 +196,7 @@ export default {
                     win.document.write(objbuilder);
                     win.document.write('</body></html>');
                 }else{
-                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -234,10 +234,10 @@ export default {
                 if(data.status == 200){
                     this.refresh()
                     this.modalShowDetail = false
-                    this.openNotification(`Exito: ${data.mensaje}`, `La prenda se ha entregado`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.openNotification(`Exito: ${data.mensaje}`, `La prenda se ha entregado`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: Inesperado al realizar la entrega`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: Inesperado al realizar la entrega`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
                 }
             })

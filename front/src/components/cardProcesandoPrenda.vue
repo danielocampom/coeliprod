@@ -214,10 +214,10 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.refresh()
-                    this.openNotification(`Exito: ${data.mensaje}`, `Se a Autorizado el proceso Exitosamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se a Autorizado el proceso Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
         },
@@ -236,10 +236,10 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.refresh()
-                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Reactivado la Lavadora`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha Reactivado la Lavadora`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
     
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }
         },
@@ -261,10 +261,10 @@ export default {
                     this.refresh()
                     this.activarLavadora(this.data.idLavadora)
                     this.modalShowDetail = false
-                    this.openNotification(`Exito: ${data.mensaje}`, `Se a cerrado el proceso Exitosamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se a cerrado el proceso Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             })
 
@@ -274,7 +274,7 @@ export default {
                 this.comfirm = false
                 this.activarLavadora(this.data.idHist, true)
             }else{
-                this.openNotification( `Error: ¡No autorizado!`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification( `Error: ¡No autorizado!`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async cancelPrednas(status){
@@ -284,7 +284,7 @@ export default {
                 let prenEliminadas = parseInt(this.data.cantidad)-parseInt(this.cantidadElim)
 
                 if(prenEliminadas < 0){
-                    this.openNotification( `No puedes Eliminar mas prendas de la cantidad asignada `, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification( `No puedes Eliminar mas prendas de la cantidad asignada `, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
                 }else{
                     let json = {
@@ -312,10 +312,10 @@ export default {
                         this.refresh()
                         this.comfirm = false
                         this.cancelPredas = false
-                        this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-center',`<box-icon name='check' color="#fff"></box-icon>`)
+                        this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                         this.$emit('updatePage', '200')
                     }else{
-                        this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-center',`<box-icon name='bug' color="#fff"></box-icon>`)
+                        this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                     }
                 }
             }
