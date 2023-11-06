@@ -23,7 +23,7 @@
                 Se Requiere Autorización
             </div>
             <p class="fw-light" v-if="data.lavadora">Lavadora {{ data.lavadora }}</p>
-            <vs-button block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
+            <vs-button class="d-none" block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
             <vs-button v-if="data.idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.idHist)"> Autorizar </vs-button>
             <vs-button v-if="data.idEstado != 10" block flat danger @click="terminar(data.idHist)"> Terminar </vs-button>
             <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>

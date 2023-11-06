@@ -2,7 +2,7 @@
     <div>
         <HeaderComponent/>
         <br>
-
+        
         <div class="container">
             <b-row class="container">
                 <!-- <b-col md="6" sm="6">
@@ -40,16 +40,22 @@
                     
                 </b-col>
                 <b-col md="7" sm="7" class="mt-5 container p-3">
+                    <div class="spinner text-center" v-if="showSpinner">
+                        <box-icon name='loader-circle' animation='spin' flip='horizontal' size="7rem"></box-icon>
+                    </div>
                     <b-card v-if="mostrarInfo" :title="cliente" :sub-title="cantidadTotal">
                         <div class="badge bg-success text-wrap float-end" >
                             {{ nombreEstado }}
                         </div>
                         <p>
                             <label for="Ingreso">
-                                <strong>Igreso:</strong> {{ fecha(new Date(fechaAlta)) }} 
+                                <strong>Ingreso: </strong> {{ fecha(new Date(fechaAlta)) }} 
                             </label><br>
                             <label for="Ingreso">
-                                <strong>Ultimo Estado:</strong> {{ calcularTiempoTranscurrido(new Date(ultimoEstado)) }} 
+                                <strong>Ultimo Estado: </strong> {{ calcularTiempoTranscurrido(new Date(ultimoEstado)) }} 
+                            </label><br>
+                            <label for="Ingreso">
+                                <strong>Número de Orden: </strong> {{ numeroOrden }} 
                             </label>
                         </p>
                         <hr>
@@ -62,19 +68,31 @@
                             <br>
                             <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(pa, i) in pasosAnt" :key="i">
                                 <b-card :title="pa.nombre" :sub-title="pa.descripcion">
-                                    <div class="badge bg-danger text-wrap float-end" >
+                                    <div class="badge bg-primary text-wrap float-end" >
                                         {{ pa.estado }}
+                                    </div>
+                                    <br>
+                                    <div v-if="pa.requiereAutorizacion" class="badge bg-danger text-wrap float-end" >
+                                        Autorizado
                                     </div>
                                     <p>
                                         <label for="Cantidad">
-                                            <strong>Cantidad:</strong>{{ pa.cantidad }}
+                                            <strong>Cantidad: </strong>{{ pa.cantidad }}
                                         </label><br>
                                         <label for="Prenda">
-                                            <strong>Prenda:</strong>{{ pa.nombrePrenda }}
+                                            <strong>Prenda: </strong>{{ pa.nombrePrenda }}
                                         </label><br>
                                         <label for="pasoProceso">
-                                            <strong>Proceso:</strong>{{ pa.pasoProceso.nombre }}<br>
-                                            <strong>Descripcion:</strong>{{ pa.pasoProceso.descripcion }}
+                                            <strong>Proceso: </strong>{{ pa.pasoProceso.nombre }}<br>
+                                            <strong>Descripcion: </strong>{{ pa.pasoProceso.descripcion }}<br>
+                                            <strong>Personal Asignado: </strong>{{ pa.usuario }}<br>
+                                            <strong>Lavadora Asignada: </strong>{{ pa.lavadora }}<br>
+                                        </label>
+                                        <label for="Auth" v-if="pa.requiereAutorizacion">
+                                            <hr>
+                                            <strong>Fecha de Autorizacion: </strong>{{ fecha(new Date(pa.autorizacion.fechaAutoriza)) }}<br>
+                                            <strong>Quien Autorizo: </strong>{{ pa.autorizacion.idUsuario }}<br>
+
                                         </label>
                                     </p>
                                 </b-card>
@@ -110,8 +128,10 @@
 
     export default {
         data:() => ({
+            showSpinner: false,
             mostrarInfo: false,
             buscarPrenda: '',
+            numeroOrden: '',
             cantidadTotal: '',
             nombreEstado: '',
             ultimoEstado: '',
@@ -180,18 +200,22 @@
                 }
             },
             async buscar(){
+                this.mostrarInfo = false
+                this.showSpinner = true
+
                 if(this.buscarPrenda != ''){
-                    this.mostrarInfo = true;
                     let t = this
                     fetchApi(this.url+`orden/findByIdOrdenPrenda/${this.buscarPrenda}`, 'GET', this.$session.get('token'))
                     .then(data => {
                         if(data.status == 200){
+                            this.mostrarInfo = true;
 
                             this.cliente = data.datos.nomCliente
                             this.cantidadTotal = 'Cantidad total de prendas '+data.datos.cantidad
                             this.nombreEstado = data.datos.nombreEstado
                             this.ultimoEstado = data.datos.ultimoEstado
                             this.fechaAlta = data.datos.fechaAlta
+                            this.numeroOrden = data.datos.idOrden
                             // console.log(data.datos)
                             let idsPasos = [] 
                             this.pasosAnt = data.datos.historial
@@ -204,7 +228,6 @@
                                 pasos = dataPenda.datos.proceso.pasos
                                 const objetosFiltrados = pasos.filter(objeto => !idsPasos.includes(objeto.id));
                                 t.pasosRestantes = objetosFiltrados
-                                // console.log(objetosFiltrados)
                             })
                         }else{
                             this.mostrarInfo = false;
@@ -212,6 +235,7 @@
                             this.openNotification(`Ooops!:`, `No existes coincidencias`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                         }
                     })
+                    .finally(() => this.showSpinner = false)
                 }else{
                     this.mostrarInfo = false;
 
