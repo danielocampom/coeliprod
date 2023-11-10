@@ -142,7 +142,7 @@ export default {
         this.paterno = this.dataUser.row.item.paterno
         this.materno = this.dataUser.row.item.materno
         this.dataUser.row.item.roles.forEach( rol => {
-            this.optionsRoles.push(rol.id) 
+            this.optionsRoles.push(''+rol.id) 
         });
     },
     methods: {

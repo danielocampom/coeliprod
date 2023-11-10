@@ -293,9 +293,7 @@
                     data.datos.datos.forEach( val => {
                         this.items.push({ username: val.username, nombre: val.nombre, paterno: val.paterno, id: val.id, roles: val.roles })
                     })
-                  this.totalRows = data.datos.totalElementos 
-              }else{
-                console.warn(data)
+                    this.totalRows = data.datos.totalElementos 
               }
           })
         },
@@ -304,8 +302,6 @@
               .then(data => {
                   if(data.status == 200){
                     this.allRoles = data.datos
-                  }else{
-                    console.warn(data)
                   }
               })
           },

@@ -9,6 +9,7 @@ export const fetchApi = async (url, metod, token) => {
             },
         })
         if(!res.ok){
+            console.log(res.status)
             throw new Error("Respuesta erronea")
         }else{
             return await res.json()

@@ -462,7 +462,7 @@ export default {
                 this.mostrarTodos()
                 this.mostraTipoLavado()
                 this.mostrarTodosLavados()
-                setTimeout(() => location.reload(), 4000);
+                // setTimeout(() => location.reload(), 4000);
             }
         },
         openNotification( title, text, color, position = null, icon) {
