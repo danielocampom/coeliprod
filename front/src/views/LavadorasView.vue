@@ -6,7 +6,72 @@
         <b-container fluid class="mt-5 container">
                 <b-row  class="align-items-end">
                     
-                    <b-col md="4" sm="6">
+                    <b-col md="4" sm="12">
+                        <b-row>
+                            <b-col class="p-1">
+                                <vs-button flat block icon @click="activeModal=!activeModal">
+                                    <box-icon name='wind' color="#195bff" ></box-icon> Agregar Lavadora
+                                </vs-button>
+                                <vs-dialog v-model="activeModal">
+                                    <template #header>
+                                    <h4 class="not-margin">
+                                        Agregar <b>Lavadora</b>
+                                    </h4>
+                                    </template>
+                        
+                                    <div class="con-form">
+                                        <vs-input success type="text" v-model="nombreLav" class="mt-4" label-placeholder="Lavadora">
+                                            <template #icon>
+                                                <box-icon name='wind'></box-icon>
+                                            </template>
+                                        </vs-input>
+                                        <div class="con-selects mt-4">
+                                            <v-select
+                                                v-model="tipoLavado"
+                                                :options="tiposLavado"
+                                                label="nombre"
+                                                placeholder="Tipo de Lavado"
+                                                :reduce="option => option.id"
+                                                :searchable="true"
+                                                :clearable="false"
+                                            />
+                                        </div>
+                                        <vs-input success type="text" v-model="capKg" class="mt-4" label-placeholder="Capacidad en kilos">
+                                            <template #icon>
+                                                <box-icon name='wind'></box-icon>
+                                            </template>
+                                        </vs-input>
+                                        <vs-input success type="text" v-model="capMinima" class="mt-4" label-placeholder="Capacidad Minima">
+                                            <template #icon>
+                                                <box-icon name='wind'></box-icon>
+                                            </template>
+                                        </vs-input>
+                                        <vs-input success type="text" v-model="capMaxima" class="mt-4" label-placeholder="Capacidad Maxima">
+                                            <template #icon>
+                                                <box-icon name='wind'></box-icon>
+                                            </template>
+                                        </vs-input>
+                                    </div>
+                                    <br>
+                                    <template #footer>
+                                        <div class="footer-dialog">
+                                            <vs-button primary block @click="addWasher()">
+                                                <box-icon name='save' color="#fff"></box-icon> Guardar
+                                            </vs-button>
+                                        </div>
+                                    </template>
+                                </vs-dialog>
+
+                                
+                            </b-col>
+                            
+                        </b-row>
+                    </b-col>
+                    
+                    <b-col md="4" sm="12">
+                    </b-col>
+                    
+                    <b-col md="4" sm="12">
                         <b-form-group
                         label="Buscar"
                         label-for="filter-input"
@@ -29,156 +94,8 @@
                         </b-input-group>
                         </b-form-group>
                     </b-col>
-                    <b-col md="8" sm="12"></b-col>
 
-                    <b-col md="8" sm="12">
-                        <b-row>
-                            <b-col class="p-1">
-                                <vs-button flat block icon @click="activeModal=!activeModal">
-                                    <box-icon name='wind' color="#195bff" ></box-icon> Agregar Lavadora
-                                </vs-button>
-                                
-                                <b-modal size="xl" centered v-model="activeModal">
-                                    <template #modal-header="{ close }">
-                                        <h5>Agregar Lavadora</h5>
-                                        <vs-button circle icon floating danger @click="close()">
-                                            <box-icon name='x' color="#fff"></box-icon>
-                                        </vs-button>
-                                    </template>
-                                    <template>
-                                        <div class="con-form">
-                                            <b-card>
-                                                <b-row>
-                                                    <b-col class="mt-4" lg="6" md="6" sm="12">
-                                                        <vs-input success type="text" v-model="nombreLav" placeholder="Lavadora">
-                                                            <template #icon>
-                                                                <box-icon name='wind'></box-icon>
-                                                            </template>
-                                                        </vs-input>
-                                                    </b-col>
-                                                    <b-col class="mt-5" lg="6" md="6" sm="12">
-                                                        <div class="con-selects">
-                                                            <vs-select placeholder="Tipo de Lavado" color="success"  v-model="tipoLavado" >
-                                                                <vs-option  v-for="(lavado, i) in tiposLavado" :key="i" :label="lavado.nombre" :value="lavado.id">
-                                                                    {{lavado.nombre}}
-                                                                </vs-option>
-                                                            </vs-select>
-                                                        </div>
-                                                    </b-col>
-                                                </b-row>
-                                            </b-card>
-                                            <b-row>
-                                                <b-col class="mt-4" lg="8" md="6" sm="12">
-                                                    <b-card title="Capacidades" sub-title="puedes seleccionar multiples capacidades">
-                                                        <b-row>
-                                                            <b-col class="mt-2" lg="8" md="8" sm="10">
-                                                                <vs-select placeholder="Tipo de Lavado" color="success"  v-model="progLavado" >
-                                                                    <vs-option  v-for="(it, i) in capacidades" :key="i" :label="it.nombre" :value="it.id">
-                                                                        {{it.nombre}}
-                                                                    </vs-option>
-                                                                </vs-select>
-                                                            </b-col>
-                                                            <b-col class="mt-2" lg="4" md="4" sm="2">
-                                                                <vs-button class="float-right" circle icon floating @click="add(progLavado)">
-                                                                    <box-icon name='plus' color='#fbfbfb' ></box-icon>
-                                                                </vs-button>
-                                                            </b-col>
-                                                        </b-row>
-                                                    </b-card>
-                                                </b-col>
-                                                <b-col class="mt-2" lg="4" md="6" sm="12" v-for="(pl, i) in programasLavado" :key="i">
-                                                    <b-card :title="pl.nombre">
-                                                        <b-list-group>
-                                                            <b-list-group-item>Descipción: {{ pl.descripcion }}</b-list-group-item>
-                                                            <b-list-group-item>Capacidad Minima: {{ pl.cantidadMinima }}</b-list-group-item>
-                                                            <b-list-group-item>Capacidad Maxima: {{ pl.cantidadMaxima }}</b-list-group-item>
-                                                            <vs-button
-                                                                    danger
-                                                                    size="small"
-                                                                    @click="elim(pl.id)"
-                                                                >
-                                                                    <box-icon name='trash' color="#FFF"></box-icon> Eliminar
-                                                            </vs-button>
-                                                        </b-list-group>
-                                                    </b-card>
-                                                </b-col>
-                                            </b-row>
-                                        </div>
-                                    </template>
-                        
-                                    <template #modal-footer="{ ok }">
-                                        <vs-button primary @click="addWasher()">
-                                            <box-icon name='save' color="#fff"></box-icon> Guardar
-                                        </vs-button>
-                                        <vs-button danger @click="ok()">
-                                            <box-icon name='exit' color="#fff"></box-icon> Salir
-                                        </vs-button>
-                                    </template>
-                                    
-                                </b-modal>
-                            </b-col>
-                            <b-col class="p-1"> 
-                                <modalListCapacidades @updatePage="updatePage"></modalListCapacidades>
-                            </b-col>
-                            <b-col class="p-1">
-                                <vs-button flat block icon @click="activeModalAddLavado=!activeModalAddLavado">
-                                    <box-icon name='clipboard' color="#195bff" ></box-icon> Capacidades 
-                                </vs-button>
-                                <vs-dialog v-model="activeModalAddLavado">
-                                    <template #header>
-                                    <h4 class="not-margin">
-                                        Registrar <b>Capacidad</b>
-                                    </h4>
-                                    </template>
-                        
-                                    <div class="con-form">
-                                        <vs-input success class="mt-3" type="text" v-model="nomLavado" label-placeholder="nombre">
-                                            <template #icon>
-                                                <box-icon name='rename'></box-icon>
-                                            </template>
-                                        </vs-input>
-                                        <vs-input success class="mt-3" type="text" v-model="desLavado" label-placeholder="descripcion">
-                                            <template #icon>
-                                                <box-icon name='rename'></box-icon>
-                                            </template>
-                                        </vs-input>
-
-                                        <vs-input success class="mt-3" type="text" v-model="canMin" label-placeholder="Cantidad Minima">
-                                            <template #icon>
-                                                <box-icon name='dialpad-alt' ></box-icon>
-                                            </template>
-                                        </vs-input>
-                                        <vs-input success class="mt-3" type="text" v-model="canMax" label-placeholder="Cantidad Maxima">
-                                            <template #icon>
-                                                <box-icon name='dialpad-alt' ></box-icon>
-                                            </template>
-                                        </vs-input>
-                                    </div>
-                                    <br>
-                                    <template #footer>
-                                        <div class="footer-dialog">
-                                            <vs-button block success
-                                                flat
-                                                :btnGuardar="btnGuardar == 1"
-                                                @click="addCapacidad()">
-                                                Guardar
-                                            </vs-button>
-                                        </div>
-                                    </template>
-                                </vs-dialog>
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                    <b-col md="4" sm="6">
-                        <b-pagination
-                            v-model="currentPage"
-                            :total-rows="totalRows"
-                            :per-page="perPage"
-                            align="fill"
-                            size="sm"
-                            class="my-0"
-                        ></b-pagination>
-                    </b-col>
+                    
                     
                 </b-row>
         </b-container>
@@ -224,6 +141,15 @@
                     </b-card>
                 </template>
             </b-table>
+
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="totalRows"
+                :per-page="perPage"
+                align="fill"
+                size="sm"
+                class="my-0"
+            ></b-pagination>
         </b-container>
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
@@ -233,9 +159,10 @@
 </template>
 
 <script>
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue';
-import btnUpdateLavadora from '@/components/btn_Update_Lavadora.vue'
-import modalListCapacidades from '@/components/modal_List_Capacidades.vue'
+import btnUpdateLavadora from '@/components/btn_Update_Lavadora.vue'    
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 
@@ -246,6 +173,9 @@ export default {
         fields: [
             { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
             { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
+            { key: 'min', label: 'Campacidad Minima %', sortable: true, sortDirection: 'desc' },
+            { key: 'max', label: 'Capacidad Maxima %', sortable: true, sortDirection: 'desc' },
+            { key: 'kilos', label: 'Capacidad en kilos', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
         
@@ -265,7 +195,6 @@ export default {
 
         capacidades: [],
        
-        lavadoras: [],
         programasLavado: [],
         contador: 0,
         tiposLavado: [],
@@ -277,8 +206,9 @@ export default {
         progLavado: '',
         nomLavado: '',
         desLavado: '',
-        canMax: '',
-        canMin: '',
+        capKg: '',
+        capMaxima: '',
+        capMinima: '',
         btnGuardar: 0,
         buscarAct: false,
         buscarTxt: '',
@@ -291,8 +221,8 @@ export default {
     components: {
         HeaderComponent,
         btnUpdateLavadora,
-        modalListCapacidades,
-        loginComponent
+        loginComponent,
+        vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -303,7 +233,6 @@ export default {
     mounted(){   
         this.mostrarTodos()
         this.mostraTipoLavado()
-        this.mostrarTodosLavados()
     
     },
     methods: {
@@ -319,29 +248,6 @@ export default {
             this.totalRows = filteredItems.length
             this.currentPage = 1
         },
-        add(id){
-            if(id){
-                this.contador++
-                fetchApi(this.url+`lavadora/programa/findById/${id}`, 'GET', this.$session.get('token'))
-                .then(data => {
-                    if(data.status == 401){ this.activarReboot = true }
-                    if(data.status == 200){
-                        let pl = data.datos
-                        this.programasLavado.push({"id": this.contador, "nombre": pl.nombre, "descripcion": pl.descripcion, "cantidadMinima": pl.cantidadMinima, "cantidadMaxima": pl.cantidadMaxima, "idPrograma": pl.id })
-                    }else{
-                        this.openNotification(`Error: inesperado al asignar una capacidad`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-                    }
-                })
-            }else{
-                this.openNotification('Ocurrio un error', `Es requerido seleccionar algun programa de lavado`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-            }
-        },
-        elim(id){
-            this.programasLavado = this.programasLavado.filter(dt => dt.id != id)
-        },
-        
-        
         async mostraTipoLavado(){
             this.tiposLavado = []
             fetchApi(this.url+'tipoLavado/findAll', 'GET', this.$session.get('token'))
@@ -356,77 +262,28 @@ export default {
             this.items = []
             fetchApi(this.url+'lavadora/findAll', 'GET', this.$session.get('token'))
             .then(data => {
-                this.lavadoras = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     data.datos.forEach( val => {
-                        this.items.push({nombre: val.lavadora, estado: val.idEstado, id: val.idLavadora, programasLavado: val.programasLavado, tipoLavado: val.tipoLavado})
+                        this.items.push({nombre: val.lavadora, estado: val.idEstado, id: val.idLavadora, tipoLavado: val.tipoLavado, max: val.max, min:val.min, kilos:val.kilos })
                     })
                     this.totalRows = this.items.length 
                 }
             })
         },
         
-        async mostrarTodosLavados(){
-            this.capacidades = []
-            fetchApi(this.url+'lavadora/programa/findByAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    data.datos.forEach( val => {
-                        this.capacidades.push({ maxCant: val.cantidadMaxima, minCant: val.cantidadMinima, descripcion: val.descripcion, nombre: val.nombre, id: val.id },)
-                    })
-                }
-            })
-        },
-        
-        async addCapacidad(){
-            let token = this.$session.get('token')
-
-            let json = {
-                "nombre": this.nomLavado,
-                "descripcion": this.desLavado,
-                "cantidadMinima": this.canMin,
-                "cantidadMaxima": this.canMax
-            };
-            let res = await fetch(this.url+"lavadora/programa/save",{
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*",
-                    'Authorization': token
-                },
-                body: JSON.stringify(json)
-            })
-            let data = await res.json()
-
-            if(data.status == 401){ this.activarReboot = true }
-            if(data.status == 200){
-                this.refresh()
-                this.activeModal = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
-                this.mostraTipoLavado()
-
-                this.canMax = ''
-                this.canMin = ''
-                this.desLavado = ''
-                this.nomLavado = ''
-                this.updatePage(200)
-            }else{
-                this.openNotification(`Error: inesperado al registrar las capacidades`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-
-            }
-        },
         async addWasher(){
             let token = this.$session.get('token')
-            let pogramLav = []
-            this.programasLavado.forEach( pl => {
-                pogramLav.push(pl.idPrograma)
-            })
+            // let pogramLav = []
+            // this.programasLavado.forEach( pl => {
+            //     pogramLav.push(pl.idPrograma)
+            // })
             let json = {
                 "lavadora": this.nombreLav,
                 "idTipoLavado": this.tipoLavado,
-                "programasLavado": pogramLav
+                "maximo": this.capMaxima,
+                "minimo": this.capMinima,
+                "kilos": this.capKg,
             };
             let res = await fetch(this.url+"lavadora/register",{
                 method: "POST",
@@ -461,8 +318,6 @@ export default {
             if(status == 200){
                 this.mostrarTodos()
                 this.mostraTipoLavado()
-                this.mostrarTodosLavados()
-                // setTimeout(() => location.reload(), 4000);
             }
         },
         openNotification( title, text, color, position = null, icon) {
@@ -552,7 +407,20 @@ input {
 </style>
 
 <style>
+.v-select.vs--single.vs--searchable {
+    margin-top:-4px;
+}
+input[type="search"] {
+    padding: 10px;
+    border: 1px solid #f6f6f6;
+    border-radius: 4px;
+    outline: none;
+}
 
+input[type="search"]:focus {
+    border-color: #f6f6f6;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
 .centerAll{
     display: grid;
     place-items: center;

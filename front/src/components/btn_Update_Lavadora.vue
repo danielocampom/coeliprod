@@ -3,88 +3,60 @@
         <vs-button circle icon floating primary  @click="active=!active">
             <box-icon name='edit' color="#fff"></box-icon>
         </vs-button>
-        <b-modal size="xl" centered v-model="active">
-            <template #modal-header="{ close }">
-                <h5>Editar Lavadora</h5>
-                <vs-button circle icon floating danger @click="close()">
-                    <box-icon name='x' color="#fff"></box-icon>
-                </vs-button>
+        
+        <vs-dialog v-model="active">
+            <template #header>
+            <h4 class="not-margin">
+                Editar <b>Lavadora</b>
+            </h4>
             </template>
+       
             <template>
                 <div class="con-form">
-                    <b-card>
-                        <b-row>
-                            <b-col class="mt-4" lg="6" md="6" sm="12">
-                                <vs-input success type="text" v-model="nombreUp" placeholder="Lavadora">
-                                    <template #icon>
-                                        <box-icon name='wind'></box-icon>
-                                    </template>
-                                </vs-input>
-                            </b-col>
-                            <b-col class="mt-5" lg="6" md="6" sm="12">
-                                <div class="con-selects">
-                                    <label for="floatingSelect">Selecciona tipo de lavado</label>
-                                    <b-skeleton type="input" v-if="tiposLavado.length == 0"></b-skeleton>
-                                    <vs-select v-else placeholder="Tipo de Lavado" color="success"  v-model="tipoLavado" >
-                                        <vs-option  v-for="(lavado, i) in tiposLavado" :key="i" :label="lavado.nombre" :value="lavado.id">
-                                            {{lavado.nombre}}
-                                        </vs-option>
-                                    </vs-select>
-                                </div>
-                            </b-col>
-                        </b-row>
-                    </b-card>
-                    <b-row>
-                        <b-col class="mt-4" lg="8" md="6" sm="12">
-                            <b-card title="Capacidades" sub-title="puedes seleccionar multiples capacidades">
-                                <b-row>
-                                    <b-col class="mt-2" lg="8" md="8" sm="10">
-                                        <label for="floatingSelect">Selecciona tipo de programa</label>
-                                        <b-skeleton type="input" v-if="programasItems.length == 0"></b-skeleton>
-                                        <vs-select v-else  placeholder="Tipo de programa" color="success"  v-model="progLavado" >
-                                            <vs-option  v-for="(it, i) in programasItems" :key="i" :label="it.nombre" :value="it.id">
-                                                {{it.nombre}}
-                                            </vs-option>
-                                        </vs-select>
-                                    </b-col>
-                                    <b-col class="mt-2" lg="4" md="4" sm="2">
-                                        <vs-button class="float-right" circle icon floating @click="add(progLavado)">
-                                            <box-icon name='plus' color='#fbfbfb' ></box-icon>
-                                        </vs-button>
-                                    </b-col>
-                                </b-row>
-                            </b-card>
-                        </b-col>
-                        <b-col class="mt-2" lg="4" md="6" sm="12" v-for="(pl, i) in programas" :key="i">
-                            <b-card :title="pl.nombre">
-                                <b-list-group>
-                                    <b-list-group-item>Descipción: {{ pl.descripcion }}</b-list-group-item>
-                                    <b-list-group-item>Capacidad Minima: {{ pl.cantidadMinima }}</b-list-group-item>
-                                    <b-list-group-item>Capacidad Maxima: {{ pl.cantidadMaxima }}</b-list-group-item>
-                                    <vs-button
-                                            danger
-                                            size="small"
-                                            @click="elim(pl.id)"
-                                        >
-                                            <box-icon name='trash' color="#FFF"></box-icon> Eliminar
-                                    </vs-button>
-                                </b-list-group>
-                            </b-card>
-                        </b-col>
-                    </b-row>
+                    <vs-input success type="text" v-model="nombreUp" class="mt-4" label-placeholder="Lavadora">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
+                    <div class="con-selects mt-4">
+                        <v-select
+                            v-model="tipoLavado"
+                            :options="tiposLavado"
+                            label="nombre"
+                            label-placeholder="Tipo de Lavado"
+                            :reduce="option => option.id"
+                            :searchable="true"
+                            :clearable="false"
+                        />
+                    </div>
+                    <vs-input success type="text" v-model="capKg" class="mt-4" label-placeholder="Capacidad en kilos">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
+                    <vs-input success type="text" v-model="capMinima" class="mt-4" label-placeholder="Capacidad Minima">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
+                    <vs-input success type="text" v-model="capMaxima" class="mt-4" label-placeholder="Capacidad Maxima">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
                 </div>
             </template>
-
-            <template #modal-footer="{ ok }">
+            
+            <template #footer>
                 <vs-button success
-                    flat
+                    flat block
                     :btnActualizar="btnActualizar == 1"
                     @click="update(dataWasher.row.item.id)">
                     Actualizar
                 </vs-button>
                 <div v-if="(dataWasher.row.item.estado == 1)" class="">
                     <vs-button danger
-                        flat
+                        flat block
                         :btnActualizar="btnElimina == 1"
                         @click="desactivar()">
                         Desactivar
@@ -92,18 +64,15 @@
                 </div>
                 <div v-else>
                     <vs-button success
-                        flat
+                        flat block
                         :btnActualizar="btnElimina == 1"
                         @click="activar()">
                         Activar
                     </vs-button>
                 </div>
-                <vs-button danger @click="ok()">
-                    <box-icon name='exit' color="#fff"></box-icon> Salir
-                </vs-button>
             </template>
             
-        </b-modal>
+        </vs-dialog>
         <vs-dialog v-model="active2">
             <template #header>
                 <h4 class="not-margin">
@@ -120,7 +89,8 @@
     
 </template>
 <script>
-
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
@@ -137,6 +107,9 @@ export default {
         programasItems: [],
         programasLavado: [],
 
+        capMaxima: '',
+        capMinima: '',
+        capKg: '',
         tiposLavado: [],
         programas: [],
         active: false,
@@ -151,18 +124,17 @@ export default {
     }),
     components: {
         ConfirmComponent,
-        loginComponent
+        loginComponent,
+        vSelect
     },
     mounted(){
-        this.mostrarTodosLavados()
         this.mostraTipoLavado()
         this.estado = this.dataWasher.row.item.estado == 1 ? true : false
         this.tipoLavado = this.dataWasher.row.item.tipoLavado
         this.nombreUp = this.dataWasher.row.item.nombre
-        this.dataWasher.row.item.programasLavado.forEach(element => {
-            this.add(element)
-        });
-
+        this.capMaxima = this.dataWasher.row.item.max
+        this.capMinima = this.dataWasher.row.item.min
+        this.capKg = this.dataWasher.row.item.kilos
     },
     methods: {
         refresh(){
@@ -207,17 +179,7 @@ export default {
                 }
             })
         },
-        async mostrarTodosLavados(){
-            fetchApi(this.url+'lavadora/programa/findByAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    data.datos.forEach( val => {
-                        this.programasItems.push({ maxCant: val.cantidadMaxima, minCant: val.cantidadMinima, descripcion: val.descripcion, nombre: val.nombre, id: val.id },)
-                    })
-                }
-            })
-        },
+        
         async deleteWasher(status){
             if(status == 200){
                 let token = this.$session.get('token')
@@ -277,7 +239,9 @@ export default {
                 "lavadora": this.nombreUp,
                 "idTipoLavado": this.tipoLavado,
                 "idLavadora": this.dataWasher.row.item.id,
-                "programasLavado": pogramLav
+                "maximo": this.capMaxima,
+                "minimo": this.capMinima,
+                "kilos": this.capKg,
             };
             let res = await fetch(this.url+"lavadora/update",{
                 method: "POST",

@@ -51,6 +51,12 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
+                    
+                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Cantidad por kilos">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
                     <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
@@ -58,20 +64,38 @@
                     </vs-input>
                     <b-skeleton class="mt-4" type="input" v-if="clienteSelect.length == 0"></b-skeleton>
                     <div class="con-selects mt-4" v-else>
-                        <vs-select style="width:100%;" label-placeholder="Cliente" color="success"  v-model="selectCliente" >
+                        <!-- <vs-select style="width:100%;" label-placeholder="Cliente" color="success"  v-model="selectCliente" >
                             <vs-option  v-for="(cli, i) in clienteSelect" :key="i" :label="cli.nombre" :value="cli.id">
                                 {{cli.nombre}}
                             </vs-option>
-                        </vs-select>
+                        </vs-select> -->
+                        <v-select
+                            v-model="selectCliente"
+                            :options="clienteSelect"
+                            label="nombre"
+                            placeholder="Cliente"
+                            :reduce="option => option.id"
+                            :searchable="true"
+                            :clearable="false"
+                        />
                     </div>
                     <b-skeleton class="mt-5" type="input" v-if="procesoSelect.length == 0"></b-skeleton>
 
                     <div class="con-selects mt-5" v-else>
-                        <vs-select style="width:100%;" label-placeholder="Tipo de proceso" color="success"  v-model="selectProceso" >
+                        <!-- <vs-select style="width:100%;" label-placeholder="Tipo de proceso" color="success"  v-model="selectProceso" >
                             <vs-option  v-for="(proceso, i) in procesoSelect" :key="i" :label="proceso.nombre" :value="proceso.id">
                                 {{proceso.nombre}}
                             </vs-option>
-                        </vs-select>
+                        </vs-select> -->
+                        <v-select
+                            v-model="selectProceso"
+                            :options="procesoSelect"
+                            label="nombre"
+                            placeholder="Tipo de proceso"
+                            :reduce="option => option.id"
+                            :searchable="true"
+                            :clearable="false"
+                        />
                     </div>
                     
                 </template>
@@ -121,7 +145,8 @@
     
 </template>
 <script>
-
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import ConfirmComponent from '@/components/confirm.vue'
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from './cardLogin.vue';
@@ -145,13 +170,16 @@ export default {
         tipoLavado: '',
         nombre: '',
         cantidadBolsa: '',
+        kilos: '',
         btnElimina: 0,
         btnActualizar: 0,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     components: {
         ConfirmComponent,
-        loginComponent
+        loginComponent,
+        vSelect
+
     },
     mounted(){
         setTimeout(() => {
@@ -164,6 +192,7 @@ export default {
             this.selectCliente = this.data.row.item.idCliente
             this.nombre = this.data.row.item.nombre
             this.cantidadBolsa = this.data.row.item.cantidadBolsa
+            this.kilos = this.data.row.item.cantidadKilos
         }, 1500)
     },
     methods: {
@@ -273,6 +302,8 @@ export default {
                 "idPrenda": this.data.row.item.id,
                 "idProceso": this.selectProceso,
                 "cantidadBolsa": this.cantidadBolsa,
+                "kilos": this.kilos,
+
             };
             let res = await fetch(this.url+"prenda/update",{
                 method: "PUT",
@@ -337,9 +368,20 @@ input {
 .vs-input{
     width: 95%;
 }
-.vs-select .vs-select--state-null{
-    margin-bottom: 1rem;
-    max-width: 100% !important;
+
+.v-select.vs--single.vs--searchable {
+    margin-top:-4px;
+}
+input[type="search"] {
+    padding: 10px;
+    border: 1px solid #f6f6f6;
+    border-radius: 4px;
+    outline: none;
+}
+
+input[type="search"]:focus {
+    border-color: #f6f6f6;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
 }
 </style>
 <style lang="stylus">

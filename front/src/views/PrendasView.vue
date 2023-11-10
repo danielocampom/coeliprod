@@ -3,10 +3,108 @@
         <HeaderComponent/>
         <br>
     
-        <b-container fluid class="mt-3 container">
+        <b-container fluid class="mt-4 container">
             
             <b-row class="align-items-end">
                 
+                <b-col md="4" sm="12">
+                    <vs-button flat block icon @click="activeModal=!activeModal">
+                        <box-icon name='wind' color="#195bff"></box-icon> Agregar Prendas
+                    </vs-button>
+                    <vs-dialog v-model="activeModal">
+                        <template #header>
+                        <h4 class="not-margin">
+                            Registrar <b>Prendas</b>
+                        </h4>
+                        </template>
+            
+                        <div class="con-form">
+                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
+                            
+                            <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Cantidad por kilos">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
+                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
+                            <div class="con-selects mt-4">
+                                <b-skeleton type="input" v-if="clientes.length == 0"></b-skeleton>
+                                <!-- <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
+                                    <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
+                                        {{cli.nombre}}
+                                    </vs-option>
+                                </vs-select> -->
+                                <v-select
+                                    v-model="cliente"
+                                    :options="clientes"
+                                    label="nombre"
+                                    placeholder="Cliente"
+                                    :reduce="option => option.id"
+                                    :searchable="true"
+                                    :clearable="false"
+                                />
+                            </div>
+                            <div class="con-selects mt-5">
+                                <b-skeleton type="input" v-if="tiposProceso.length == 0"></b-skeleton>
+                                <!-- <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
+                                    <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
+                                        {{proceso.nombre}}
+                                    </vs-option>
+                                </vs-select> -->
+                                <v-select
+                                    v-model="tipoProceso"
+                                    :options="tiposProceso"
+                                    label="nombre"
+                                    placeholder="Tipo de proceso"
+                                    :reduce="option => option.id"
+                                    :searchable="true"
+                                    :clearable="false"
+                                />
+                            </div>
+                        </div>
+                        <br>
+                        <template #footer>
+                            <div class="footer-dialog">
+                                <vs-button block success
+                                    flat
+                                    :btnGuardar="btnGuardar == 1"
+                                    @click="addPrenda()">
+                                    Guardar
+                                </vs-button>
+                            </div>
+                        </template>
+                    </vs-dialog>
+                </b-col>
+                <b-col md="8" sm="12"></b-col>
+
+                <b-col md="6" sm="6">
+                    <b-form-group
+                        label="registros"
+                        label-for="per-page-select"
+                        label-cols-sm="6"
+                        label-cols-md="4"
+                        label-cols-lg="3"
+                        label-align-sm="right"
+                        label-size="sm"
+                        class="mb-0"
+                        >
+                        <b-form-select label="registros"
+                            class="custom-select"
+                            id="per-page-select"
+                            v-model="perPage"
+                            :options="pageOptions"
+                            size="sm"
+                        ></b-form-select>
+                    </b-form-group>
+                </b-col>
                 <b-col md="6" sm="6">
                     <b-form-group
                     label="Buscar"
@@ -30,88 +128,6 @@
                     </b-input-group>
                     </b-form-group>
                 </b-col>
-                <b-col md="6" sm="6">
-                    <b-pagination
-                        v-model="currentPage"
-                        :total-rows="totalRows"
-                        :per-page="perPage"
-                        align="fill"
-                        size="sm"
-                        class="my-0 mb-3"
-                    ></b-pagination>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <vs-button flat icon @click="activeModal=!activeModal">
-                        <box-icon name='wind' color="#195bff"></box-icon> Agregar Prendas
-                    </vs-button>
-                    <vs-dialog v-model="activeModal">
-                        <template #header>
-                        <h4 class="not-margin">
-                            Registrar <b>Prendas</b>
-                        </h4>
-                        </template>
-            
-                        <div class="con-form">
-                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
-                            <div class="con-selects">
-                                <b-skeleton class="mt-4" type="input" v-if="clientes.length == 0"></b-skeleton>
-                                <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
-                                    <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
-                                        {{cli.nombre}}
-                                    </vs-option>
-                                </vs-select>
-                            </div>
-                            <div class="con-selects">
-                                <b-skeleton class="mt-5" type="input" v-if="tiposProceso.length == 0"></b-skeleton>
-                                <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
-                                    <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
-                                        {{proceso.nombre}}
-                                    </vs-option>
-                                </vs-select>
-                            </div>
-                        </div>
-                        <br>
-                        <template #footer>
-                            <div class="footer-dialog">
-                                <vs-button block success
-                                    flat
-                                    :btnGuardar="btnGuardar == 1"
-                                    @click="addPrenda()">
-                                    Guardar
-                                </vs-button>
-                            </div>
-                        </template>
-                    </vs-dialog>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <b-form-group
-                        label="registros"
-                        label-for="per-page-select"
-                        label-cols-sm="6"
-                        label-cols-md="4"
-                        label-cols-lg="3"
-                        label-align-sm="right"
-                        label-size="sm"
-                        class="mb-0"
-                        >
-                        <b-form-select label="registros"
-                            class="custom-select"
-                            id="per-page-select"
-                            v-model="perPage"
-                            :options="pageOptions"
-                            size="sm"
-                        ></b-form-select>
-                    </b-form-group>
-                </b-col>
             </b-row>
             <b-table
                 class="table table-bordered table-hover"
@@ -133,25 +149,33 @@
                 small
                 @filtered="onFiltered"
             >
-            <template #cell(estado)="row">
-                <div class="d-flex justify-content-center">
-                    <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
-                </div>
-            </template>
-            <template #cell(actions)="row">
-                <div class="d-flex justify-content-center">
-                    <btnUpdatePrenda @updatePage="updatePage" :data="{row}" />
-                </div>
-            </template>
+                <template #cell(estado)="row">
+                    <div class="d-flex justify-content-center">
+                        <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
+                    </div>
+                </template>
+                <template #cell(actions)="row">
+                    <div class="d-flex justify-content-center">
+                        <btnUpdatePrenda @updatePage="updatePage" :data="{row}" />
+                    </div>
+                </template>
 
-            <template #row-details="row">
-                <b-card>
-                <ul>
-                    <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                </ul>
-                </b-card>
-            </template>
+                <template #row-details="row">
+                    <b-card>
+                    <ul>
+                        <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                    </ul>
+                    </b-card>
+                </template>
             </b-table>
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="totalRows"
+                :per-page="perPage"
+                align="fill"
+                size="sm"
+                class="my-0 mb-3"
+            ></b-pagination>
         </b-container>
         <br>
         
@@ -163,6 +187,8 @@
 </template>
 
 <script>
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue';
 import btnUpdatePrenda from '@/components/btn_Update_Prendas.vue'
 import { fetchApi, refreshSession } from "@/service/service.js"
@@ -176,7 +202,8 @@ export default {
             { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
             { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
             { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadBolsa', label: 'cantidad Bolsa', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadKilos', label: 'Cantidad Por Kilo', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadBolsa', label: 'Cantidad Bolsa', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
         
@@ -201,6 +228,7 @@ export default {
         sinData: false,
         activeModal: false,
         nombre: '',
+        kilos: '',
         cantidadBolsa: '',
         tipoProceso: '',
         cliente: '',
@@ -216,7 +244,8 @@ export default {
     components: {
         HeaderComponent,
         btnUpdatePrenda,
-        loginComponent
+        loginComponent,
+        vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -291,6 +320,7 @@ export default {
                 "idProceso": this.tipoProceso,
                 "idCliente": this.cliente,
                 "cantidadBolsa": this.cantidadBolsa,
+                "kilos": this.kilos,
             };
             let res = await fetch(this.url+"prenda/register",{
                 method: "POST",
@@ -401,7 +431,20 @@ input {
 </style>
 
 <style>
+.v-select.vs--single.vs--searchable {
+    margin-top:-4px;
+}
+input[type="search"] {
+    padding: 10px;
+    border: 1px solid #f6f6f6;
+    border-radius: 4px;
+    outline: none;
+}
 
+input[type="search"]:focus {
+    border-color: #f6f6f6;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
 .centerAll{
     display: grid;
     place-items: center;
