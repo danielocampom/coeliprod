@@ -56,7 +56,7 @@
                                                             </template>
                                                         </vs-input>
                                                     </b-col>
-                                                    <b-col class="mt-5" lg="6" md="6" sm="12">
+                                                    <!-- <b-col class="mt-5" lg="6" md="6" sm="12">
                                                         <div class="con-selects">
                                                             <vs-select placeholder="Tipo de Lavado" color="success"  v-model="tipoLavado" >
                                                                 <vs-option  v-for="(lavado, i) in tiposLavado" :key="i" :label="lavado.nombre" :value="lavado.id">
@@ -64,7 +64,21 @@
                                                                 </vs-option>
                                                             </vs-select>
                                                         </div>
+                                                    </b-col> -->
+                                                    <b-col class="mt-5" lg="6" md="6" sm="12">
+                                                        <div class="con-selects">
+                                                            <v-select
+                                                                v-model="tipoLavado"
+                                                                :options="tiposLavado"
+                                                                label="nombre"
+                                                                placeholder="Tipo de Lavado"
+                                                                :reduce="option => option.id"
+                                                                :searchable="true"
+                                                                :clearable="false"
+                                                            />
+                                                        </div>
                                                     </b-col>
+                                                    
                                                 </b-row>
                                             </b-card>
                                             <b-row>
@@ -233,6 +247,8 @@
 </template>
 
 <script>
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue';
 import btnUpdateLavadora from '@/components/btn_Update_Lavadora.vue'
 import modalListCapacidades from '@/components/modal_List_Capacidades.vue'
@@ -279,6 +295,9 @@ export default {
         desLavado: '',
         canMax: '',
         canMin: '',
+        capKg: '',
+        capMaxima: '',
+        capMinima: '',
         btnGuardar: 0,
         buscarAct: false,
         buscarTxt: '',
@@ -286,13 +305,14 @@ export default {
         hidden: true,
 
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
-
+       
     }),
     components: {
         HeaderComponent,
         btnUpdateLavadora,
         modalListCapacidades,
-        loginComponent
+        loginComponent,
+        vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -498,11 +518,7 @@ input {
 .ml-5 .vs-card{
     margin-left: auto!important
 }
-#per-page-select{
-    background: #fff;
-    border-radius: 0.5rem;
-    padding: 4px;
-  }
+
 </style>
 <style lang="stylus">
   getColor(vsColor, alpha = 1)
@@ -552,7 +568,20 @@ input {
 </style>
 
 <style>
+    .v-select.vs--single.vs--searchable {
+        margin-top:-4px;
+    }
+    input[type="search"] {
+      padding: 10px;
+      border: 1px solid #f6f6f6;
+      border-radius: 4px;
+      outline: none;
+    }
 
+    input[type="search"]:focus {
+      border-color: #f6f6f6;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+    }
 .centerAll{
     display: grid;
     place-items: center;
