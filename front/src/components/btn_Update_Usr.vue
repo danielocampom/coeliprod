@@ -161,7 +161,7 @@ export default {
                 "idUsuario": this.dataUser.row.item.id,
                 "nombre": this.nombre,
                 "paterno": this.paterno,
-                "materno": this.maternos,
+                "materno": this.materno,
                 "roles": this.optionsRoles,
             };
             let res = await fetch(this.url+"usuario/update",{

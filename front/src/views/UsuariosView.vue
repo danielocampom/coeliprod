@@ -26,42 +26,8 @@
             </b-container>
 
             <b-row class="align-items-end">
-                
-                <b-col md="6" sm="6">
-                    <b-form-group
-                    label="Buscar"
-                    label-for="filter-input"
-                    label-cols-sm="3"
-                    label-align-sm="right"
-                    label-size="sm"
-                    class="mb-0"
-                    >
-                    <b-input-group size="sm">
-                        <b-form-input
-                        id="filter-input"
-                        v-model="filter"
-                        type="search"
-                        placeholder="Buscar"
-                        ></b-form-input>
-
-                        <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                    </b-form-group>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <b-pagination
-                        v-model="currentPage"
-                        :total-rows="totalRows"
-                        :per-page="perPage"
-                        align="fill"
-                        size="sm"
-                        class="my-0 mb-3"
-                    ></b-pagination>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <vs-button class="my-0 mb-3" flat icon @click="activeModal=!activeModal">
+                <b-col md="4" sm="12">
+                    <vs-button class="my-0 mb-3" flat icon block @click="activeModal=!activeModal">
                         <box-icon name='user-plus' color="#195bff"></box-icon> Agregar Usuario
                     </vs-button>
                     <b-modal size="xl" centered v-model="activeModal">
@@ -123,6 +89,8 @@
                         </template>
                     </b-modal>
                 </b-col>
+                <b-col md="8" sm="12">
+                </b-col>
                 <b-col md="6" sm="6">
                     <b-form-group
                         label="registros"
@@ -143,6 +111,31 @@
                         ></b-form-select>
                     </b-form-group>
                 </b-col>
+
+                <b-col md="6" sm="6">
+                    <b-form-group
+                    label="Buscar"
+                    label-for="filter-input"
+                    label-cols-sm="3"
+                    label-align-sm="right"
+                    label-size="sm"
+                    class="mb-0"
+                    >
+                        <b-input-group size="sm">
+                            <b-form-input
+                            id="filter-input"
+                            v-model="filter"
+                            type="search"
+                            placeholder="Buscar"
+                            ></b-form-input>
+
+                            <b-input-group-append>
+                            <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
+                            </b-input-group-append>
+                        </b-input-group>
+                    </b-form-group>
+                </b-col>
+                
             </b-row>
 
             <!-- Main table element -->
@@ -166,27 +159,34 @@
                 small
                 @filtered="onFiltered"
             >
-            <template #cell(actions)="row">
-                <div class="d-flex justify-content-center">
-                    <!-- <vs-button circle icon floating danger @click="eliminarLavado(row.item.id)">
-                        <box-icon name='trash' color="#fff"></box-icon>
-                    </vs-button> -->
-                    <btnUsrComponent @updatePage="updatePage" :dataUser="{row}" />
-                    <!-- <vs-button circle icon floating primary @click="eliminarLavado(row.item.id)">
-                        <box-icon name='edit' color="#fff"></box-icon>
-                    </vs-button> -->
-                </div>
-            </template>
+                <template #cell(actions)="row">
+                    <div class="d-flex justify-content-center">
+                        <!-- <vs-button circle icon floating danger @click="eliminarLavado(row.item.id)">
+                            <box-icon name='trash' color="#fff"></box-icon>
+                        </vs-button> -->
+                        <btnUsrComponent @updatePage="updatePage" :dataUser="{row}" />
+                        <!-- <vs-button circle icon floating primary @click="eliminarLavado(row.item.id)">
+                            <box-icon name='edit' color="#fff"></box-icon>
+                        </vs-button> -->
+                    </div>
+                </template>
 
-            <template #row-details="row">
-                <b-card>
-                <ul>
-                    <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                </ul>
-                </b-card>
-            </template>
+                <template #row-details="row">
+                    <b-card>
+                    <ul>
+                        <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                    </ul>
+                    </b-card>
+                </template>
             </b-table>
-
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="totalRows"
+                :per-page="perPage"
+                align="fill"
+                size="sm"
+                class="my-0 mb-3"
+            ></b-pagination>
         </b-container>
          <br>
          <div v-if="activarReboot">
@@ -212,6 +212,7 @@
             { key: 'username', label: 'Nombre usuario', sortable: true, class: 'text-center' },
             { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
             { key: 'paterno', label: 'apellido Paterno', sortable: true, sortDirection: 'desc' },
+            { key: 'materno', label: 'apellido Materno', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
         
@@ -290,8 +291,9 @@
           .then(data => {
               if(data.status == 401){  this.activarReboot = true }
               if(data.status == 200){
+                console.log(data.datos.datos)
                     data.datos.datos.forEach( val => {
-                        this.items.push({ username: val.username, nombre: val.nombre, paterno: val.paterno, id: val.id, roles: val.roles })
+                        this.items.push({ username: val.username, nombre: val.nombre, paterno: val.paterno, materno: val.materno, id: val.id, roles: val.roles })
                     })
                     this.totalRows = data.datos.totalElementos 
               }

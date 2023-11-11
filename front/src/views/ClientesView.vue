@@ -7,41 +7,8 @@
     
             <b-row class="align-items-end">
                 
-                <b-col md="6" sm="6">
-                    <b-form-group
-                    label="Buscar"
-                    label-for="filter-input"
-                    label-cols-sm="3"
-                    label-align-sm="right"
-                    label-size="sm"
-                    class="mb-0"
-                    >
-                    <b-input-group size="sm">
-                        <b-form-input
-                        id="filter-input"
-                        v-model="filter"
-                        type="search"
-                        placeholder="Buscar"
-                        ></b-form-input>
-
-                        <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                    </b-form-group>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <b-pagination
-                        v-model="currentPage"
-                        :total-rows="totalRows"
-                        :per-page="perPage"
-                        align="fill"
-                        size="sm"
-                        class="my-0 mb-3"
-                    ></b-pagination>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <vs-button class="my-0 mb-3" flat icon @click="activeModal=!activeModal">
+                <b-col md="4" sm="12">
+                    <vs-button class="my-0 mb-3" flat block icon @click="activeModal=!activeModal">
                         <box-icon name='user-plus' color="#195bff"></box-icon> Agregar Cliente
                     </vs-button>
                     <vs-dialog v-model="activeModal">
@@ -76,6 +43,9 @@
                         </template>
                     </vs-dialog>
                 </b-col>
+                <b-col md="8" sm="12">
+                    
+                </b-col>
                 <b-col md="6" sm="6">
                     <b-form-group
                         label="registros"
@@ -94,6 +64,29 @@
                             :options="pageOptions"
                             size="sm"
                         ></b-form-select>
+                    </b-form-group>
+                </b-col>
+                <b-col md="6" sm="6">
+                    <b-form-group
+                    label="Buscar"
+                    label-for="filter-input"
+                    label-cols-sm="3"
+                    label-align-sm="right"
+                    label-size="sm"
+                    class="mb-0"
+                    >
+                        <b-input-group size="sm">
+                            <b-form-input
+                            id="filter-input"
+                            v-model="filter"
+                            type="search"
+                            placeholder="Buscar"
+                            ></b-form-input>
+
+                            <b-input-group-append>
+                            <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
+                            </b-input-group-append>
+                        </b-input-group>
                     </b-form-group>
                 </b-col>
             </b-row>
@@ -119,26 +112,33 @@
                 small
                 @filtered="onFiltered"
             >
-            <template #cell(estado)="row">
-                <div class="d-flex justify-content-center">
-                    <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
-                </div>
-            </template>
-            <template #cell(actions)="row">
-                <div class="d-flex justify-content-center">
-                    <btnClienteComponent @updatePage="updatePage" :dataCli="{row}" />
-                </div>
-            </template>
+                <template #cell(estado)="row">
+                    <div class="d-flex justify-content-center">
+                        <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
+                    </div>
+                </template>
+                <template #cell(actions)="row">
+                    <div class="d-flex justify-content-center">
+                        <btnClienteComponent @updatePage="updatePage" :dataCli="{row}" />
+                    </div>
+                </template>
 
-            <template #row-details="row">
-                <b-card>
-                <ul>
-                    <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                </ul>
-                </b-card>
-            </template>
+                <template #row-details="row">
+                    <b-card>
+                    <ul>
+                        <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
+                    </ul>
+                    </b-card>
+                </template>
             </b-table>
-
+            <b-pagination
+                v-model="currentPage"
+                :total-rows="totalRows"
+                :per-page="perPage"
+                align="fill"
+                size="sm"
+                class="my-0 mb-3"
+            ></b-pagination>
         </b-container>
         <br>
         <div v-if="activarReboot">
