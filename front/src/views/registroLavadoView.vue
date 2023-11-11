@@ -1,4 +1,4 @@
-<template>
+    <template>
     <div>
         <HeaderComponent/>
         <br>
@@ -25,7 +25,7 @@
                                 </b-col>
                             </b-row>
                         </b-card>
-                        <b-card class="mt-4" title="Asignación de Pasos">
+                        <b-card class="mt-4" title="Asignación de pasos">
                             <b-row class="mt-2 align-items-end">
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
                                     <vs-input state="primary" primary v-model="nombre" label-placeholder="Nombre del Proceso">
