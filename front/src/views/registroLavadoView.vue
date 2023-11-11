@@ -44,32 +44,26 @@
                                 
                                 <b-col lg="4" md="4" sm="12">
                                     <div class="con-selects">
-                                        <label for="floatingSelect">Selecciona el tipo de Lavado</label>
+                                        <!-- <label for="floatingSelect">Selecciona el tipo de Lavado</label> -->
                                         <div class="form-floating">
-                                            <b-form-select style="height: 1rem;" class="form-select"  v-model="tipoLavado" :options="tipoLavados" @change="mostrarLavadoras" size="sm"></b-form-select>
+                                            <b-form-select style="height: 1rem;" searchable class="form-select"  v-model="tipoLavado" :options="tipoLavados" :filter="customFilter" @change="mostrarLavadoras" size="sm"></b-form-select>
                                             <label for="floatingSelect" v-if="tipoLavado == ''">Selecciona una Opción</label>
                                             <label for="floatingSelect" v-else>{{tipoLavado.nombre}}</label>
+                                            <!-- <v-select
+                                                @change="mostrarLavadoras"
+                                                v-model="tipoLavado"
+                                                :options="tipoLavados"
+                                                label="nombre"
+                                                placeholder="Selecciona el tipo de Lavado"
+                                                :reduce="option => option.id"
+                                                :searchable="true"
+                                                :clearable="false"
+                                            /> -->
                                         </div>
                                     </div>
                                 </b-col>
                                 
-                                <b-col class="mt-4" lg="12" md="12" sm="12" v-if="tipoLavado != ''">
-                                    <b-row>
-                                       <b-col lg="4" md="6" sm="12" v-for="(lvd, i) in lavadoras" :key="i">
-                                            <div class="con-selects">
-                                                <label for="floatingSelect">{{lvd.nombreLvd}}</label>
-                                                <div class="form-floating">
-                                                    <select class="form-select" @change="guardarResultado(i,  $event.target.value, lvd.idLavadora)">
-                                                        <option value="" selected>Selecciona La Cantidad Correspondiente</option>
-                                                        <option v-for="(prog, j) in lvd.programasLavado" :key="j" :value="prog.idPrograma">{{ prog.nombreProgramaLavado }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        </b-col>
-                                    </b-row>
-                                    
-                                </b-col>
+                                
                                 <div class="con-switch mt-5">
                                     <b-row>
                                         <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
@@ -122,6 +116,8 @@
     </div>
 </template>
 <script>
+// import vSelect from "vue-select";
+// import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue';
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
@@ -156,7 +152,8 @@ export default {
     components: {
         HeaderComponent,
         loginComponent,
-        draggable
+        draggable,
+        // vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -175,6 +172,14 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        customFilter(option, query) {
+            // Implementa tu lógica de búsqueda aquí
+            const optionText = option.text.toLowerCase();
+            const queryText = query.toLowerCase();
+            console.log(queryText);
+
+            return optionText.includes(queryText);
         },
         guardarResultado(index, valorSeleccionado, lavadora) {
             this.resultados[index] = {idPrograma: valorSeleccionado, idLavadora: lavadora};
@@ -230,6 +235,7 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.tipoLavados.push({"value": 0, "text": "No Aplica"})
+                    // this.tipoLavados = data.datos
                     data.datos.forEach( value => {
                         this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
                     })
@@ -371,6 +377,20 @@ input {
     width: 95%;
     border-radius: 1rem;
     height: 1rem;
+}
+.v-select.vs--single.vs--searchable {
+    margin-top:-4px;
+}
+input[type="search"] {
+    padding: 10px;
+    border: 1px solid #f6f6f6;
+    border-radius: 4px;
+    outline: none;
+}
+
+input[type="search"]:focus {
+    border-color: #f6f6f6;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
 }
 </style>
 <style lang="stylus">

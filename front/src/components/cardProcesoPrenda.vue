@@ -35,13 +35,17 @@
                         label-placeholder="cantidad a ingresar"
                     />
                     <div class="con-selects" v-if="data.idTipoLavado">
-                        <b-skeleton class="mt-3" type="input" v-if="lavadorasAll.length == 0"></b-skeleton>
+                        <!-- <b-skeleton class="mt-3" type="input" v-if="lavadorasAll.length == 0"></b-skeleton>
                         <vs-select style="max-width:100%!important;"  class="mt-3" v-else success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
                             <vs-option  v-for="(lavadora, i) in lavadorasAll" :key="i" :label="lavadora.lavadora" :value="lavadora.idLavadora">
                                 {{lavadora.lavadora}}  Max.: {{ lavadora.maxima }}  Min.: {{ lavadora.minima }}
                             </vs-option>
+                        </vs-select> -->
+                        <vs-select style="max-width:100%!important;"  class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
+                            <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
+                                {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
+                            </vs-option>
                         </vs-select>
-                        
                     </div>
                     
                 </div>
@@ -188,9 +192,7 @@ export default {
     },
     mounted(){
         let fecha=new Date(this.data.fechaInicio);
-        
         this.date = this.calcularTiempoTranscurrido(fecha);
-        this.mostraLavadoras()
         
         setTimeout(() => {
             this.render = false
@@ -233,24 +235,7 @@ export default {
                 return `${segundos} seg${segundos > 1 ? 's' : ''}`;
             }
         },
-        async mostraLavadoras(){
-            if(this.data.idTipoLavado){
-                fetchApi(this.url+`lavadora/findByTipoLavado/${this.data.idTipoLavado}`, 'GET', this.$session.get('token'))
-                // fetchApi(this.url+`lavadora/findByEstado/1`, 'GET', this.$session.get('token'))
-                .then(data => {
-                    if(data.status == 401){ this.activarReboot = true }
-                    if(data.status == 200){
-                        data.datos.forEach(element => {
-                            this.lavadorasAll.push({"idLavadora": element.idLavadora, "lavadora": element.nombreLvd, maxima: element.programasLavado[0].cantidadMaxima, minima: element.programasLavado[0].cantidadMinima})
-                        });
-                    }else{
-                        this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]
-                    }
-                })
-            }else{
-                this.lavadorasAll = [{"idLavadora": 0, "lavadora": 'Sin Lavadoras'}]
-            }
-        },
+      
         async iniciar(){
             let token = this.$session.get('token')
 
