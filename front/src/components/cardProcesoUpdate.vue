@@ -43,31 +43,10 @@
                                     <div class="mt-1">
                                         <label for="tipoLavado">Tipo de Lavado: </label>                                    
                                         <strong>
-                                            {{paso.idTipoLavado}}
+                                            {{paso.nombre}}
                                         </strong>
                                     </div>
-                                    <div class="mt-1">
-                                        <label for="tipoLavado">Programa de lavado: </label>                                    
-                                        
-                                            <ul v-if="paso.idProgramaLavado">
-                                                
-                                                <li>
-                                                    Nombre: ejemplo
-                                                </li>
-                                                <li>
-                                                    Descripcion: ejemplo
-                                                </li>
-                                                <li>
-                                                    cantidad Minima: ejemplo
-                                                </li>
-                                                <li>
-                                                    cantidad Maxima: ejemplo
-                                                </li>
-                                            </ul>
-                                        <strong v-else>
-                                            No aplica programa de lavado
-                                        </strong>
-                                    </div>
+                                    
                                 </v-card-text>
                             </v-card>
                         </v-timeline-item>
@@ -198,7 +177,7 @@
                                 <b-col lg="4" md="4" sm="12">
                                     <div class="con-selects">
                                         <div class="form-floating">
-                                            <select class="form-select" v-model="tipoLavado"  @change="mostrarLavadoras">
+                                            <select class="form-select" v-model="tipoLavado">
                                                 <option value="" selected>Selecciona una Opcion</option>
                                                 <option v-for="(lav, j) in tipoLavados" :key="j" :value="lav.value.id">{{ lav.value.nombre }}</option>
                                             </select>
@@ -206,23 +185,7 @@
                                     </div>
                                 </b-col>
                                 
-                                <b-col class="mt-4" lg="12" md="12" sm="12" v-if="tipoLavado != ''">
-                                    <b-row>
-                                       <b-col lg="4" md="6" sm="12" v-for="(lvd, i) in lavadoras" :key="i">
-                                            <div class="con-selects">
-                                                <label for="floatingSelect">{{lvd.nombreLvd}}</label>
-                                                <div class="form-floating">
-                                                    <select class="form-select" @change="guardarResultado(i,  $event.target.value, lvd.idLavadora)">
-                                                        <option value="" selected>Selecciona La Cantidad Correspondiente</option>
-                                                        <option v-for="(prog, j) in lvd.programasLavado" :key="j" :value="prog.idPrograma">{{ prog.nombreProgramaLavado }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        </b-col>
-                                    </b-row>
-                                    
-                                </b-col>
+                                
                                 <div class="con-switch mt-5">
                                     <b-row>
                                         <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
@@ -287,7 +250,7 @@
                                 <b-col lg="4" md="4" sm="12">
                                     <div class="con-selects">
                                         <div class="form-floating">
-                                            <select class="form-select" v-model="tipoLavadoAdd"  @change="mostrarLavadoras(1)">
+                                            <select class="form-select" v-model="tipoLavadoAdd">
                                                 <option value="" selected>Selecciona una Opcion</option>
                                                 <option v-for="(lav, j) in tipoLavados" :key="j" :value="lav.value.id">{{ lav.value.nombre }}</option>
                                             </select>
@@ -295,23 +258,6 @@
                                     </div>
                                 </b-col>
                                 
-                                <b-col class="mt-4" lg="12" md="12" sm="12" v-if="tipoLavadoAdd != ''">
-                                    <b-row>
-                                       <b-col lg="4" md="6" sm="12" v-for="(lvd, i) in lavadoras" :key="i">
-                                            <div class="con-selects">
-                                                <label for="floatingSelect">{{lvd.nombreLvd}}</label>
-                                                <div class="form-floating">
-                                                    <select class="form-select" @change="guardarResultado(i,  $event.target.value, lvd.idLavadora)">
-                                                        <option value="" selected>Selecciona La Cantidad Correspondiente</option>
-                                                        <option v-for="(prog, j) in lvd.programasLavado" :key="j" :value="prog.idPrograma">{{ prog.nombreProgramaLavado }}</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        </b-col>
-                                    </b-row>
-                                    
-                                </b-col>
                                 <div class="con-switch mt-5">
                                     <b-row>
                                         <b-col class="mt-2" cols="2" v-for="(rol, i) in allRoles" :key="i">
@@ -386,7 +332,6 @@ export default {
         Agregar: 0,
         active2: false,
         resultados: [],
-        programasLavadoSelected: [],
         lavadoras: [],
         select : '',
         activeDetalles: false,
@@ -409,7 +354,6 @@ export default {
     },
     mounted(){
         this.contador = this.dataProceso.pasos.length
-        console.log(this.dataProceso)
         this.pasos = this.dataProceso.pasos.map((paso) => ({
             id: paso.id,
             descripcion: paso.descripcion,
@@ -422,7 +366,6 @@ export default {
         this.nombreProceso = this.dataProceso.nombre
         this.codigoProceso = this.dataProceso.codigo
         this.mostraRoles()
-        this.mostrarLavados()
         this.mostrarTipoLavados()
         setTimeout(() => {
             this.render = false
@@ -458,7 +401,6 @@ export default {
             this.nombre = dataPaso.nombre
             this.descripcion = dataPaso.descripcion
             this.tipoLavado = dataPaso.idTipoLavado
-            this.mostrarLavadoras()
             
             dataPaso.programaLavadora.forEach( dt => {
                 this.resultados.push({idLavadora: dt.idLavadora, idPrograma: dt.programa.id})
@@ -466,27 +408,7 @@ export default {
             
             this.optionsRoles = dataPaso.rolesCambio
         },
-        async mostrarLavadoras( add = ''){
-            let lavado = ''
-            if(add != ''){
-                lavado = this.tipoLavadoAdd
-            }else{
-                lavado = this.tipoLavado
-            }
-            this.lavadoras = []
-            fetchApi(this.url+`lavadora/findByTipoLavado/${lavado}`, 'GET', this.$session.get('token'))
-            .then(data => {
-                this.lavadoras = []
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.lavadoras = data.datos
-                    this.lavadoras.selectedPrograma = null
-                }
-            })
-        },
-        guardarResultado(index, valorSeleccionado, lavadora) {
-            this.resultados[index] = {idPrograma: valorSeleccionado, idLavadora: lavadora};
-        },
+        
         async EditarNomProceso(){
             let token = this.$session.get('token')
 
@@ -527,19 +449,7 @@ export default {
                     this.allRoles = data.datos
                 }
             })
-        },
-        mostrarLavados(){
-            fetchApi(this.url+'lavadora/programa/findByAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.lavados.push({"value": {id: 0, nombre: "No Aplica", descripcion: "El Proceso no requiere lavado", maxima: "No Requiere Capacidad", minima: "No Requiere Capacidad"}, "text": "No Aplica"})
-                    data.datos.forEach( value => {
-                        this.lavados.push({"value": {id: value.id, nombre: value.nombre, descripcion: value.descripcion, maxima: value.cantidadMaxima, minima: value.cantidadMinima}, "text": value.nombre})
-                    })
-                }
-            })
-        },  
+        }, 
         
         mostrarTipoLavados(){
             this.tipoLavados = []
@@ -589,9 +499,6 @@ export default {
         },
         async addNewPaso(){
             
-            this.resultados.forEach( resultado => {
-                this.programasLavadoSelected.push({idLavadora:resultado.idLavadora, idPrograma:resultado.idPrograma})
-            });
             let error = []
             if(this.descripcionAdd == ''){
                 error.push("<br>Es Requerido el campo Descripción")
@@ -603,16 +510,12 @@ export default {
                 error.push("<br>Es Requerido seleccionar un Rol")
             }
 
-            if(this.programasLavadoSelected.length == 0){
-                error.push("<br>Es Requerido seleccionar una lavadora con su capacidad correspondiente")
-            }
             let pasos = {
                 "descripcion": this.descripcionAdd,
                 "nombre": this.nombreAdd,
                 "orden": this.orden++,
                 "rolesCambio": this.optionsRolesAdd,
                 "idTipoLavado": this.tipoLavadoAdd.id,
-                "programaLavadora": this.programasLavadoSelected, 
                 "id": this.contador,
                 "idProceso": this.dataProceso.id
             }
@@ -736,12 +639,11 @@ export default {
             if(status == 200){
                 this.$emit('updatePage', '200')
                 this.mostraRoles()
-                this.mostrarLavados()
                 this.mostrarTipoLavados()
-                setTimeout(() => {
-                    this.render = false
+                // setTimeout(() => {
+                //     this.render = false
 
-                }, 1000) 
+                // }, 1000) 
             }
         },
         openNotification( title, text, color, position = null, icon) {

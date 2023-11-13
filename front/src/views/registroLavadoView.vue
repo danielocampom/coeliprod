@@ -46,7 +46,7 @@
                                     <div class="con-selects">
                                         <!-- <label for="floatingSelect">Selecciona el tipo de Lavado</label> -->
                                         <div class="form-floating">
-                                            <b-form-select style="height: 1rem;" searchable class="form-select"  v-model="tipoLavado" :options="tipoLavados" :filter="customFilter" @change="mostrarLavadoras" size="sm"></b-form-select>
+                                            <b-form-select style="height: 1rem;" searchable class="form-select"  v-model="tipoLavado" :options="tipoLavados"  size="sm"></b-form-select>
                                             <label for="floatingSelect" v-if="tipoLavado == ''">Selecciona una Opción</label>
                                             <label for="floatingSelect" v-else>{{tipoLavado.nombre}}</label>
                                             <!-- <v-select
@@ -133,7 +133,6 @@ export default {
         tipoLavados: [],
         programaLavadora: [],
         programasLavado: [],
-        programasLavadoSelected: [],
         lavado: '',
         tipoLavado: '',
         lavadora: '',
@@ -163,7 +162,6 @@ export default {
     },
     mounted(){    
         this.mostraRoles()
-        this.mostrarLavados()
         this.mostrarTipoLavados()
     },
     methods: {
@@ -173,21 +171,12 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-        customFilter(option, query) {
-            // Implementa tu lógica de búsqueda aquí
-            const optionText = option.text.toLowerCase();
-            const queryText = query.toLowerCase();
-            console.log(queryText);
-
-            return optionText.includes(queryText);
-        },
         guardarResultado(index, valorSeleccionado, lavadora) {
             this.resultados[index] = {idPrograma: valorSeleccionado, idLavadora: lavadora};
         },
         onDragEnd() {
             this.pasos = this.pasos.map((paso, index) => ({
                 id: paso.id,
-                programaLavadora: this.programasLavadoSelected, 
                 idTipoLavado: paso.idTipoLavado,
                 nombre: paso.nombre,
                 orden: index+1,
@@ -195,36 +184,12 @@ export default {
                 rolesCambio: paso.rolesCambio,
             }));
         },
-        async mostrarLavadoras(){
-            this.lavadoras = []
-            fetchApi(this.url+`lavadora/findByTipoLavado/${this.tipoLavado.id}`, 'GET', this.$session.get('token'))
-            .then(data => {
-                this.lavadoras = []
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.lavadoras = data.datos
-                    this.lavadoras.selectedPrograma = null
-                }
-            })
-        },
         async mostraRoles(){
             fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.allRoles = data.datos
-                }
-            })
-        },
-        mostrarLavados(){
-            fetchApi(this.url+'lavadora/programa/findByAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.lavados.push({"value": {id: 0, nombre: "No Aplica", descripcion: "El Proceso no requiere lavado", maxima: "No Requiere Capacidad", minima: "No Requiere Capacidad"}, "text": "No Aplica"})
-                    data.datos.forEach( value => {
-                        this.lavados.push({"value": {id: value.id, nombre: value.nombre, descripcion: value.descripcion, maxima: value.cantidadMaxima, minima: value.cantidadMinima}, "text": value.nombre})
-                    })
                 }
             })
         },  
@@ -247,9 +212,6 @@ export default {
         },
         async addPaso(){
             
-            this.resultados.forEach( resultado => {
-                this.programasLavadoSelected.push({idLavadora:resultado.idLavadora, idPrograma:resultado.idPrograma})
-            });
             let error = []
             if(this.descripcion == ''){
                 error.push("<br>Es Requerido el campo Descripción")
@@ -262,12 +224,8 @@ export default {
             }
             
 
-            if(this.programasLavadoSelected.length == 0){
-                error.push("<br>Es Requerido seleccionar una lavadora con su capacidad correspondiente")
-            }
             let pasos = {
                 "id": this.contador,
-                "programaLavadora": this.programasLavadoSelected, 
                 "idTipoLavado": this.tipoLavado.id,
                 "nombre": this.nombre,
                 "descripcion": this.descripcion,
@@ -282,7 +240,6 @@ export default {
                 this.optionsRoles = []
                 this.tipoLavado = ''
                 this.lavadoras = []
-                this.programasLavadoSelected = []
                 this.resultados = []
                 pasos = {}
 
@@ -323,11 +280,21 @@ export default {
                 this.openNotification(`Error Inesperado al agregar el proceso`, `Comuniquese con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
+        limpiarCapos(){
+            this.nombreProceso = ''
+            this.codigoProceso = ''
+            this.nombre = ''
+            this.descripcion = ''
+            this.tipoLavado = ''
+            this.optionsRoles = []
+            this.pasos = []
+        },
         async updatePage(status){
             if(status == 200){
-                setTimeout(function() {
-                    location.reload();
-                }, 3000)
+                this.limpiarCapos()
+                // setTimeout(function() {
+                //     location.reload();
+                // }, 3000)
 
             }
         },
