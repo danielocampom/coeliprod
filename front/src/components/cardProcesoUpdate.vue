@@ -117,7 +117,7 @@
                                     <vs-button
                                         primary
                                         block
-                                        @click="editarPaso(paso.id)"
+                                        @click="editarPaso(paso.id, paso.orden)"
                                     >
                                         <box-icon name='edit' color="#fff"></box-icon >Editar
                                     </vs-button>
@@ -331,6 +331,7 @@ export default {
         nombreProceso: '',
         codigoProceso: '',
         descripcion: '',
+        idPaso: '',
         nombre: '',
         orden: 1,
         contador: 0,
@@ -400,14 +401,15 @@ export default {
             this.activeDetalles = true
             this.$forceUpdate();
         },
-        editarPaso(id){
+        editarPaso(id, ordenPaso = ''){
             let dataPaso = this.pasos.find(objeto => objeto.id === id)
             this.activeEditar = true
             this.activeEditarPaso = true
             this.nombre = dataPaso.nombre
             this.descripcion = dataPaso.descripcion
             this.tipoLavado = dataPaso.idTipoLavado
-            
+            this.idPaso = id 
+            this.ordenPaso = ordenPaso
             dataPaso.rolesCambio.forEach( rol => {
                 this.optionsRoles.push(''+rol) 
             });
@@ -562,14 +564,16 @@ export default {
         },
         async updateProceso(){
             let token = this.$session.get('token')
-            let pasosFiltrados = this.pasos.filter(paso => paso.idProgramaLavado !== 0);
 
             let json = {
-                "idProceso": this.dataProceso.id,
-                "nombreProceso": this.nombreProceso,
-                "codigo": this.codigoProceso,
-                "pasos": pasosFiltrados,
+                "idPaso": this.idPaso,
+                "descripcion": this.descripcion,
+                "nombre": this.nombre,
+                "idTipoLavado": this.tipoLavado,
+                "orden": this.ordenPaso,
+                "rolesCambio": this.optionsRoles,
             };
+            
             // bugError
 
             let res = await fetch(this.url+"proceso/update/paso",{
@@ -586,6 +590,9 @@ export default {
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
                 this.refresh()
+                this.activeEditarPaso = false
+                this.activeEditar = true
+
                 //se actualiza token
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Actualizado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.updatePage(200)
