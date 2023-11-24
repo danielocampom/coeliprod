@@ -91,6 +91,22 @@
                 </template>
                 
             </b-modal>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat warn @click="modalReiniciar =! modalReiniciar" > Reiniciar </vs-button>
+            <vs-dialog blur  v-model="modalReiniciar">
+                <template #header>
+                    <h4 class="not-margin">
+                        Seguro que deseas Reiniciar el <b>Proceso</b>
+                    </h4>
+                </template>
+
+                <template #footer>
+                    <div class="footer-dialog">
+                        <vs-button block @click="reiniciar()">
+                            Reiniciar
+                        </vs-button>
+                    </div>
+                </template>
+            </vs-dialog>
         </b-card>
         <vs-dialog v-model="comfirmApertura">
             <template #header>
@@ -103,7 +119,7 @@
         <vs-dialog v-model="comfirm">
             <template #header>
                 <h4 class="not-margin">
-                    Estas seguro que deseas <b>Eliminar las prednas?</b>
+                    Estas seguro que deseas <b>Eliminar las prendas?</b>
                 </h4>
             </template>
             <ConfirmComponent @confirm="cancelPrednas"/>
@@ -130,6 +146,8 @@ export default {
         date: '',
         comfirm: false,
         comfirmApertura: false,
+        modalReiniciar: false,
+
         cancelPredas: false,
         motivoElim: '',
         cantidadElim: '',
@@ -243,6 +261,28 @@ export default {
                 }
             }
         },
+        async reiniciar(){
+            let token = this.$session.get('token')
+            let res = await fetch(this.url+`orden/paso/return/${this.data.idHist}`,{
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+            })
+            let data = await res.json()
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                // this.activarLavadora(this.data.idLavadora)
+                this.modalReiniciar = false
+                this.openNotification(`Exito: ${data.mensaje}`, `Se a cerrado el proceso Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.$emit('updatePage', '200')
+            }else{
+                this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
+        },
         terminar(id){
 
             let token = this.$session.get('token')
@@ -259,7 +299,7 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.refresh()
-                    this.activarLavadora(this.data.idLavadora)
+                    // this.activarLavadora(this.data.idLavadora)
                     this.modalShowDetail = false
                     this.openNotification(`Exito: ${data.mensaje}`, `Se a cerrado el proceso Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')

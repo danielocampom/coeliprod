@@ -16,34 +16,57 @@
                                                 <b-list-group-item>
                                                     <b-row  class="center mt-2">
                                                         <b-col lg="12" class="mt-4">
-                                                            <div class="con-selects">
-                                                                <div class="form-floating">
-                                                                    <b-form-select class="form-select"  v-model="SelectCliente" @change="mostarPrendas()" :options="getClientes"></b-form-select>
-                                                                    <label for="floatingSelect">Selecciona un cliente</label>
-                                                                </div>
+                                                            <label for="floatingSelect">Selecciona un cliente</label>
+                                                            <div class="con-selects mt-3">
+                                                                <v-select
+                                                                    
+                                                                    v-model="SelectCliente"
+                                                                    :options="getClientes"
+                                                                    label="nombre"
+                                                                    placeholder="Selecciona una opcion"
+                                                                    :reduce="option => option.id"
+                                                                    :searchable="true"
+                                                                    :clearable="false"
+                                                                    @search:no-results="onNoResults"
+                                                                    @input="clienteSeleccionado"
+
+                                                                />
                                                             </div>
                                                         </b-col>
-                                                        <b-col lg="12" class="mt-5">
+                                                        <b-col lg="6" sm="6" class="mt-5">
                                                             <vs-input type="date" size="large" v-model="fechaEntrega" primary label-placeholder="Fecha de entrega" :min="minDate">
                                                                 <template #icon>
                                                                     <box-icon name='calendar' ></box-icon>
                                                                 </template>
                                                             </vs-input>
                                                         </b-col>
+                                                        <b-col lg="6" sm="6">
+                                                        </b-col>
                                                     </b-row>
                                                 </b-list-group-item>
                                                 <b-list-group-item>
                                                     <b-row>
                                                         <b-col lg="12" class="mt-4">
-                                                            <div class="con-selects">
-                                                                <div class="form-floating">
-                                                                    <b-form-select class="form-select"   v-model="SelectPrenda" :options="getPrendas"></b-form-select>
-                                                                    <label for="floatingSelect">Selecciona una prenda</label>
-                                                                </div>
+                                                            <label for="floatingSelect">Selecciona una prenda</label>
+                                                            <div class="con-selects mt-3">
+                                                                <v-select
+                                                                    
+                                                                    v-model="SelectPrenda"
+                                                                    :options="getPrendas"
+                                                                    label="nombre"
+                                                                    placeholder="Selecciona una opcion"
+                                                                    :reduce="option => option.id"
+                                                                    :searchable="true"
+                                                                    :clearable="false"
+                                                                    @search:no-results="onNoResults"
+                                                                    @input="prendaSeleccionada"
+
+                                                                        
+                                                                />
                                                             </div>
                                                         </b-col>
                                                         <b-col lg="6" sm="8" class="mt-4">
-                                                            <vs-input v-model="cantidad" primary label-placeholder="Cantidad">
+                                                            <vs-input v-model="cantidad" primary label-placeholder="Cantidad en Piezas">
                                                                 <template #icon>
                                                                     <box-icon name='dialpad-alt'></box-icon>
                                                                 </template>
@@ -131,6 +154,8 @@
 </template>
 
 <script>
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue'
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
@@ -145,9 +170,11 @@ export default {
         active: 0,
         getPrendas: [],
         getClientes: [],
+        array_prendas: [],
         sinData: false,
         ordenesEspera: [],
         SelectCliente: '',
+        nombrePrenda: '',
         fechaEntrega: '',
         SelectPrenda: '',
         cantidad: '',
@@ -167,8 +194,8 @@ export default {
     components: {
         HeaderComponent,
         loginComponent,
-        cardLlegada
-
+        cardLlegada,
+        vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -177,16 +204,29 @@ export default {
         })
     },
     mounted(){    
-        this.getPrendas = [{"value": "null", "text": "Selecciona un cliente para mostrar informacion"}]
+        this.getPrendas = []
         this.mostraClientesActivos()
         this.mostrarOrdenes()
     },
+    
     methods: {
         refresh(){
             refreshSession(this.url ,this.$session.get('token')).then( data => {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        onNoResults(searchText) {
+            // Lógica para manejar el caso en que no se encuentran resultados
+            console.log(`No se encontraron resultados para: ${searchText}`);
+        },
+        clienteSeleccionado() {
+            this.mostraPrendasActivas()
+        },
+        prendaSeleccionada(){
+            if (this.SelectPrenda) {
+                this.nombrePrenda = this.array_prendas.find(prenda => prenda.id === this.SelectPrenda)
+            }
         },
         async mostrarOrdenes(){
             this.ordenesEspera = []
@@ -200,46 +240,38 @@ export default {
                         this.sinData = true
                     }
                 }else{
-
                     this.sinData = true
                 }
             })
         },
         async mostraClientesActivos(){
-            this.getClientes = [{"value": "null", "text": "cargando..."}]
+            this.getClientes = []
 
             fetchApi(this.url+'cliente/findByEstado/1', 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.getClientes = []
-                    data.datos.forEach( value => {
-                        this.getClientes.push({"value": value.id, "text": value.nombre})
-                    })
+                    this.getClientes = data.datos
                 }else{
-                    this.getClientes = [{"value": "null", "text": "Sin clientes"}]
+                    this.getClientes = []
                 }
             })
         },
-        mostarPrendas(){
-            this.mostraPrendasActivas()
-        },
         async mostraPrendasActivas(){
-
             fetchApi(this.url+`prenda/findByCliente/${this.SelectCliente}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     if(data.datos.length != 0){
-                        this.getPrendas = []
+                        this.getPrendas = data.datos
                         data.datos.forEach( value => {
-                            this.getPrendas.push({"value": {id: value.id, nombre: value.nombre}, "text": value.nombre})
+                            this.array_prendas.push({id: value.id, nombre: value.nombre})
                         })
                     }else{
-                        this.getPrendas = [{"value": "null", "text": "Prendas sin asignar"}]
+                        this.getPrendas = []
                     }
                 }else{
-                    this.getPrendas = [{"value": "null", "text": "Prendas sin asignar"}]
+                    this.getPrendas = []
                 }
             })
             .catch(err => console.log(err))
@@ -247,8 +279,8 @@ export default {
         async addPrenda(){
             let prenda = {
                 "id": this.contador,
-                "idPrenda": this.SelectPrenda.id,
-                "nombre": this.SelectPrenda.nombre,
+                "idPrenda": this.SelectPrenda,
+                "nombre": this.nombrePrenda.nombre,
                 "cantidad": this.cantidad
             }
             this.error = []
@@ -323,7 +355,7 @@ export default {
             text: text
           })
         }
-    }
+    },
 }
 </script>
 
@@ -355,6 +387,23 @@ input {
     width: 95%;
     border-radius: 1rem;
     height: 1rem;
+}
+.v-select.vs--single.vs--searchable {
+    margin-top:-4px;
+}
+.vs--searchable .vs__dropdown-toggle{
+    border-radius: 0.7rem;
+}
+input[type="search"] {
+    padding: 10px;
+    border: 1px solid #f6f6f6;
+    border-radius: 4px;
+    outline: none;
+}
+
+input[type="search"]:focus {
+    border-color: #f6f6f6;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
 }
 </style>
 

@@ -34,6 +34,7 @@
                                                 :reduce="option => option.id"
                                                 :searchable="true"
                                                 :clearable="false"
+                                                no-results-text="No se encontraron resultados"
                                             />
                                         </div>
                                         <vs-input success type="text" v-model="capKg" class="mt-4" label-placeholder="Capacidad en kilos">
@@ -409,6 +410,9 @@ input {
 <style>
 .v-select.vs--single.vs--searchable {
     margin-top:-4px;
+}
+.vs--searchable .vs__dropdown-toggle{
+    border-radius: 0.7rem;
 }
 input[type="search"] {
     padding: 10px;

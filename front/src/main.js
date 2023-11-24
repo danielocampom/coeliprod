@@ -20,6 +20,7 @@ import 'vuetify/dist/vuetify.min.css'
 // Make BootstrapVue available throughout your project
 Vue.config.productionTip = false
 
+
 Vue.use(VueApexCharts)
 Vue.use(Vuetify)
 Vue.use(BootstrapVue,{
@@ -34,5 +35,5 @@ Vue.component('apexchart-all', VueApexCharts)
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
 }).$mount('#app')

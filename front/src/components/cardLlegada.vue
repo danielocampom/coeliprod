@@ -37,52 +37,8 @@
                 </vs-button>
             </template>
             <template >
-                <b-card v-if="detail.length == 0">
-                    <div class="d-flex flex-row bd-highlight mb-3">
-                        <div class="p-2 bd-highlight">
-                            <b-skeleton animation="wave" width="85%"></b-skeleton>
-                        </div>
-                    </div>
-
-                    <b-skeleton type="input"></b-skeleton>
-                    <br>
-                    <b-skeleton type="input"></b-skeleton>
-                    <br>
-
-                    <b-row cols-sm="12" cols-md="6" cols-lg="4" class="mt-4">
-                        <b-col>
-                            <b-card>
-                                <b-skeleton animation width="85%"></b-skeleton>
-                                <b-skeleton animation width="55%"></b-skeleton>
-                                <b-skeleton animation width="70%"></b-skeleton>
-                            </b-card>
-                        </b-col>
-                        <b-col>
-                            <b-card>
-                                <b-skeleton animation width="85%"></b-skeleton>
-                                <b-skeleton animation width="55%"></b-skeleton>
-                                <b-skeleton animation width="70%"></b-skeleton>
-                            </b-card>
-                        </b-col>
-                        <b-col>
-                            <b-card>
-                                <b-skeleton animation width="85%"></b-skeleton>
-                                <b-skeleton animation width="55%"></b-skeleton>
-                                <b-skeleton animation width="70%"></b-skeleton>
-                            </b-card>
-                        </b-col>
-                        
-                        <b-col>
-                            <b-card>
-                                <b-skeleton animation width="85%"></b-skeleton>
-                                <b-skeleton animation width="55%"></b-skeleton>
-                                <b-skeleton animation width="70%"></b-skeleton>
-                            </b-card>
-                        </b-col>
-                    </b-row>
-
-                </b-card>
-                <div v-else>
+                
+                <div v-if="detail.length != 0">
                     <b-card>
                         <div class="d-flex flex-row bd-highlight mb-3">
                             <div class="p-2 bd-highlight">
@@ -93,21 +49,31 @@
                         cantidad: <b>{{ detail.cantidad }}</b> <br>
                         tipo de lavado:<b> {{detail.proceso.nombre}} ({{ detail.proceso.codigo}})</b> 
                         <br>
-                        <strong class="mt-5">Pasos:</strong>
                         <hr>
-                        <b-row align-h="start">
-                            <b-col class="mt-4" v-for="(paso, i) in detail.proceso.pasos" :key="i">
-                                <div class="d-flex flex-row bd-highlight mb-3">
-                                    <div class="bd-highlight">
-                                        <b-card :title="paso.nombre" :sub-title="paso.descripcion">
-                                        </b-card>
-                                    </div>
-                                    <div v-if="detail.proceso.pasos.length != i+1" class="bd-highlight">
-                                        <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
-                                    </div>
-                                </div>
-                            </b-col>
-                        </b-row>
+                        <v-timeline dense clipped >
+                            <v-timeline-item>
+                                <template v-slot:icon>
+                                    <span><box-icon name='shower'></box-icon></span>
+                                </template>
+                                <h3>Pasos:</h3>
+                            </v-timeline-item>
+                            <br>
+                            <v-timeline-item dot-color="grey" class="mb-4" size="small"  v-for="(paso, i) in detail.proceso.pasos" :key="i">
+                                <template v-slot:icon>
+                                    <small class="pt-1 headline font-weight-bold">{{prefijos(paso.nombre)}}</small>
+                                </template>
+                                <vs-card>
+                                    <template #title>
+                                        <h3>{{paso.nombre}}</h3>
+                                    </template>
+                                    <template #text>
+                                        <p>
+                                            {{paso.descripcion}}
+                                        </p>
+                                    </template>
+                                </vs-card>
+                            </v-timeline-item>
+                        </v-timeline>
                     </b-card>
                 </div>
             </template>
@@ -166,6 +132,18 @@ export default {
         fecha(fecha){
             moment.locale('es')
             return moment(fecha).format("LLLL")
+        },
+        prefijos(cadena){
+            let terminacion = cadena.split(' ').slice(-1)[0]
+            let palabras = cadena.split(" ");
+            terminacion = terminacion.length > 2 ? '' : terminacion;
+            
+            let letras = palabras.map(palabra => {
+                let quitarEN = palabra.replace('EN', '');
+                let quitarTerminacion = quitarEN.replace(terminacion, '');
+                 return quitarTerminacion.charAt(0);
+            });
+            return letras.join("")+terminacion
         },
         refresh(){
             refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -266,11 +244,7 @@ export default {
 .modal-xl{
     margin-top: 2rem;
 }
-.card{
-    border-radius: 1rem;
-    min-height: 9rem; 
-    min-width: 12rem;
-}
+
 .vs-input{
     width: 95%;
 }

@@ -11,10 +11,10 @@
                         <div v-if="showDetectionBox" :style="detectionBoxStyle" class="detection-box"></div>
                     </div>
                 </b-col>                 -->
-                <b-col md="5" sm="5" class="mt-5 container p-3">
+                <b-col lg="5" md="12" sm="12" class="mt-5 container p-3">
                     <b-card title="Buscar estado de la prenda">
                         <div class="row">
-                            <div class="col">
+                            <div class="col" sm="10" md="10" lg="10">
                                 <vs-input
                                     class="mt-5 buscarPrenda"
                                     primary
@@ -25,7 +25,7 @@
                                     </template>
                                 </vs-input>
                             </div>
-                            <div class="col">
+                            <div class="col" sm="2" md="2" lg="2">
                                 <vs-button
                                     class="mt-5"
                                     success
@@ -39,7 +39,7 @@
                     </b-card>
                     
                 </b-col>
-                <b-col md="7" sm="7" class="mt-5 container p-3">
+                <b-col lg="7" md="12" sm="12" class="mt-5 container p-3">
                     <div class="spinner text-center" v-if="showSpinner">
                         <box-icon name='loader-circle' animation='spin' flip='horizontal' size="7rem"></box-icon>
                     </div>

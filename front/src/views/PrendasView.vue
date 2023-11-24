@@ -203,7 +203,7 @@ export default {
             { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
             { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
             { key: 'cantidadKilos', label: 'Cantidad Por Kilo', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadBolsa', label: 'Cantidad Bolsa', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadBolsa', label: 'Cantidad pieza/par', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
         

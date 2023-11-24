@@ -10,14 +10,14 @@
                         <b-card>
                             <b-row>
                                 <b-col class="mt-4" lg="6" md="6" sm="12">
-                                    <vs-input state="primary" primary v-model="nombreProceso" label-placeholder="Nombre del Proceso">
+                                    <vs-input primary v-model="nombreProceso" label-placeholder="Nombre del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
                                     </vs-input>
                                 </b-col>
                                 <b-col class="mt-4" lg="6" md="6" sm="12">
-                                    <vs-input state="primary" primary v-model="codigoProceso" label-placeholder="Clave del Proceso">
+                                    <vs-input primary v-model="codigoProceso" label-placeholder="Clave del Proceso">
                                         <template #icon>
                                             <box-icon name='dialpad-alt'></box-icon>
                                         </template>
@@ -28,14 +28,14 @@
                         <b-card class="mt-4" title="Asignación de pasos">
                             <b-row class="mt-2 align-items-end">
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
-                                    <vs-input state="primary" primary v-model="nombre" label-placeholder="Nombre del Proceso">
+                                    <vs-input primary v-model="nombre" label-placeholder="Nombre del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
                                     </vs-input>
                                 </b-col>
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
-                                    <vs-input state="primary" primary v-model="descripcion" label-placeholder="Descripción del Proceso">
+                                    <vs-input primary v-model="descripcion" label-placeholder="Descripción del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
@@ -44,22 +44,15 @@
                                 
                                 <b-col lg="4" md="4" sm="12">
                                     <div class="con-selects">
-                                        <!-- <label for="floatingSelect">Selecciona el tipo de Lavado</label> -->
-                                        <div class="form-floating">
-                                            <b-form-select style="height: 1rem;" searchable class="form-select"  v-model="tipoLavado" :options="tipoLavados"  size="sm"></b-form-select>
-                                            <label for="floatingSelect" v-if="tipoLavado == ''">Selecciona una Opción</label>
-                                            <label for="floatingSelect" v-else>{{tipoLavado.nombre}}</label>
-                                            <!-- <v-select
-                                                @change="mostrarLavadoras"
-                                                v-model="tipoLavado"
-                                                :options="tipoLavados"
-                                                label="nombre"
-                                                placeholder="Selecciona el tipo de Lavado"
-                                                :reduce="option => option.id"
-                                                :searchable="true"
-                                                :clearable="false"
-                                            /> -->
-                                        </div>
+                                        <v-select
+                                            v-model="tipoLavado"
+                                            :options="tipoLavados"
+                                            label="nombre"
+                                            placeholder="Selecciona el tipo de Lavado"
+                                            :reduce="option => option.id"
+                                            :searchable="true"
+                                            :clearable="false"
+                                        />
                                     </div>
                                 </b-col>
                                 
@@ -116,8 +109,8 @@
     </div>
 </template>
 <script>
-// import vSelect from "vue-select";
-// import "vue-select/dist/vue-select.css";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue';
 import { fetchApi, refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
@@ -152,7 +145,7 @@ export default {
         HeaderComponent,
         loginComponent,
         draggable,
-        // vSelect
+        vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -199,11 +192,12 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.tipoLavados.push({"value": 0, "text": "No Aplica"})
-                    // this.tipoLavados = data.datos
-                    data.datos.forEach( value => {
-                        this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
-                    })
+                    // this.tipoLavados.push({"value": 0, "text": "No Aplica"})
+                    this.tipoLavados = data.datos
+                    // data.datos.forEach( value => {
+                    //     // this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
+                    //     this.tipoLavados.push({"id": value.id, "text": value.nombre})
+                    // })
                 }
             })
         },  
@@ -348,8 +342,11 @@ input {
 .v-select.vs--single.vs--searchable {
     margin-top:-4px;
 }
+.vs--searchable .vs__dropdown-toggle{
+    border-radius: 1rem;
+}
 input[type="search"] {
-    padding: 10px;
+    padding: 5px;
     border: 1px solid #f6f6f6;
     border-radius: 4px;
     outline: none;

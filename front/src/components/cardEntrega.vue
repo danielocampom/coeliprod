@@ -92,21 +92,29 @@
                                 
                                 <br>
                                 <br>
-                                <strong class="mt-5">Pasos:</strong>
                                 <hr>
-                                <b-row align-h="start">
-                                    <b-col class="mt-4" v-for="(paso, i) in prenda.detalle.pasos" :key="i">
-                                        <div class="d-flex flex-row bd-highlight mb-3">
-                                            <div class="bd-highlight">
-                                                <b-card :title="paso.nombre" :sub-title="paso.descripcion">
-                                                </b-card>
-                                            </div>
-                                            <div v-if="prenda.detalle.pasos.length != i+1" class="bd-highlight">
-                                                <box-icon name='right-arrow-alt' animation='flashing' class="mt-5" size='lg' ></box-icon>
-                                            </div>
-                                        </div>
-                                    </b-col>
-                                </b-row>
+                                <v-timeline dense clipped >
+                                    <v-timeline-item>
+                                        <template v-slot:icon>
+                                            <span><box-icon name='shower'></box-icon></span>
+                                        </template>
+                                        <h3>Pasos:</h3>
+                                    </v-timeline-item>
+                                    <br>
+                                    <v-timeline-item dot-color="grey" class="mb-4" size="small"  v-for="(paso, i) in prenda.detalle.pasos" :key="i">
+                                        <template v-slot:icon>
+                                            <h6 class="pt-1 headline font-weight-bold">{{prefijos(paso.nombre)}}</h6>
+                                        </template>
+                                        <vs-card>
+                                            <template #text>
+                                                <h5>{{paso.nombre}}</h5>
+                                                <p>
+                                                    {{paso.descripcion}}
+                                                </p>
+                                            </template>
+                                        </vs-card>
+                                    </v-timeline-item>
+                                </v-timeline>
                             </b-card>
                         </div>
                      
@@ -170,6 +178,17 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        prefijos(cadena){
+            let terminacion = cadena.split(' ').slice(-1)[0]
+            let palabras = cadena.split(" ");
+            terminacion = terminacion.length > 2 ? '' : terminacion;
+            let letras = palabras.map(palabra => {
+                let quitarEN = palabra.replace('EN', '');
+                let quitarTerminacion = quitarEN.replace(terminacion, '');
+                 return quitarTerminacion.charAt(0);
+            });
+            return letras.join("")+terminacion
         },
         async mostraCli(){
             fetchApi(this.url+`cliente/findById/${this.data.idCliente}`, 'GET', this.$session.get('token'))

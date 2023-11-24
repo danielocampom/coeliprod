@@ -141,7 +141,8 @@ const routes = [
     path: '/roles',
     name: 'roles',
     component: () => import('../views/rolesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN, ROLES.ROLES]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS]}
+    // meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN]}
   },
   
   {

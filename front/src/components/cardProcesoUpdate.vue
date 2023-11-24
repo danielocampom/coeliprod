@@ -75,14 +75,14 @@
                         <b-card>
                             <b-row>
                                 <b-col class="mt-4" lg="6" md="6" sm="12">
-                                    <vs-input state="primary" primary v-model="nombreProceso" label-placeholder="Nombre del Proceso">
+                                    <vs-input primary v-model="nombreProceso" label-placeholder="Nombre del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
                                     </vs-input>
                                 </b-col>
                                 <b-col class="mt-4" lg="6" md="6" sm="12">
-                                    <vs-input state="primary" primary v-model="codigoProceso" label-placeholder="Clave del Proceso">
+                                    <vs-input primary v-model="codigoProceso" label-placeholder="Clave del Proceso">
                                         <template #icon>
                                             <box-icon name='dialpad-alt'></box-icon>
                                         </template>
@@ -160,14 +160,14 @@
                         <b-card class="mt-4" title="Editar de Pasos">
                             <b-row class="mt-2 align-items-end">
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
-                                    <vs-input state="primary" primary v-model="nombre" label-placeholder="Nombre del Proceso">
+                                    <vs-input primary v-model="nombre" label-placeholder="Nombre del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
                                     </vs-input>
                                 </b-col>
-                                <b-col class="mt-2" lg="4" md="4" sm="12">
-                                    <vs-input state="primary" primary v-model="descripcion" label-placeholder="Descripción del Proceso">
+                                <b-col class="mt-4" lg="4" md="4" sm="12">
+                                    <vs-input primary v-model="descripcion" label-placeholder="Descripción del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
@@ -176,12 +176,15 @@
                                 
                                 <b-col lg="4" md="4" sm="12">
                                     <div class="con-selects">
-                                        <div class="form-floating">
-                                            <select class="form-select" v-model="tipoLavado">
-                                                <option value="" selected>Selecciona una Opcion</option>
-                                                <option v-for="(lav, j) in tipoLavados" :key="j" :value="lav.value.id">{{ lav.value.nombre }}</option>
-                                            </select>
-                                        </div>
+                                        <v-select
+                                            v-model="tipoLavado"
+                                            :options="tipoLavados"
+                                            label="nombre"
+                                            placeholder="Selecciona el tipo de Lavado"
+                                            :reduce="option => option.id"
+                                            :searchable="true"
+                                            :clearable="false"
+                                        />
                                     </div>
                                 </b-col>
                                 
@@ -233,14 +236,14 @@
                         <b-card class="mt-4" title="Agregar de Pasos">
                             <b-row class="mt-2 align-items-end">
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
-                                    <vs-input state="primary" primary v-model="nombreAdd" label-placeholder="Nombre del Proceso">
+                                    <vs-input primary v-model="nombreAdd" label-placeholder="Nombre del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
                                     </vs-input>
                                 </b-col>
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
-                                    <vs-input state="primary" primary v-model="descripcionAdd" label-placeholder="Descripción del Proceso">
+                                    <vs-input primary v-model="descripcionAdd" label-placeholder="Descripción del Proceso">
                                         <template #icon>
                                             <box-icon name='rename'></box-icon>
                                         </template>
@@ -249,12 +252,15 @@
                                 
                                 <b-col lg="4" md="4" sm="12">
                                     <div class="con-selects">
-                                        <div class="form-floating">
-                                            <select class="form-select" v-model="tipoLavadoAdd">
-                                                <option value="" selected>Selecciona una Opcion</option>
-                                                <option v-for="(lav, j) in tipoLavados" :key="j" :value="lav.value.id">{{ lav.value.nombre }}</option>
-                                            </select>
-                                        </div>
+                                        <v-select
+                                            v-model="tipoLavadoAdd"
+                                            :options="tipoLavados"
+                                            label="nombre"
+                                            placeholder="Tipo de Lavado"
+                                            :reduce="option => option.id"
+                                            :searchable="true"
+                                            :clearable="false"
+                                        />
                                     </div>
                                 </b-col>
                                 
@@ -298,7 +304,8 @@
 </template>
 
 <script>
-// arreglar registro drag
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import loginComponent from './cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import draggable from 'vuedraggable';
@@ -345,6 +352,7 @@ export default {
     components: {
         loginComponent,
         draggable,
+        vSelect
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -457,10 +465,11 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.tipoLavados.push({"value": {id: "0", nombre: "No Aplica" }, "text": "No Aplica"})
-                    data.datos.forEach( value => {
-                        this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
-                    })
+                    this.tipoLavados = data.datos
+                    // this.tipoLavados.push({"value": {id: "0", nombre: "No Aplica" }, "text": "No Aplica"})
+                    // data.datos.forEach( value => {
+                    //     this.tipoLavados.push({"value": {id: value.id, nombre: value.nombre }, "text": value.nombre})
+                    // })
                 }
             })
         }, 
@@ -666,6 +675,23 @@ body {
     background: #f1f1f1 !important;
 }
 
+.vs--searchable .vs__dropdown-toggle{
+    border-radius: 0.7rem;
+}
+.vs__dropdown-toggle{
+    margin-top: 3.3rem;
+}
+input[type="search"] {
+    padding:5px;
+    border: 1px solid #f6f6f6;
+    border-radius: 4px;
+    outline: none;
+}
+
+input[type="search"]:focus {
+    border-color: #f6f6f6;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); 
+}
 .card{
     border-radius: 1rem;
 }
