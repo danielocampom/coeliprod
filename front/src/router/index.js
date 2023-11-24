@@ -115,7 +115,7 @@ const routes = [
     path: '/procesoPrendas',
     name: 'procesoPrendas',
     component: () => import('../views/procesoPrendas.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.USUARIOS]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.PROCESOORDEN]}
   },
   {
     path: '/llegada',
@@ -127,7 +127,7 @@ const routes = [
     path: '/ordenes',
     name: 'ordenes',
     component: () => import('../views/OrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.ALMACENENTRADA]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.ALMACENENTRADA, ROLES.PROCESOORDEN]}
   },
   
   {
@@ -141,15 +141,14 @@ const routes = [
     path: '/roles',
     name: 'roles',
     component: () => import('../views/rolesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS]}
-    // meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN]}
   },
   
   {
     path: '/historico',
     name: 'historico',
     component: () => import('../views/historicoOrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN, ROLES.ALMACENENTRADA]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN, ROLES.HISTORIALLAVADO]}
   },
 
   {

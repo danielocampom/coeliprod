@@ -291,7 +291,6 @@
           .then(data => {
               if(data.status == 401){  this.activarReboot = true }
               if(data.status == 200){
-                console.log(data.datos.datos)
                     data.datos.datos.forEach( val => {
                         this.items.push({ username: val.username, nombre: val.nombre, paterno: val.paterno, materno: val.materno, id: val.id, roles: val.roles })
                     })
@@ -303,7 +302,7 @@
               fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
               .then(data => {
                   if(data.status == 200){
-                    this.allRoles = data.datos
+                      this.allRoles = data.datos
                   }
               })
           },

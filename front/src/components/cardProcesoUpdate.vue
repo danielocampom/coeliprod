@@ -156,7 +156,7 @@
                 </template>
                 <div class="con-form">
                     <b-container class="bv-example-row">
-                        
+                        <!-- bugError -->
                         <b-card class="mt-4" title="Editar de Pasos">
                             <b-row class="mt-2 align-items-end">
                                 <b-col class="mt-2" lg="4" md="4" sm="12">
@@ -368,7 +368,6 @@ export default {
             nombre: paso.nombre,
             orden: paso.orden,
             rolesCambio: paso.roles,
-            programaLavadora: paso.programas, 
             idTipoLavado: paso.idTipoLavado,
         }));
         this.nombreProceso = this.dataProceso.nombre
@@ -390,7 +389,6 @@ export default {
         onDragEnd() {
             this.pasos = this.pasos.map((paso, index) => ({
                 id: paso.id,
-                programaLavadora: paso.programaLavadora, 
                 idTipoLavado: paso.idTipoLavado,
                 nombre: paso.nombre,
                 orden: index+1,
@@ -410,11 +408,10 @@ export default {
             this.descripcion = dataPaso.descripcion
             this.tipoLavado = dataPaso.idTipoLavado
             
-            dataPaso.programaLavadora.forEach( dt => {
-                this.resultados.push({idLavadora: dt.idLavadora, idPrograma: dt.programa.id})
+            dataPaso.rolesCambio.forEach( rol => {
+                this.optionsRoles.push(''+rol) 
             });
             
-            this.optionsRoles = dataPaso.rolesCambio
         },
         
         async EditarNomProceso(){
@@ -425,7 +422,6 @@ export default {
                 "nombreProceso": this.nombreProceso,
                 "codigo": this.codigoProceso,
             };
-            
             let res = await fetch(this.url+"proceso/update/proceso",{
                 method: "PUT",
                 headers: {
@@ -574,8 +570,9 @@ export default {
                 "codigo": this.codigoProceso,
                 "pasos": pasosFiltrados,
             };
-            
-            let res = await fetch(this.url+"proceso/update",{
+            // bugError
+
+            let res = await fetch(this.url+"proceso/update/paso",{
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
