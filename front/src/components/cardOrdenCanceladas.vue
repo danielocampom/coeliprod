@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <vs-alert danger v-if="dataClient.cantidadAnterior != dataClient.cantidadActual">
+        <vs-alert danger >
             <b-skeleton v-if="!dataClient.nombreCliente" type="button"></b-skeleton>
             <div>
                 <p class="fw-bold fs-4">{{ dataClient.nombrePrenda }} </p> 

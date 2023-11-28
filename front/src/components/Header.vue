@@ -7,7 +7,7 @@
         </vs-button>
           <box-icon name='last-page'></box-icon> {{ breadcrumb }} /
       </template>
-        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="llegada">
+        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="llegada">
           <router-link to="/llegada" class="nav-link">
               <box-icon name='grid-alt'></box-icon> Llegada
           </router-link>
@@ -17,7 +17,7 @@
               <box-icon name='briefcase'></box-icon> Proceso Prendas
           </router-link>
         </vs-navbar-item>
-        <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTREGA'].includes(role))" id="entregas">
+        <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTREGA'].includes(role))" id="entregas">
           <router-link to="/entregas" class="nav-link">
               <box-icon name='shopping-bag'></box-icon> Entregas
           </router-link>
@@ -38,12 +38,21 @@
           <img src="@/assets/logo_coeli.png" alt="urvina-coeli">
       </template>
       
-      <vs-sidebar-item  :class="{ 'active': isActive('/dashboard') }"  id="home">
+      <vs-sidebar-item  :class="{ 'active': isActive('/home') }"  id="home">
         <template #icon>
           <box-icon name='home-alt-2' ></box-icon>
         </template>
-        <router-link to="/dashboard" class="nav-link">
+        <router-link to="/home" class="nav-link">
           Home
+        </router-link>
+      </vs-sidebar-item>
+
+      <vs-sidebar-item  :class="{ 'active': isActive('/dashboard') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'DASHPROD'].includes(role))" id="dashboard">
+        <template #icon>
+          <box-icon name='line-chart'></box-icon>
+        </template>
+        <router-link to="/dashboard" class="nav-link">
+          Dashboard
         </router-link>
       </vs-sidebar-item>
       
@@ -102,7 +111,7 @@
           </vs-sidebar-item>
         </template>
 
-        <vs-sidebar-item :class="{ 'active': isActive('/registroLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="registroLavado">
+        <vs-sidebar-item :class="{ 'active': isActive('/registroLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESO LAVADO'].includes(role))" id="registroLavado">
           <template #icon>
             <box-icon type='solid' name='file-plus'></box-icon>
           </template>
@@ -111,7 +120,7 @@
           </router-link>
         </vs-sidebar-item>
   
-        <vs-sidebar-item :class="{ 'active': isActive('/procesoLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESOLAVADO'].includes(role))" id="procesoLavado">
+        <vs-sidebar-item :class="{ 'active': isActive('/procesoLavado') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESO LAVADO'].includes(role))" id="procesoLavado">
           <template #icon>
             <box-icon type='solid' name='file-plus'></box-icon>
           </template>
@@ -153,7 +162,7 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="ordenes">
+          <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="ordenes">
             <template #icon>
               <box-icon name='folder-open'></box-icon>
             </template>
@@ -162,7 +171,7 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACENENTRADA'].includes(role))" id="rastreo" >
+          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="rastreo" >
             <template #icon>
               <box-icon name='book-reader'></box-icon>
             </template>
@@ -200,9 +209,9 @@
             </router-link>
           </vs-sidebar-item>
     
-          <vs-sidebar-item  :active="activeModal == 'cambioNip'" id="cambioNip" >
-            <template #icon>
-              <box-icon name='dialpad-alt' @click="activeModal=!activeModal"></box-icon>
+          <vs-sidebar-item id="cambioNip" >
+            <template #icon >
+              <box-icon name='dialpad-alt' @click="passModal"></box-icon>
             </template>
             Cambio de NIP
           </vs-sidebar-item>
@@ -330,13 +339,17 @@ export default {
 
       }
     },
+    passModal(){
+      console.log("click")
+      this.activeModal = true
+    },
     isActive(route) {
       return this.$route.path == route;
     },
     logout(){
       this.$session.destroy();
-      location.reload();
-      // this.$router.push('/login');
+      this.$router.push('/login');
+      // location.reload();
     },
     openNotification( title, text, color, position = null, icon) {
       this.$vs.notification({

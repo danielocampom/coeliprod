@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <vs-button circle icon floating primary  @click="active=!active">
+        <vs-button circle icon floating primary  @click="dataModal">
             <box-icon name='edit' color="#fff"></box-icon>
         </vs-button>
         <vs-dialog blur v-model="active">
@@ -77,7 +77,6 @@ export default {
         loginComponent
     },
     mounted(){
-        this.nombreUp = this.dataTypeWasher.row.item.nombre
         
     },
     methods: {
@@ -87,7 +86,11 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-    
+        dataModal(){
+            this.active = true
+            this.nombreUp = this.dataTypeWasher.row.item.nombre
+
+        },
         async deleteWasher(status){
             if(status == 200){
                 let token = this.$session.get('token')

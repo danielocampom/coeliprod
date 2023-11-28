@@ -452,7 +452,13 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.allRoles = data.datos
+                    if(!this.$session.get('roles').some(role => ['SISTEMAS'].includes(role))){
+                        this.allRoles = data.datos.filter(function (rol) {
+                            return rol.id !== 1;
+                        });
+                    }else{
+                        this.allRoles = data.datos
+                    }
                 }
             })
         }, 

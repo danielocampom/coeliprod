@@ -2,10 +2,20 @@
     <div>
         <HeaderComponent/>
         <br>
-        <b-row class="mt-5 p-4">
-            <b-col lg="3" md="4" sm="12">
+        <b-row class="mt-1">
+            <b-col class="mt-5" lg="6" md="6" sm="12">
+              <b-card title="Ordenes entregadas">
+                  <apexchart-all type="donut" height="200" :options="chartOptionsSemiDonut" :series="entradasSalidas"></apexchart-all>
+              </b-card>
+            </b-col>
+            <b-col class="mt-5" lg="6" md="6" sm="12">
+              <b-card title="Ordenes del mes pasado y actual">
+                  <apexchart-all type="bar" height="200" :options="chartOptionsMPA" :series="seriesMPA"></apexchart-all>
+              </b-card>
+            </b-col>
+            <b-col lg="3" md="4" sm="6">
                 <b-card title="Entregas" v-if="seriesEntregas.length > 0">
-                    <apexchart-all type="donut" height="280" :options="chartOptionsEntregas" :series="seriesEntregas"></apexchart-all>
+                    <apexchart-all height="200" type="donut" :options="chartOptionsEntregas" :series="seriesEntregas"></apexchart-all>
                 </b-card>
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -15,39 +25,9 @@
                     </v-skeleton-loader>
                 </b-card>
             </b-col>
-            <b-col lg="9" md="4" sm="12">
-              <b-row >
-                <b-col>
-                    <b-card :title="cliente" :style="{ 'border-left': `solid 5px ${fechaEntregaColor} !important` }">
-                        <b-row>
-                            <b-col lg="3" md="6" sm="12">
-                                <apexchart-all v-if="seriesRadial.length > 0" type="radialBar" height="350" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
-                                <b-card no-body class="overflow-hidden" v-else>
-                                    <v-skeleton-loader
-                                        height="300"
-                                        type="image, image, image"
-                                    >
-                                    </v-skeleton-loader>
-                                </b-card>
-                            </b-col>
-                            <b-col lg="9" md="6" sm="12">
-                                <apexchart-all v-if="seriesLine.length > 0" type="line" height="350" :options="chartOptionsLine" :series="seriesLine"></apexchart-all>
-                                <b-card no-body class="overflow-hidden" v-else>
-                                    <v-skeleton-loader
-                                        height="300"
-                                        type="image, image, image"
-                                    >
-                                    </v-skeleton-loader>
-                                </b-card>
-                            </b-col>
-                        </b-row>
-                    </b-card>
-                </b-col>
-              </b-row>
-            </b-col>
             <b-col lg="3" md="4" sm="6">
                 <b-card title="Visita clientes" v-if="seriesVisitas.length > 0">
-                  <apexchart-all type="bar" height="280" :options="chartOptionsVisitas" :series="seriesVisitas"></apexchart-all>
+                  <apexchart-all type="bar" :options="chartOptionsVisitas" :series="seriesVisitas"></apexchart-all>
                 </b-card>
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -59,7 +39,7 @@
             </b-col>
             <b-col lg="3" md="4" sm="6">
                 <b-card title="Ingerso prendas mensuales" v-if="seriesPrendas.length > 0">
-                  <apexchart-all type="bar" height="280" :options="chartOptionsPrendas" :series="seriesPrendas"></apexchart-all>
+                  <apexchart-all type="bar" :options="chartOptionsPrendas" :series="seriesPrendas"></apexchart-all>
                 </b-card> 
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -71,7 +51,7 @@
             </b-col>
             <b-col lg="3" md="4" sm="6">
                 <b-card title="Ingreso prendas anuales" v-if="seriesPrendasAnuales.length > 0">
-                    <apexchart-all type="bar" height="280" :options="chartOptionsPrendasAnuales" :series="seriesPrendasAnuales"></apexchart-all>
+                    <apexchart-all type="bar" :options="chartOptionsPrendasAnuales" :series="seriesPrendasAnuales"></apexchart-all>
                 </b-card>
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -81,66 +61,55 @@
                     </v-skeleton-loader>
                 </b-card>
             </b-col>
+
+            <b-col lg="12" md="12" sm="12">
+                <b-card :title="cliente" :style="{ 'border-left': `solid 5px ${fechaEntregaColor} !important` }">
+                    <b-row>
+                        <b-col lg="3" md="6" sm="12">
+                            <apexchart-all class="mt-4" v-if="seriesRadial.length > 0" type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
+                            <b-card no-body class="overflow-hidden" v-else>
+                                <v-skeleton-loader
+                                    height="300"
+                                    type="image, image, image"
+                                >
+                                </v-skeleton-loader>
+                            </b-card>
+                        </b-col>
+                        <b-col lg="9" md="6" sm="12">
+                            <apexchart-all v-if="seriesLine.length > 0" type="line" height="350" :options="chartOptionsLine" :series="seriesLine"></apexchart-all>
+                            <b-card no-body class="overflow-hidden" v-else>
+                                <v-skeleton-loader
+                                    height="300"
+                                    type="image, image, image"
+                                >
+                                </v-skeleton-loader>
+                            </b-card>
+                        </b-col>
+                    </b-row>
+                </b-card>
+            </b-col>
+            
         </b-row>
         
-        <!-- <div class="slider mt-5" v-if="sinData"> -->
-            <!-- <div class="cardsContent" :style="{ transform: `translateX(-${currentSlide * 100}%)` }"> -->
-              <b-row>
-                <b-col lg="2" md="4" sm="6" v-for="(lavadora, i) in lavadoras" :key="i">
-                  <lavadoraDashboard style="min-width: 10rem;min-height: 10rem;" class="m-1"  :data="{nombre: lavadora.lavadora, tipoLavado: lavadora.tipoLavado, idEstado: lavadora.idEstado}"></lavadoraDashboard>
-                </b-col>
-              </b-row>
-            <!-- </div> -->
-            <!-- <div class="controls"> -->
-                <!-- <button @click="previousSlide" :disabled="currentSlide === 0"><box-icon name='skip-previous'></box-icon></button> -->
-                <!-- <button @click="nextSlide" :disabled="currentSlide === lavadoras.length - 1"><box-icon name='skip-next'></box-icon></button> -->
-            <!-- </div> -->
-        <!-- </div> -->
+        <b-row>
+          <b-col lg="3" md="4" sm="6" v-for="(lavadora, i) in lavadoras" :key="i">
+            <lavadoraDashboard class="m-1"  :data="{id:lavadora.idLavadora ,nombre: lavadora.lavadora, tipoLavado: lavadora.tipoLavado, idEstado: lavadora.idEstado}"></lavadoraDashboard>
+          </b-col>
+        </b-row>
         
-        <v-row class="mt-1 p-4" v-if="reload">
-            <v-col sm="12" md="4" lg="3" class="mt-4">
-                
-                <b-card no-body class="overflow-hidden">
-                    <v-skeleton-loader
-                        height="300"
-                        type="image, image, image"
-                    >
-                    </v-skeleton-loader>
-                </b-card>
-                
-                <b-card  no-body class="overflow-hidden mt-3">
-                    <v-skeleton-loader
-                        height="150"
-                        type="image, image, image"
-                    >
-                    </v-skeleton-loader>
-                </b-card>
-            </v-col>
-            <v-col sm="12" md="4" lg="9" class="mt-4">
-                <b-card  no-body class="overflow-hidden">
-                    <v-skeleton-loader
-                        height="470"
-                        type="image, image, image"
-                    >
-                    </v-skeleton-loader>
-                </b-card>
-            </v-col>
-        </v-row>
-        
-        <b-row class="mt-1 p-4" v-else>
-            <b-col class="mt-4" lg="3" md="6" sm="12">
-                <b-card title="Ordenes entregadas">
-                    <apexchart-all type="donut" height="350" :options="chartOptionsSemiDonut" :series="entradasSalidas"></apexchart-all>
-                </b-card>
-                <b-card class="mt-3" title="Ordenes del mes pasado y actual">
-                    <apexchart-all type="bar" height="150" :options="chartOptionsMPA" :series="seriesMPA"></apexchart-all>
-                </b-card>
-            </b-col>
-            <b-col class="mt-4" lg="9" md="6" sm="12">
-                <b-card title="Frecuencia de los clientes">
-                    <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all>
-                </b-card>
-            </b-col>
+        <b-row>
+          <b-col class="mt-4" lg="12" md="12" sm="12">
+              <b-card title="Frecuencia de los clientes">
+                  <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all>
+              </b-card>
+          </b-col>
+          <b-col class="mt-4" lg="12" md="12" sm="12">
+              <b-card title="Frecuencia de los clientes">
+                <apexchart-all type="bar" height="350" :options="chartOptionsejemplo" :series="seriesejemplo"></apexchart-all>
+
+                  <!-- <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all> -->
+              </b-card>
+          </b-col>
         </b-row>
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
@@ -205,15 +174,15 @@ export default {
                 }
             },
             grid: {
-                padding: {
+              padding: {
                 bottom: -80
-                }
+              }
             },
             responsive: [{
-                breakpoint: 480,
+                breakpoint: 100,
                 options: {
                 chart: {
-                    width: 200
+                    width: 500
                 },
                 legend: {
                     position: 'bottom'
@@ -392,6 +361,106 @@ export default {
             }
         },
 
+
+        series: [{
+            data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
+        }],
+        chartOptions: {
+          chart: {
+            type: 'bar',
+            height: 380
+          },
+          plotOptions: {
+            bar: {
+              barHeight: '100%',
+              distributed: true,
+              horizontal: true,
+              dataLabels: {
+                position: 'bottom'
+              },
+            }
+          },
+          colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
+            '#f48024', '#69d2e7'
+          ],
+          dataLabels: {
+            enabled: true,
+            textAnchor: 'start',
+            style: {
+              colors: ['#fff']
+            },
+            formatter: function (val, opt) {
+              return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
+            },
+            offsetX: 0,
+            dropShadow: {
+              enabled: true
+            }
+          },
+          stroke: {
+            width: 1,
+            colors: ['#fff']
+          },
+          xaxis: {
+            categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
+              'United States', 'China', 'India'
+            ],
+          },
+          yaxis: {
+            labels: {
+              show: false
+            }
+          },
+          title: {
+              text: 'Custom DataLabels',
+              align: 'center',
+              floating: true
+          },
+          subtitle: {
+              text: 'Category Names as DataLabels inside bars',
+              align: 'center',
+          },
+          tooltip: {
+            theme: 'dark',
+            x: {
+              show: false
+            },
+            y: {
+              title: {
+                formatter: function () {
+                  return ''
+                }
+              }
+            }
+          }
+        },
+
+        clientesGraf: [ ],
+        seriesejemplo: [ ],
+        chartOptionsejemplo: {
+          chart: {
+            height: 350,
+            type: 'bar'
+          },
+          plotOptions: {
+            bar: {
+              columnWidth: '60%'
+            }
+          },
+          colors: ['#4eeba2'],
+          dataLabels: {
+            enabled: false
+          },
+          legend: {
+            show: true,
+            showForSingleSeries: true,
+            customLegendItems: ['Mes Actual', 'Mes Pasado'],
+            markers: {
+              fillColors: ['#4eeba2', '#fb5f4f']
+            }
+          }
+        },
+          
         
     }),
     created(){
@@ -404,18 +473,24 @@ export default {
         this.dataDash()
         this.Lavadoras()
         this.getOrdenes()
+        
         this.chartOptionsBarCode.labels = this.barCodeNameCli
         
+        this.seriesejemplo = [{
+          name: 'Mes Actual',
+          data: [ this.clientesGraf ]
+        }]
+        
+        // console.log(this.clientesGraf)
 
+        this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
         setTimeout(() => {
-            this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
-            this.reload = false
-        }, 4000);
-
+          this.reload = false
+        }, 2000);
         
         setInterval(() => {
             this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
-        }, 600000);
+        }, 10000);
             
         
     },
@@ -426,25 +501,14 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-        fullScren(){
-          let entregasCard = document.querySelector("#entregasCard")
-
-          if (entregasCard.requestFullscreen) {
-            entregasCard.requestFullscreen();
-          } else if (entregasCard.mozRequestFullScreen) {
-            entregasCard.mozRequestFullScreen();
-          } else if (entregasCard.webkitRequestFullscreen) {
-            entregasCard.webkitRequestFullscreen();
-          } else if (entregasCard.msRequestFullscreen) {
-            entregasCard.msRequestFullscreen();
-          }
-        },
+        
         previousSlide() {
             this.currentSlide--
         },
         nextSlide() {
             this.currentSlide++
         },
+        
         dataDash(){
             this.entradasSalidas = []
             this.seriesMPA = []
@@ -488,10 +552,10 @@ export default {
                         }
                       },
                       responsive: [{
-                        breakpoint: 480,
+                        breakpoint: 500,
                         options: {
                           chart: {
-                            width: 200
+                            width: 500
                           },
                           legend: {
                             position: 'bottom'
@@ -525,7 +589,7 @@ export default {
                       },
                       plotOptions: {
                         bar: {
-                          borderRadius: 4,
+                          borderRadius: 1,
                           horizontal: true,
                         }
                       },
@@ -619,11 +683,26 @@ export default {
 
                     this.seriesMPA.push({ data: [data.datos.entradasMesAnterior, data.datos.entradasMes]})
                     data.datos.clientes.forEach( cli => {
-                        this.barCodeActual.push(cli.visitasMes)
-                        this.barCodeAnterior.push(cli.visitasMesAnterior)
-                        this.barCodeNameCli.push(cli.cliente)
+                      this.barCodeActual.push(cli.visitasMes)
+                      this.barCodeAnterior.push(cli.visitasMesAnterior)
+                      this.barCodeNameCli.push(cli.cliente)
+                      this.clientesGraf.push({
+                        x: cli.cliente,
+                        y: cli.visitasMes,
+                        goals: [
+                          {
+                            name: 'Mes Pasado',
+                            value: cli.visitasMesAnterior,
+                            strokeHeight: 5,
+                            strokeColor: '#fb5f4f'
+                          }
+                        ]
+                      })
                     });
-
+                      // console.log(clientesGraf)
+                      // console.log(this.seriesejemplo[0].data)
+                    
+                    
                     this.seriesBarCode = [{
                         name: 'Visitas del mes actual',
                         type: 'column',
@@ -633,6 +712,8 @@ export default {
                         type: 'line',
                         data: this.barCodeAnterior
                     }]
+
+
                 }
 
             })

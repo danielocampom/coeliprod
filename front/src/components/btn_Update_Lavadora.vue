@@ -1,6 +1,6 @@
 <template>
     <div>
-        <vs-button circle icon floating primary  @click="active=!active">
+        <vs-button circle icon floating primary  @click="dataModal">
             <box-icon name='edit' color="#fff"></box-icon>
         </vs-button>
         
@@ -129,12 +129,7 @@ export default {
     },
     mounted(){
         this.mostraTipoLavado()
-        this.estado = this.dataWasher.row.item.estado == 1 ? true : false
-        this.tipoLavado = this.dataWasher.row.item.tipoLavado
-        this.nombreUp = this.dataWasher.row.item.nombre
-        this.capMaxima = this.dataWasher.row.item.max
-        this.capMinima = this.dataWasher.row.item.min
-        this.capKg = this.dataWasher.row.item.kilos
+        
     },
     methods: {
         refresh(){
@@ -142,6 +137,15 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        dataModal(){
+            this.active = true
+            this.estado = this.dataWasher.row.item.estado == 1 ? true : false
+            this.tipoLavado = this.dataWasher.row.item.tipoLavado
+            this.nombreUp = this.dataWasher.row.item.nombre
+            this.capMaxima = this.dataWasher.row.item.max
+            this.capMinima = this.dataWasher.row.item.min
+            this.capKg = this.dataWasher.row.item.kilos
         },
         desactivar(){
             this.active = false

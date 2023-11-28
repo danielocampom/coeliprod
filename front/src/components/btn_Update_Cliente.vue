@@ -2,7 +2,7 @@
     <div>
         
         
-        <vs-button circle icon floating primary  @click="active=!active">
+        <vs-button circle icon floating primary  @click="dataModal">
             <box-icon name='edit' color="#fff"></box-icon>
         </vs-button>
         
@@ -104,9 +104,7 @@ export default {
         loginComponent
     },
     mounted(){
-        this.estado = this.dataCli.row.item.estado == 1 ? true : false
-        this.claveUp = this.dataCli.row.item.clave
-        this.nombreUp = this.dataCli.row.item.nombre
+        
     },
     methods: {
         refresh(){
@@ -115,7 +113,12 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-    
+        dataModal(){
+            this.active = true
+            this.estado = this.dataCli.row.item.estado == 1 ? true : false
+            this.claveUp = this.dataCli.row.item.clave
+            this.nombreUp = this.dataCli.row.item.nombre
+        },
         async deleteCliente(status){
             if(status == 200){
                 let token = this.$session.get('token')

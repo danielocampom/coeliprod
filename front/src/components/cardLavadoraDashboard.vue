@@ -1,9 +1,7 @@
 <template>
     <div>
-        <b-card :title="data.nombre" :sub-title="tipoLavado" v-if="reload">
-            <apexchart-all type="donut" :options="chartOptionsG" :series="series" v-if="data.idEstado == 1"></apexchart-all>
-            <apexchart-all type="donut" :options="chartOptionsR" :series="series" v-if="data.idEstado == 7"></apexchart-all>
-            <apexchart-all type="donut" :options="chartOptionsY" :series="series" v-if="data.idEstado == 6"></apexchart-all>
+        <b-card :title="data.nombre" :sub-title="tipoLavado.nombre" v-if="reload">
+            <apexchart-all type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
         </b-card>
         <b-card no-body class="overflow-hidden" v-else>
             <v-skeleton-loader
@@ -17,7 +15,6 @@
   
 <script>
 import { fetchApi } from "@/service/service.js"
-
 export default {
     name:"lavadoraDashboard",
     props: {
@@ -27,85 +24,176 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API,
         reload: false,
         tipoLavado: '',
-        color: [],
-        series: [100],
-        chartOptionsR: {
-            chart: {
-                type: 'donut',
-            },
-            colors:['#fb5f4f'],
-            labels: [""],
-            dataLabels: {
-                enabled: false,
-            },
-            responsive: [{
-                breakpoint: 240,
-                options: {
-                    chart: {
-                        width: 100,
-                    },
-                    legend: {
-                        position: 'center',
-                        offsetY: 0,
-                        height: 50,
-                    }
-                }
-            }]
-        },
+       labels: ['Percent'],
         
-        chartOptionsG: {
-            chart: {
-                type: 'donut',
-            },
-            colors:['#4eeba2'],
-            labels: [""],
-            dataLabels: {
-              enabled: false
-            },
-            responsive: [{
-                breakpoint: 240,
-                options: {
-                    chart: {
-                        width: 0,
-                    },
-                    legend: {
-                        position: 'center',
-                            offsetY: 0,
-                            height: 50,
-                    }
-                }
-            }]
-        },
+       seriesRadial: [],
+        // chartOptionsRadial: {
+        //     chart: {
+        //       height: 350,
+        //       type: 'radialBar',
+        //       toolbar: {
+        //         show: true
+        //       }
+        //     },
+        //     plotOptions: {
+        //       radialBar: {
+        //         startAngle: -135,
+        //         endAngle: 225,
+        //          hollow: {
+        //           margin: 0,
+        //           size: '70%',
+        //           background: '#fff',
+        //           image: undefined,
+        //           imageOffsetX: 0,
+        //           imageOffsetY: 0,
+        //           position: 'front',
+        //           dropShadow: {
+        //             enabled: true,
+        //             top: 3,
+        //             left: 0,
+        //             blur: 4,
+        //             opacity: 0.24
+        //           }
+        //         },
+        //         track: {
+        //           background: '#fff',
+        //           strokeWidth: '67%',
+        //           margin: 0, // margin is in pixels
+        //           dropShadow: {
+        //             enabled: true,
+        //             top: -3,
+        //             left: 0,
+        //             blur: 4,
+        //             opacity: 0.35
+        //           }
+        //         },
+            
+        //         dataLabels: {
+        //           show: true,
+        //           name: {
+        //             offsetY: -10,
+        //             show: true,
+        //             color: '#888',
+        //             fontSize: '17px'
+        //           },
+        //           value: {
+        //             formatter: function(val) {
+        //               return parseInt(val);
+        //             },
+        //             color: '#111',
+        //             fontSize: '36px',
+        //             show: true,
+        //           }
+        //         }
+        //       }
+        //     },
+        //     fill: {
+        //       type: 'gradient',
+        //       gradient: {
+        //         shade: 'dark',
+        //         type: 'horizontal',
+        //         shadeIntensity: 0.5,
+        //         gradientToColors: ['#007bff'],
+        //         inverseColors: true,
+        //         opacityFrom: 1,
+        //         opacityTo: 1,
+        //         stops: [0, 100]
+        //       }
+        //     },
+        //     stroke: {
+        //       lineCap: 'round'
+        //     },
+        //     labels: ['Avance'],
+        // },
 
-        chartOptionsY: {
+        chartOptionsRadial: {
             chart: {
-                type: 'donut',
+              height: 350,
+              type: 'radialBar',
+              toolbar: {
+                show: true
+              }
             },
-            colors:['#fddb58'],
-            labels: [""],
-            dataLabels: {
-              enabled: false
-            },
-            responsive: [{
-                breakpoint: 240,
-                options: {
-                    chart: {
-                        width: 100,
+            plotOptions: {
+              radialBar: {
+                startAngle: -135,
+                endAngle: 225,
+                 hollow: {
+                  margin: 0,
+                  size: '70%',
+                  background: '#fff',
+                  image: undefined,
+                  imageOffsetX: 0,
+                  imageOffsetY: 0,
+                  position: 'front',
+                  dropShadow: {
+                    enabled: true,
+                    top: 3,
+                    left: 0,
+                    blur: 4,
+                    opacity: 0.24
+                  }
+                },
+                track: {
+                  background: '#fff',
+                  strokeWidth: '67%',
+                  margin: 0, // margin is in pixels
+                  dropShadow: {
+                    enabled: true,
+                    top: -3,
+                    left: 0,
+                    blur: 4,
+                    opacity: 0.35
+                  }
+                },
+            
+                dataLabels: {
+                  show: true,
+                  name: {
+                    offsetY: -10,
+                    show: true,
+                    color: '#888',
+                    fontSize: '17px'
+                  },
+                  value: {
+                    formatter: function(val) {
+                      return parseInt(val);
                     },
-                    legend: {
-                        position: 'center',
-                            offsetY: 0,
-                            height: 50,
-                    }
+                    color: '#111',
+                    fontSize: '36px',
+                    show: true,
+                  }
                 }
-            }]
-        },
+              }
+            },
+            fill: {
+              type: 'gradient',
+              gradient: {
+                shade: 'dark',
+                type: 'horizontal',
+                shadeIntensity: 0.6,
+                // gradientToColors: ['#4eeba2'],
+                gradientToColors: ['#ff1800'],
+                inverseColors: false,
+                opacityFrom: 1,
+                opacityTo: 1,
+                stops: [0, 100]
+              }
+            },
+            stroke: {
+              lineCap: 'round'
+            },
+            labels: ['Capacidad'],
+          },
+
+        
     }),
     mounted(){
         this.Lavadoras()
-        setTimeout(() => {
+        this.capacidad(this.data.id)
+        // setTimeout(() => {
             this.reload = true
-        }, 1500);
+        // }, 1500);
         
     },
     methods: {
@@ -114,10 +202,17 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    this.tipoLavado = data.datos.nombre
+                    this.tipoLavado = data.datos
                 }
             })
         },
+        capacidad(id){
+            fetchApi(this.url+`lavadora/capacidad/${id}`, 'GET', this.$session.get('token'))
+            .then(dt => {
+                
+                this.seriesRadial = [dt.datos.porcentaje]
+            })
+        }
     }
 }
 </script>

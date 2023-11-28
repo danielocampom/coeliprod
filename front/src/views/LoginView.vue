@@ -70,12 +70,13 @@ export default {
       let data = await res.json()
       if(data.status == 200){
         data.datos.roles.push("DEFAULT")
+        data.datos.roles.push("HOME")
         this.$session.start()
         this.$session.set('token', data.datos.token)
         this.$session.set('roles', data.datos.roles)
         this.$session.set('username', data.datos.username)
         this.$session.set('idUsuario', data.datos.idUsuario)
-        this.$router.push("dashboard")
+        this.$router.push("home")
         this.toggleFullscreen()
         
       }else{

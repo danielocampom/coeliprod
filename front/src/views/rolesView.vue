@@ -77,7 +77,7 @@
         <br>
         <b-container class="bv-example-row">
             <b-row>
-                <b-col class="mt-4" lg="3" md="6" sm="12" v-for="(rol, i) in allRoles" :key="i">
+                <b-col class="mt-4" lg="3" md="6" sm="12" v-for="(rol, i) in allRoles" :key="i" >
                     <CardRolComponent @updatePage="updatePage" :dataRol="{nombre: rol.nombre, descripcion: rol.descripcion, id: rol.id, personaliza: rol.personaliza}" />
                 </b-col>
             </b-row>
@@ -135,12 +135,18 @@
             }) 
         },
         async mostraRoles(){
-              fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
-              .then(data => {
-                  if(data.status == 200){
-                      this.allRoles = data.datos
-                  }
-              })
+            fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 200){
+                    if(!this.$session.get('roles').some(role => ['SISTEMAS'].includes(role))){
+                        this.allRoles = data.datos.filter(function (rol) {
+                            return rol.id !== 1;
+                        });
+                    }else{
+                        this.allRoles = data.datos
+                    }
+                }
+            })
           },
         async addRoll(){
             let token = this.$session.get('token')

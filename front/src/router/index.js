@@ -21,7 +21,8 @@ const ROLES = {
   ALMACENENTREGA: 'ALMACEN ENTREGA',
   CANCELACION: 'CANCELACION',
   ROLES: 'ROLES',
-  DEFAULT: 'DEFAULT'
+  DEFAULT: 'DEFAULT',
+  HOME: 'HOME'
 }
 
 const routes = [
@@ -41,18 +42,26 @@ const routes = [
 
   },
   {
-    path: '/comentLog',
-    name: 'comentLog',
-    component: () => import('../views/comentLogView.vue'),
+    path: '/log',
+    name: 'log',
+    component: () => import('../views/LogView.vue'),
 
-    meta: {requireAuth: false, roles:[ROLES.DEFAULT]}
+    meta: {requireAuth: false, roles:[ROLES.SISTEMAS, ROLES.ADMIN]}
+
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: () => import('../views/HomeView.vue'),
+
+    meta: {requireAuth: false, roles:[ROLES.HOME]}
 
   },
   {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('../views/Dashboard.vue'),
-    meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
+    meta: {requireAuth: true, roles:[ROLES.SISTEMAS, ROLES.ADMIN, ROLES.DASHPROD]}
   },
   
   {
@@ -176,6 +185,14 @@ const routes = [
     name: 'ejemplo',
     component: () => import('../views/ejemploView.vue'),
     meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
+  },
+  {
+    path: '/comentLog',
+    name: 'comentLog',
+    component: () => import('../views/comentLogView.vue'),
+
+    meta: {requireAuth: false, roles:[ROLES.DEFAULT]}
+
   },
 ]
 

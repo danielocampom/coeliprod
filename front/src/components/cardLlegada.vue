@@ -9,6 +9,7 @@
     
     <b-card v-else
         :title="nomCliente"
+        :sub-title = "detail.nombre"
         tag="article"
         style="max-width: 20rem;"
         class="mb-2"

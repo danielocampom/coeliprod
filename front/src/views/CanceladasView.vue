@@ -61,7 +61,6 @@ import HeaderComponent from '@/components/Header.vue';
 import CardOrdenCanceladasComponent from '@/components/cardOrdenCanceladas.vue';
 import { refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
-import moment from 'moment'
 
 export default {
     name:"LavadoSecoView",
@@ -85,7 +84,6 @@ export default {
     },
     mounted(){ 
 
-        this.mostrarOrdenes()
     },
     methods: {
         refresh(){
@@ -98,14 +96,11 @@ export default {
         async mostrarOrdenes(){
             let token = this.$session.get('token')
             
-            let fechaInicio = moment().format("DD/MM/YYYY")
-            let fechaFinal = moment().add(1, 'month').format("DD/MM/YYYY")
-
             let fomartSt = this.fechInicio.split('-')
             let fomartEn = this.fechFinal.split('-')
 
-            let positionDateStart = this.fechInicio == ''? fechaInicio : `${fomartSt[2]}/${fomartSt[1]}/${fomartSt[0]}`
-            let positionDateEnd = this.fechFinal == ''? fechaFinal : `${fomartEn[2]}/${fomartEn[1]}/${fomartEn[0]}`
+            let positionDateStart = `${fomartSt[2]}/${fomartSt[1]}/${fomartSt[0]}`
+            let positionDateEnd = `${fomartEn[2]}/${fomartEn[1]}/${fomartEn[0]}`
 
             this.dataOrden = []
             let json = {
@@ -113,7 +108,6 @@ export default {
                 "fechaInicio": positionDateStart,
                 "fechaFin": positionDateEnd
             };
-            console.log(json)
             let res = await fetch(this.url+"orden/cancelacion/consulta",{
                 method: "POST",
                 headers: {
@@ -128,9 +122,7 @@ export default {
 
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
-                console.log(data) 
                 this.dataOrden = data.datos
-                console.log(data.datos)
             }else{
                 this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }

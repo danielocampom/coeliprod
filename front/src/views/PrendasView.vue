@@ -301,7 +301,6 @@ export default {
                 this.prendas = []
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    console.log(data)
                     data.datos.forEach( val => {
                         this.items.push(val)
                     })

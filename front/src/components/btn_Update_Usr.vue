@@ -1,6 +1,6 @@
 <template>
     <div>
-        <vs-button circle icon floating primary  @click="active=!active">
+        <vs-button circle icon floating primary  @click="dataModal">
             <box-icon name='edit' color="#fff"></box-icon>
         </vs-button>
         <b-modal size="xl" centered v-model="active">
@@ -138,12 +138,7 @@ export default {
             this.mostrarBtn = true
         }
         this.mostraRoles()
-        this.nombre = this.dataUser.row.item.nombre
-        this.paterno = this.dataUser.row.item.paterno
-        this.materno = this.dataUser.row.item.materno
-        this.dataUser.row.item.roles.forEach( rol => {
-            this.optionsRoles.push(''+rol.id) 
-        });
+        
     },
     methods: {
         async mostraRoles(){
@@ -153,6 +148,15 @@ export default {
                     this.allRoles = data.datos
                 }
             })
+        },
+        dataModal(){
+            this.active = true
+            this.nombre = this.dataUser.row.item.nombre
+            this.paterno = this.dataUser.row.item.paterno
+            this.materno = this.dataUser.row.item.materno
+            this.dataUser.row.item.roles.forEach( rol => {
+                this.optionsRoles.push(''+rol.id) 
+            });
         },
         async updateUsr(){
             let token = this.$session.get('token')

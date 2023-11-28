@@ -1,40 +1,8 @@
 <template>
     <div>
-        <vs-button circle icon floating primary  @click="active=!active">
+        <vs-button circle icon floating primary  @click="dataModal">
             <box-icon name='edit' color="#fff"></box-icon>
         </vs-button>
-        <!-- <b-container class="bv-example-row">
-            <b-card v-if="!proceso.nombre" style="height: 9rem;">
-                <b-skeleton animation="throb" class="mt-3" width="85%"></b-skeleton>
-                <b-skeleton animation="throb" class="mt-3" width="100%"></b-skeleton>
-                <b-skeleton animation="throb" class="mt-3" width="55%"></b-skeleton>
-            </b-card>
-
-            <b-card v-else @click="active=!active">
-                <b-skeleton animation="throb" width="85%" v-if="!data.nombre"></b-skeleton>
-                <div class="d-flex flex-row bd-highlight mb-3" v-else>
-                    <div class="bd-highlight">
-                        <box-icon name='radio-circle-marked' :color="data.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
-                    </div>
-                    <div class="bd-highlight">
-                        {{data.nombre}}
-                    </div>
-                </div>
-                <b-skeleton animation="throb" width="100%" v-if="!cliente.nombre"></b-skeleton>
-                <div v-else>
-                    <p class="fw-bold">
-                        {{cliente.nombre}} 
-                    </p>
-                </div>
-                <b-skeleton animation="throb" width="55%" v-if="!proceso.nombre"></b-skeleton>
-                <div v-else>
-                    <p class="fw-lighter">
-                        {{proceso.nombre}}
-                    </p>
-                </div>
-            </b-card>
-        </b-container> -->
-
         <vs-dialog blur v-model="active">
             <template #header>
                 <h4 class="not-margin">
@@ -64,11 +32,6 @@
                     </vs-input>
                     <b-skeleton class="mt-4" type="input" v-if="clienteSelect.length == 0"></b-skeleton>
                     <div class="con-selects mt-4" v-else>
-                        <!-- <vs-select style="width:100%;" label-placeholder="Cliente" color="success"  v-model="selectCliente" >
-                            <vs-option  v-for="(cli, i) in clienteSelect" :key="i" :label="cli.nombre" :value="cli.id">
-                                {{cli.nombre}}
-                            </vs-option>
-                        </vs-select> -->
                         <v-select
                             v-model="selectCliente"
                             :options="clienteSelect"
@@ -82,11 +45,6 @@
                     <b-skeleton class="mt-5" type="input" v-if="procesoSelect.length == 0"></b-skeleton>
 
                     <div class="con-selects mt-5" v-else>
-                        <!-- <vs-select style="width:100%;" label-placeholder="Tipo de proceso" color="success"  v-model="selectProceso" >
-                            <vs-option  v-for="(proceso, i) in procesoSelect" :key="i" :label="proceso.nombre" :value="proceso.id">
-                                {{proceso.nombre}}
-                            </vs-option>
-                        </vs-select> -->
                         <v-select
                             v-model="selectProceso"
                             :options="procesoSelect"
@@ -117,14 +75,6 @@
                             Desactivar
                         </vs-button>
                     </div>
-                    <!-- <div v-else>
-                        <vs-button class="m-1" success
-                            flat
-                            :btnActualizar="btnElimina == 1"
-                            @click="activar()">
-                            Activar
-                        </vs-button>
-                    </div> -->
                 </div>
             </template>
         </vs-dialog>
@@ -183,16 +133,10 @@ export default {
     },
     mounted(){
         setTimeout(() => {
-            this.estado = this.data.row.item.estado == 1 ? true : false
             this.mostraCliente()
             this.mostraProceso()
             this.mostraTipoProceso()
             this.mostraTipoClientes()
-            this.selectProceso = this.data.row.item.proceso.id
-            this.selectCliente = this.data.row.item.idCliente
-            this.nombre = this.data.row.item.nombre
-            this.cantidadBolsa = this.data.row.item.cantidadBolsa
-            this.kilos = this.data.row.item.cantidadKilos
         }, 1500)
     },
     methods: {
@@ -201,6 +145,15 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        dataModal(){
+            this.active = true
+            this.selectProceso = this.data.row.item.proceso.id
+            this.selectCliente = this.data.row.item.idCliente
+            this.nombre = this.data.row.item.nombre
+            this.cantidadBolsa = this.data.row.item.cantidadBolsa
+            this.kilos = this.data.row.item.cantidadKilos
+            this.estado = this.data.row.item.estado == 1 ? true : false
         },
     
         async mostraCliente(){

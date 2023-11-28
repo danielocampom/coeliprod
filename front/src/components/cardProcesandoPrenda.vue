@@ -98,7 +98,13 @@
                         Seguro que deseas Reiniciar el <b>Proceso</b>
                     </h4>
                 </template>
-
+                <div class="con-form">
+                    <vs-input
+                        class="mt-1"
+                        v-model="motivoReturn"
+                        label-placeholder="motivo de reinicio"
+                    />
+                </div>
                 <template #footer>
                     <div class="footer-dialog">
                         <vs-button block @click="reiniciar()">
@@ -150,6 +156,7 @@ export default {
 
         cancelPredas: false,
         motivoElim: '',
+        motivoReturn: '',
         cantidadElim: '',
         opciones: false,
         detail: [],
@@ -263,13 +270,21 @@ export default {
         },
         async reiniciar(){
             let token = this.$session.get('token')
-            let res = await fetch(this.url+`orden/paso/return/${this.data.idHist}`,{
+            let json = {
+                "mensaje": this.motivoReturn,
+                "idHist": this.data.idHist,
+                "idOrdenPrenda": "-1",
+                "cantidadCancela": "-1"
+            };
+            let res = await fetch(this.url+`orden/paso/return/`,{
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': "*",
                     'Authorization': token
                 },
+                body: JSON.stringify(json)
+
             })
             let data = await res.json()
             if(data.status == 401){ this.activarReboot = true }

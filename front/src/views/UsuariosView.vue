@@ -302,7 +302,13 @@
               fetchApi(this.url+'rol/findAll', 'GET', this.$session.get('token'))
               .then(data => {
                   if(data.status == 200){
-                      this.allRoles = data.datos
+                      if(!this.$session.get('roles').some(role => ['SISTEMAS'].includes(role))){
+                          this.allRoles = data.datos.filter(function (rol) {
+                              return rol.id !== 1;
+                          });
+                        }else{
+                            this.allRoles = data.datos
+                        }
                   }
               })
           },
@@ -336,6 +342,10 @@
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.mostrarUsuarios()
                 this.refresh()
+                this.optionsRoles = ''
+                this.materno = ''
+                this.paterno = ''
+                this.nombre = ''
             }else{
                 this.openNotification(`Error: inesperado al agregar un nuevo usuario`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
