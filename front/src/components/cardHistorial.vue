@@ -33,7 +33,7 @@
                 <template >
                     <b-row class="mt-3" v-if="dataClient.historial.length > 0">
                         <b-col lg="6" md="6" sm="12" class="mt-4" v-for="(historial, i) in dataClient.historial" :key="i" >
-                            <detailHistorial :dataHitorial="{historial }"></detailHistorial>
+                            <detailHistorial :dataHitorial="{historial}"></detailHistorial>
                         </b-col>
                     </b-row>
                     <div class="center" v-else>

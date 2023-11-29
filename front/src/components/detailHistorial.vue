@@ -74,9 +74,9 @@ export default {
     }),
     mounted(){
         console.log(this.dataHitorial)
-        this.dataHitorial.pasoProceso.idTipoLavado ? this.mostrarTipoLavado(this.dataHitorial.historial.pasoProceso.idTipoLavado) : ''
-        this.dataHitorial.pasoProceso.idProgramaLavado ? this.mostrarProgramaLavado(this.dataHitorial.historial.pasoProceso.idProgramaLavado) : '' 
-        this.dataHitorial.lavadora ? this.mostrarLavadoraEnUso(this.dataHitorial.historial.lavadora) : '' 
+        this.dataHitorial.historial.pasoProceso.idTipoLavado ? this.mostrarTipoLavado(this.dataHitorial.historial.pasoProceso.idTipoLavado) : ''
+        this.dataHitorial.historial.pasoProceso.idProgramaLavado ? this.mostrarProgramaLavado(this.dataHitorial.historial.pasoProceso.idProgramaLavado) : '' 
+        this.dataHitorial.historial.lavadora ? this.mostrarLavadoraEnUso(this.dataHitorial.historial.lavadora) : '' 
         setInterval(() => {
             this.render = true
         }, 1000);
