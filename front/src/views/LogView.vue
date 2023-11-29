@@ -17,7 +17,7 @@
 
 <script>
 import HeaderComponent from '@/components/Header.vue';
-import { refreshSession } from "@/service/service.js"
+import { refreshSession, fetchApi } from "@/service/service.js"
 
 export default {
     data: () => ({
@@ -33,6 +33,7 @@ export default {
         })
     },
     mounted(){
+        this.getLogs()
     },
     methods: {
         
@@ -43,6 +44,17 @@ export default {
             }) 
         },
         
+        async getLogs(){
+            fetchApi(this.url+'utils/logs/ms-coeli-error-10-15-2023.log', 'GET', this.$session.get('token'))
+            .then(data => {
+                this.prendas = []
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    console.log(data)
+                }
+                this.refresh()
+            })
+        },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
             progress: 'auto',

@@ -12,6 +12,9 @@
                 <div class="badge bg-success text-wrap float-end" >
                     {{ data.estado }}
                 </div>
+                <vs-button circle icon floating primary @click="imprimirTicket(data.idOrdenPrena)">
+                    <box-icon name='printer' color="#fff"></box-icon>
+                </vs-button>
                 <p class="fw-light text-muted">id Orden {{ data.idOrden }}.</p>
                 <p>{{ date }}</p>
                 cantidad de prendas
@@ -31,7 +34,7 @@
 <script>
 // import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
-import { refreshSession } from "@/service/service.js"
+import { refreshSession, fetchApi } from "@/service/service.js"
 import moment from 'moment';
 
 export default {
@@ -66,6 +69,25 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        async imprimirTicket(idOrdenPrena){
+            let objbuilder = ``
+            // this.modalPrint = true
+            // console.log(idOrdenPrena)
+            fetchApi(this.url+`orden/reportes/prenda/${idOrdenPrena}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
+                    let win = window.open("about:blank", "Entrega", "width=900px,height=600px");
+                    let title = "Entrega";
+                    win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                    win.document.write(objbuilder);
+                    win.document.write('</body></html>');
+                }else{
+                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
+            })
         },
        
         async updatePage(status){

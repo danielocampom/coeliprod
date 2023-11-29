@@ -17,7 +17,7 @@
                 </div>
                 <b-row v-if="procesando">
                     <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
-                        <ProcesandoComponent @updatePage="updatePage" :data="{nomCliente:dt.nomCliente, idOrden: dt.idOrden, prenda:dt.prenda, fechaAlta:dt.fechaAlta, estado:dt.estado, cantidad:dt.cantidad}"></ProcesandoComponent>
+                        <ProcesandoComponent @updatePage="updatePage" :data="{nomCliente:dt.nomCliente, idOrden: dt.idOrden, idOrdenPrena: dt.idOrdenPrena, prenda:dt.prenda, fechaAlta:dt.fechaAlta, estado:dt.estado, cantidad:dt.cantidad}"></ProcesandoComponent>
                     </b-col>
                 </b-row>
                 <b-row v-else>
@@ -108,6 +108,7 @@ export default {
                             })
                         })
                     }
+                    console.log(this.getDatos)
                 }else{
                     this.sinData = true
                 }
@@ -131,6 +132,8 @@ export default {
                     this.sinData = true
                     // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
+                console.log(this.getDatos)
+
             })
             .catch(err => console.log(err))
         },

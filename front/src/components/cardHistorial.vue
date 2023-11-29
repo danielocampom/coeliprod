@@ -91,6 +91,7 @@ export default {
         setInterval(() => {
             this.render = true
         }, 1000);
+        console.log(this.dataClient.historial)
     },
     methods:{
         refresh(){

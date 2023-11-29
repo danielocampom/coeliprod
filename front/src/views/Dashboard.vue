@@ -13,7 +13,7 @@
                   <apexchart-all type="bar" height="200" :options="chartOptionsMPA" :series="seriesMPA"></apexchart-all>
               </b-card>
             </b-col>
-            <b-col lg="3" md="4" sm="6">
+            <b-col lg="6" md="12" sm="12">
                 <b-card title="Entregas" v-if="seriesEntregas.length > 0">
                     <apexchart-all height="200" type="donut" :options="chartOptionsEntregas" :series="seriesEntregas"></apexchart-all>
                 </b-card>
@@ -25,9 +25,9 @@
                     </v-skeleton-loader>
                 </b-card>
             </b-col>
-            <b-col lg="3" md="4" sm="6">
+            <b-col lg="6" md="12" sm="12">
                 <b-card title="Visita clientes" v-if="seriesVisitas.length > 0">
-                  <apexchart-all type="bar" :options="chartOptionsVisitas" :series="seriesVisitas"></apexchart-all>
+                  <apexchart-all type="bar" height="200" :options="chartOptionsVisitas" :series="seriesVisitas"></apexchart-all>
                 </b-card>
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -37,9 +37,9 @@
                     </v-skeleton-loader>
                 </b-card>
             </b-col>
-            <b-col lg="3" md="4" sm="6">
+            <b-col lg="6" md="12" sm="12">
                 <b-card title="Ingerso prendas mensuales" v-if="seriesPrendas.length > 0">
-                  <apexchart-all type="bar" :options="chartOptionsPrendas" :series="seriesPrendas"></apexchart-all>
+                  <apexchart-all type="bar" height="200" :options="chartOptionsPrendas" :series="seriesPrendas"></apexchart-all>
                 </b-card> 
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -49,9 +49,9 @@
                     </v-skeleton-loader>
                 </b-card>
             </b-col>
-            <b-col lg="3" md="4" sm="6">
+            <b-col lg="6" md="12" sm="12">
                 <b-card title="Ingreso prendas anuales" v-if="seriesPrendasAnuales.length > 0">
-                    <apexchart-all type="bar" :options="chartOptionsPrendasAnuales" :series="seriesPrendasAnuales"></apexchart-all>
+                    <apexchart-all type="bar" height="200" :options="chartOptionsPrendasAnuales" :series="seriesPrendasAnuales"></apexchart-all>
                 </b-card>
                 <b-card no-body class="overflow-hidden" v-else>
                     <v-skeleton-loader
@@ -160,6 +160,7 @@ export default {
 
         currentSlide: 0,
         entradasSalidas: [],
+        // erick
         chartOptionsSemiDonut: {
             chart: {
                 type: 'donut',
@@ -521,7 +522,6 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                  
                     this.seriesEntregas = [data.datos.entregasTiempo, data.datos.entregasDestiempo]
                     let total = data.datos.entregasTiempo + data.datos.entregasDestiempo
                     let totalVisitas = data.datos.numClientesMes + data.datos.numClientesAnio
@@ -529,7 +529,7 @@ export default {
                     let totalPrendas = data.datos.numPrendasMes + data.datos.numCanceladasMes
                     let totalPrendasAnuales = data.datos.numPrendasAnio + data.datos.numCanceladasAnio
 
-
+                  // erick
                     this.chartOptionsEntregas ={
                       chart: {
                         type: 'donut',
@@ -552,13 +552,13 @@ export default {
                         }
                       },
                       responsive: [{
-                        breakpoint: 500,
+                        breakpoint: 480,
                         options: {
                           chart: {
-                            width: 500
+                            width: 200
                           },
                           legend: {
-                            position: 'bottom'
+                            position: 'center'
                           }
                         }
                       }]
@@ -677,11 +677,11 @@ export default {
                     },
                     
                     this.entradasSalidas = [data.datos.entregas, data.datos.entradasMes]
-                    this.seriesVisitas.push({ data: [data.datos.numClientesMes, data.datos.numClientesAnio]})
-                    this.seriesPrendas.push({ data: [data.datos.numPrendasMes, data.datos.numCanceladasMes]})
-                    this.seriesPrendasAnuales.push({ data: [data.datos.numPrendasAnio, data.datos.numCanceladasAnio]})
+                    this.seriesVisitas.push({  name: 'Visitas', data: [data.datos.numClientesMes, data.datos.numClientesAnio]})
+                    this.seriesPrendas.push({  name: 'Prendas', data: [data.datos.numPrendasMes, data.datos.numCanceladasMes]})
+                    this.seriesPrendasAnuales.push({  name: 'Prendas', data: [data.datos.numPrendasAnio, data.datos.numCanceladasAnio]})
 
-                    this.seriesMPA.push({ data: [data.datos.entradasMesAnterior, data.datos.entradasMes]})
+                    this.seriesMPA.push({ name: 'Ordenes', data: [data.datos.entradasMesAnterior, data.datos.entradasMes]})
                     data.datos.clientes.forEach( cli => {
                       this.barCodeActual.push(cli.visitasMes)
                       this.barCodeAnterior.push(cli.visitasMesAnterior)

@@ -130,11 +130,16 @@
                     </b-tab>
                     <b-tab title="Ordenes">
                         <b-container class="bv-example-row">
-                            <b-row>
-                                <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(ordenes, i) in ordenesEspera" :key="i">
-                                    <cardLlegada @updatePage="updatePage" :data="{idCiente:ordenes.idCliente, prendas: ordenes.prendas, fechaEntrega: ordenes.fechaEntrega, idOrden: ordenes.idOrden}"></cardLlegada>
-                                </b-col>
-                            </b-row>            
+                            <b-card v-for="(orden, i) in ordenesEspera" :key="i">
+                                <b-row >
+                                    <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(prenda, i) in orden.prendas" :key="i">
+                                        <cardLlegada @updatePage="updatePage" :data="{idCiente:orden.idCliente, prenda: prenda, fechaEntrega: orden.fechaEntrega, idOrden: orden.idOrden}"></cardLlegada>
+                                    </b-col>
+                                </b-row>            
+                                <vs-button primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
+                                    Enviar
+                                </vs-button>
+                            </b-card>
                             <vs-alert v-if="sinData" class="mt-5" shadow danger>
                                 <template #title>
                                     No se han encontrado datos
@@ -228,6 +233,39 @@ export default {
                 this.nombrePrenda = this.array_prendas.find(prenda => prenda.id === this.SelectPrenda)
             }
         },
+        async enviarDatos(idOrden, prendas){
+            let ordenPrendas = []
+            prendas.forEach( pr => {
+                ordenPrendas.push({"idOrdenPrenda": pr.idOrdenPrena, "cantidad": pr.cantidad})
+            })
+            
+            
+            let json = {
+                "idOrdenLavado": idOrden,
+                "ordenPrendas": ordenPrendas,
+            };
+            let token = this.$session.get('token')
+            const res = await fetch(this.url+`orden/confirmaOrden`,{
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
+            })
+            const data = await res.json();
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.openNotification(`Exito: Orden procesada`, `Se ha Enviado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                // ordenPrendas = []
+                this.mostrarOrdenes()
+            }else{
+                console.warn(data)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+            }
+        },
         async mostrarOrdenes(){
             this.ordenesEspera = []
             fetchApi(this.url+'orden/findByEstado/1', 'GET', this.$session.get('token'))
@@ -242,6 +280,7 @@ export default {
                 }else{
                     this.sinData = true
                 }
+                console.log(this.ordenesEspera)
             })
         },
         async mostraClientesActivos(){

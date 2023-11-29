@@ -19,13 +19,14 @@
                 Fecha de entrega
                 <strong>{{ fecha(data.fechaEntrega) }}</strong>    
             </p>
+            <p>
+                Cantidad
+                <strong>{{ detail.cantidad }}</strong>
+            </p>
         
         </b-card-text>
         <vs-button primary block @click="imprimitPapeleta(idOrdenPrenda)">
             imprimir papeleta
-        </vs-button>
-        <vs-button primary block @click="enviarDatos(data.idOrden)">
-            Enviar
         </vs-button>
         <vs-button success block @click="modalShowDetail = !modalShowDetail">
             Ver Detalles
@@ -122,17 +123,22 @@ export default {
         this.dataCliente()
         setTimeout(() => {
             this.render = false
-            this.data.prendas.forEach( value => {
-                this.mostrarDetailPrendas(value.idPrenda, value.cantidad)
-                this.cantidadPrendas =  value.cantidad
-                this.idOrdenPrenda =  value.idOrdenPrena
-            })
+            // this.data.prendas.forEach( value => {
+            //     this.mostrarDetailPrendas(value.idPrenda, value.cantidad)
+            //     this.cantidadPrendas =  value.cantidad
+            //     this.idOrdenPrenda =  value.idOrdenPrena
+            // })
+            this.mostrarDetailPrendas(this.data.prenda.idPrenda, this.data.prenda.cantidad)
+            this.cantidadPrendas =  this.data.prenda.cantidad
+            this.idOrdenPrenda =  this.data.prenda.idOrdenPrena
+
         },500)
     },
     methods: {
-        fecha(fecha){
+        fecha(fechaLarga){
+            let fecha = fechaLarga.split("T")
             moment.locale('es')
-            return moment(fecha).format("LLLL")
+            return moment(fecha[0]).format("LL")
         },
         prefijos(cadena){
             let terminacion = cadena.split(' ').slice(-1)[0]
@@ -178,40 +184,7 @@ export default {
                 }
             })
         },
-        async enviarDatos(idOrden){
-            let ordenPrendas = []
-            this.data.prendas.forEach( pr => {
-                ordenPrendas.push({"idOrdenPrenda": pr.idOrdenPrena, "cantidad": pr.cantidad})
-            })
-            
-            
-            let json = {
-                "idOrdenLavado": idOrden,
-                "ordenPrendas": ordenPrendas,
-            };
-            
-            let token = this.$session.get('token')
-            const res = await fetch(this.url+`orden/confirmaOrden`,{
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*",
-                    'Authorization': token
-                },
-                body: JSON.stringify(json)
-            })
-            const data = await res.json();
-            if(data.status == 401){ this.activarReboot = true }
-            if(data.status == 200){
-                this.refresh()
-                this.openNotification(`Exito: Orden procesada`, `Se ha Enviado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
-                ordenPrendas = []
-                this.$emit('updatePage', '200')
-            }else{
-                console.warn(data)
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-            }
-        },
+        
         async mostrarDetailPrendas(id, cantidad){
             this.detail = []
             if(id){
@@ -219,6 +192,7 @@ export default {
                 .then(data => {
                     if(data.status == 401){ this.activarReboot = true }
                     if(data.status == 200){
+                        // console.log(data.datos)
                         this.detail = data.datos
                         this.detail.cantidad = cantidad
                     }
