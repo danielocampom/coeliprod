@@ -16,20 +16,27 @@
                     </vs-switch>
                 </div>
                 <b-row v-if="procesando">
-                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
-                        <ProcesandoComponent @updatePage="updatePage" :data="{nomCliente:dt.nomCliente, idOrden: dt.idOrden, idOrdenPrena: dt.idOrdenPrena, prenda:dt.prenda, fechaAlta:dt.fechaAlta, estado:dt.estado, cantidad:dt.cantidad}"></ProcesandoComponent>
+                    <vs-alert class="mt-5" v-if="!mostraProcesos" shadow danger>
+                        <template #title>
+                            No se han encontrado datos
+                        </template>
+                    </vs-alert>
+                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos[1]" :key="i">
+                        <ProcesandoComponent @updatePage="updatePage" :data="{data:dt}"></ProcesandoComponent>
                     </b-col>
                 </b-row>
                 <b-row v-else>
-                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos" :key="i">
-                        <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena, fechaEntrega:dt.fechaEntrega}"></EntregasComponent>
+                    <vs-alert class="mt-5" v-if="!mostraEntregas" shadow danger>
+                        <template #title>
+                            No se han encontrado datos
+                        </template>
+                    </vs-alert>
+                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos[0]" :key="i">
+                        <EntregasComponent @updatePage="updatePage" :data="{dt}"></EntregasComponent>
+                        <!-- <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena, fechaEntrega:dt.fechaEntrega}"></EntregasComponent> -->
                     </b-col>
                 </b-row>
-                <vs-alert class="mt-5" v-if="sinData" shadow danger>
-                    <template #title>
-                        No se han encontrado datos
-                    </template>
-                </vs-alert>
+                
             </template>
         </b-container>
         <div v-if="activarReboot">
@@ -52,8 +59,9 @@ export default {
     name:"EntregaView",
     data: () => ({
         getDatos: [],
-        sinData: false,
         procesando: false,
+        mostraEntregas: false,
+        mostraProcesos: false,
         buscar: false,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
@@ -85,35 +93,10 @@ export default {
         mostrarAct(){
             if(!this.procesando){
                 this.procesando = true
-                this.mostrarProcesos()
             }else{
                 this.procesando = false
-                this.mostraPrendas()
             }
-        },
-        async mostrarProcesos(){
-            this.getDatos = []
-            fetchApi(this.url+`orden/ordenPrenda/estado/8`, 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    if(data.datos.length != 0){
-                        data.datos.forEach( value => {
-                            fetchApi(this.url+`prenda/findById/${value.idPrenda}`, 'GET', this.$session.get('token'))
-                            .then(dt => {
-                                this.sinData = false
-
-                                let info = {"nomCliente":value.nomCliente, "idOrden": value.idOrden, "prenda": dt.datos.nombre, "cantidad": value.cantidad, "fechaAlta":value.fechaAlta, "estado": value.nombreEstado}
-                                this.getDatos.push(info)
-                            })
-                        })
-                    }
-                    console.log(this.getDatos)
-                }else{
-                    this.sinData = true
-                }
-            })
-            .catch(err => console.log(err))
+            this.mostraPrendas()
         },
         async mostraPrendas(){
             this.getDatos = []
@@ -125,14 +108,20 @@ export default {
                     if(data.datos.length != 0){
                         data.datos.forEach( value => {
                            this.getDatos.push(value) 
-                            this.sinData = false
                         })
                     }
                 }else{
-                    this.sinData = true
+                    this.getDatos[0] = []
+                    this.getDatos[1] = []
                     // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
-                console.log(this.getDatos)
+                if(this.getDatos[1].length){
+                    this.mostraProcesos = true
+                }
+                
+                if(this.getDatos[0].length){
+                    this.mostraEntregas = true
+                }
 
             })
             .catch(err => console.log(err))

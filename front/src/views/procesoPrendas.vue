@@ -73,11 +73,7 @@ export default {
     },
     mounted(){    
         this.mostratConsultas()
-        // console.log(this.consultasProcesando)
-        // setTimeout(() => {
-            // this.sinData = this.consultas.length == 0 ? false : true
-            // this.sinDataProcesando = this.consultasProcesando.length == 0 ? false : true
-        // }, 100);
+        
     },
     methods: {
         refresh(){
@@ -93,7 +89,6 @@ export default {
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
-                    
                     data.datos.forEach( value => {
                         if(value.idEstado == null){
                             this.consultas.push(value)

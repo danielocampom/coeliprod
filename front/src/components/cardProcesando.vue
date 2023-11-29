@@ -8,18 +8,18 @@
                 <b-skeleton type="button" width="100%" class="mb-2"></b-skeleton>
                 <b-skeleton type="button" width="100%"></b-skeleton>
             </b-card>        
-            <b-card v-else :title="data.nomCliente+' '+data.prenda" :style="{ 'border-left': `solid 5px #0d6efd !important` }">
+            <b-card v-else :title="data.data.nomCliente+' '+data.data.prenda" :style="{ 'border-left': `solid 5px #0d6efd !important` }">
                 <div class="badge bg-success text-wrap float-end" >
-                    {{ data.estado }}
+                    {{ data.data.nombreEstado }}
                 </div>
-                <vs-button circle icon floating primary @click="imprimirTicket(data.idOrdenPrena)">
+                <vs-button circle icon floating primary @click="imprimirTicket(data.data.idOrdenPrena)">
                     <box-icon name='printer' color="#fff"></box-icon>
                 </vs-button>
-                <p class="fw-light text-muted">id Orden {{ data.idOrden }}.</p>
+                <p class="fw-light text-muted">id Orden {{ data.data.idOrden }}.</p>
                 <p>{{ date }}</p>
                 cantidad de prendas
                 <div class="badge bg-success text-wrap float-end" >
-                    {{ data.cantidad }}
+                    {{ data.data.cantidad }}
                 </div>
                 <br>
                 <br>
@@ -55,7 +55,7 @@ export default {
     },
     mounted(){
         moment.locale('es');  
-        let fechaIngreso = this.data.fechaAlta.split('T')
+        let fechaIngreso = this.data.data.ultimoEstado.split('T')
         let horaIngreso = fechaIngreso[1].split('.')[0]
         let fechaHora = fechaIngreso[0]+" "+horaIngreso
         this.date = moment(fechaHora).startOf('hour').fromNow()

@@ -15,6 +15,14 @@
                                             <b-list-group flush>
                                                 <b-list-group-item>
                                                     <b-row  class="center mt-2">
+                                                        
+                                                        <b-col lg="12" sm="12" class="mt-4">
+                                                            <vs-input v-model="folio" primary label-placeholder="Folio">
+                                                                <template #icon>
+                                                                    <box-icon name='dialpad-alt'></box-icon>
+                                                                </template>
+                                                            </vs-input>
+                                                        </b-col>
                                                         <b-col lg="12" class="mt-4">
                                                             <label for="floatingSelect">Selecciona un cliente</label>
                                                             <div class="con-selects mt-3">
@@ -183,6 +191,7 @@ export default {
         fechaEntrega: '',
         SelectPrenda: '',
         cantidad: '',
+        folio: '',
         contador: 0,
         error: [],
         prendas: [],
@@ -280,7 +289,6 @@ export default {
                 }else{
                     this.sinData = true
                 }
-                console.log(this.ordenesEspera)
             })
         },
         async mostraClientesActivos(){
@@ -320,7 +328,8 @@ export default {
                 "id": this.contador,
                 "idPrenda": this.SelectPrenda,
                 "nombre": this.nombrePrenda.nombre,
-                "cantidad": this.cantidad
+                "cantidad": this.cantidad,
+
             }
             this.error = []
             this.SelectCliente == '' ? this.error.push("<br>el campo es Cliente Requerido") : ''
@@ -350,8 +359,16 @@ export default {
             let json = {
                 "idCliente": this.SelectCliente,
                 "fechaEntrega": this.fechaEntrega,
-                "ordenPrendas": this.prendas
+                "ordenPrendas": this.prendas,
+                "numEnvio": this.folio
+
             };
+
+            if(this.folio == ''){
+                this.openNotification(`Error: inesperado`, `El folio es un valor Requerido`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                return 0;
+            }
+
             let res = await fetch(this.url+"orden/register",{
                 method: "POST",
                 headers: {

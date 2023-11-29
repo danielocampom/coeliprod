@@ -10,16 +10,17 @@
             </b-card>        
             <b-card v-else :title="nomCli" :style="{ 'border-left': `solid 5px #0d6efd !important` }">
                 <div class="badge bg-success text-wrap float-end" >
-                    {{ data.nombreEstado }}
+                    {{ data.dt.nombreEstado }}
                 </div>
                 <p class="fw-light text-muted">Clave Cliente {{ claveCli }}</p>
-                <p class="fw-light text-muted">Id Orden {{ data.idOrden }}</p>
+                <p class="fw-light text-muted">Folio {{ data.dt.numEnvio }}</p>
+                <p class="fw-light text-muted">Id Orden {{ data.dt.idOrden }}</p>
                 <p class="fw-light text-muted">Fecha Entrega {{ date }}</p>
-                <vs-button block primary @click="entregar(data.idOrden)"> Entregar </vs-button>
-                <vs-button block success @click="modalShowDetail=!modalShowDetail"> Ver Detalles </vs-button>
+                <vs-button block primary @click="entregar(data.dt.idOrden)"> Entregar </vs-button>
+                <vs-button block success @click="mostraCliDetail"> Ver Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
                     <template #modal-header="{ close }">
-                        <h5>Detalles {{ nomCli }} <p class="fw-light">clave cliente{{ claveCli }}.</p></h5>
+                        <h5>Detalles {{ nomCli }} <p class="fw-light">clave cliente {{ claveCli }}.</p></h5>
                         <vs-button circle icon floating danger @click="close()">
                             <box-icon name='x' color="#fff"></box-icon>
                         </vs-button>
@@ -165,9 +166,8 @@ export default {
         loginComponent
     },
     mounted(){
-        this.date = moment(this.fechaEntrega).format('MM/DD/YYYY');
+        this.date = moment(this.data.dt.fechaEntrega).format('MM/DD/YYYY');
         this.mostraCli()
-        this.mostraCliDetail()
         setTimeout(() => {
             this.render = false
         }, 100)   
@@ -191,7 +191,7 @@ export default {
             return letras.join("")+terminacion
         },
         async mostraCli(){
-            fetchApi(this.url+`cliente/findById/${this.data.idCliente}`, 'GET', this.$session.get('token'))
+            fetchApi(this.url+`cliente/findById/${this.data.dt.idCliente}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
@@ -220,8 +220,9 @@ export default {
             })
         },
         async mostraCliDetail(){
-            this.prendas = []
-            this.data.prendas.forEach( prenda => {
+            this.modalShowDetail = true
+            // this.prendas = []
+            this.data.dt.prendas.forEach( prenda => {
                 fetchApi(this.url+`prenda/findById/${prenda.idPrenda}`, 'GET', this.$session.get('token'))
                 .then(data => {
                     if(data.status == 401){ this.activarReboot = true }

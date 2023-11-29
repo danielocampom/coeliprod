@@ -4,38 +4,38 @@
             <b-row>
                 <b-col cols="10">
                     <div class='badge bg-primary text-wrap float-end' >
-                        {{ dataHitorial.estado }}
+                        {{ dataHitorial.historial.estado }}
                     </div>
                     <h4 class="mb-5 ">
-                        {{ dataHitorial.pasoProceso.nombre }}
+                        {{ dataHitorial.historial.pasoProceso.nombre }}
                     </h4>
                     
                 </b-col>
             </b-row>
-            <h5 class="fw-lighter">{{dataHitorial.pasoProceso.descripcion}}</h5>
+            <h5 class="fw-lighter">{{dataHitorial.historial.pasoProceso.descripcion}}</h5>
             
             
             <div class="mt-1">
                 <label for="tipoLavado">Tipo de Lavado: </label>                                    
                 <strong>
-                    {{ dataHitorial.pasoProceso.idTipoLavado ? tipoLavado : "No aplica tipo de lavado" }} 
+                    {{ dataHitorial.historial.pasoProceso.idTipoLavado ? tipoLavado : "No aplica tipo de lavado" }} 
                 </strong>
             </div>
             <div class="mt-1">
                 <label for="tipoLavado">Programa de lavado: </label>                                    
                 
-                    <ul v-if="dataHitorial.pasoProceso.idProgramaLavado">
+                    <ul v-if="dataHitorial.historial.pasoProceso.idProgramaLavado">
                         <li>
-                            Nombre: <strong >{{ programaLavado.nombre }}</strong>
+                            Nombre: <strong >{{ programaLavado.historial.nombre }}</strong>
                         </li>
                         <li>
-                            Descripcion: <strong >{{  programaLavado.descripcion }}</strong>
+                            Descripcion: <strong >{{  programaLavado.historial.descripcion }}</strong>
                         </li>
                         <li>
-                            cantidad Minima: <strong >{{ programaLavado.cantidadMinima }}</strong>
+                            cantidad Minima: <strong >{{ programaLavado.historial.cantidadMinima }}</strong>
                         </li>
                         <li>
-                            cantidad Maxima: <strong >{{ programaLavado.cantidadMaxima }}</strong>
+                            cantidad Maxima: <strong >{{ programaLavado.historial.cantidadMaxima }}</strong>
                         </li>
                     </ul>
                 <strong v-else>
@@ -45,7 +45,7 @@
             <div class="mt-1">
                 <label for="tipoLavado">Lavadora en uso: </label>                                    
                 <strong>
-                    {{ dataHitorial.lavadora ? lavadora : "No aplica uso de Lavadora" }} 
+                    {{ dataHitorial.historial.lavadora ? lavadora : "No aplica uso de Lavadora" }} 
                 </strong>
             </div>
         </b-card>
@@ -73,9 +73,10 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     mounted(){
-        this.dataHitorial.pasoProceso.idTipoLavado ? this.mostrarTipoLavado(this.dataHitorial.pasoProceso.idTipoLavado) : ''
-        this.dataHitorial.pasoProceso.idProgramaLavado ? this.mostrarProgramaLavado(this.dataHitorial.pasoProceso.idProgramaLavado) : '' 
-        this.dataHitorial.lavadora ? this.mostrarLavadoraEnUso(this.dataHitorial.lavadora) : '' 
+        console.log(this.dataHitorial)
+        this.dataHitorial.pasoProceso.idTipoLavado ? this.mostrarTipoLavado(this.dataHitorial.historial.pasoProceso.idTipoLavado) : ''
+        this.dataHitorial.pasoProceso.idProgramaLavado ? this.mostrarProgramaLavado(this.dataHitorial.historial.pasoProceso.idProgramaLavado) : '' 
+        this.dataHitorial.lavadora ? this.mostrarLavadoraEnUso(this.dataHitorial.historial.lavadora) : '' 
         setInterval(() => {
             this.render = true
         }, 1000);
