@@ -399,6 +399,7 @@ export default {
                 this.SelectPrenda = ''
                 this.fechaEntrega = ''
                 this.SelectCliente = ''
+                this.folio = ''
             }
         },
         openNotification( title, text, color, position = null, icon) {
