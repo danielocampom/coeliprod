@@ -69,13 +69,24 @@
                             </b-row>
                             
                             <div class="con-switch">
-                                <b-row>
-                                <b-col class="mt-3" cols="2" v-for="(rol, i) in allRoles" :key="i">
-                                    <vs-switch  :val="''+rol.id" v-model="optionsRoles">
-                                    {{ rol.nombre }}
-                                    </vs-switch>
-                                </b-col>
-                                </b-row>
+                                <b-card title="Vistas">
+                                    <b-row>
+                                        <b-col class="mt-3" cols="2" v-for="(rol, i) in allRoles.slice(0, 16)" :key="i">
+                                            <vs-switch  :val="''+rol.id" v-model="optionsRoles">
+                                            {{ rol.nombre }}
+                                            </vs-switch>
+                                        </b-col>
+                                    </b-row>
+                                </b-card>
+                                <b-card class="mt-5" title="Perisos de lavados">
+                                    <b-row>
+                                        <b-col class="mt-3" cols="2" v-for="(rol, i) in allRoles.slice(17)" :key="i">
+                                            <vs-switch  :val="''+rol.id" v-model="optionsRoles">
+                                            {{ rol.nombre }}
+                                            </vs-switch>
+                                        </b-col>
+                                    </b-row>
+                                </b-card>
                             </div>
                         </div>
                         <br>
@@ -161,13 +172,7 @@
             >
                 <template #cell(actions)="row">
                     <div class="d-flex justify-content-center">
-                        <!-- <vs-button circle icon floating danger @click="eliminarLavado(row.item.id)">
-                            <box-icon name='trash' color="#fff"></box-icon>
-                        </vs-button> -->
                         <btnUsrComponent @updatePage="updatePage" :dataUser="{row}" />
-                        <!-- <vs-button circle icon floating primary @click="eliminarLavado(row.item.id)">
-                            <box-icon name='edit' color="#fff"></box-icon>
-                        </vs-button> -->
                     </div>
                 </template>
 
