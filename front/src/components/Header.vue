@@ -13,7 +13,7 @@
             &nbsp;
           </router-link>
         </vs-navbar-item>
-        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="llegada">
+        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ENTRADAS'].includes(role))" id="llegada">
           <router-link to="/llegada" class="nav-link">
               <box-icon name='grid-alt'></box-icon> Llegada
           </router-link>
@@ -23,7 +23,7 @@
               <box-icon name='briefcase'></box-icon> Proceso Prendas
           </router-link>
         </vs-navbar-item>
-        <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTREGA'].includes(role))" id="entregas">
+        <vs-navbar-item :active=" isActive('/entregas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ENTREGAS'].includes(role))" id="entregas">
           <router-link to="/entregas" class="nav-link">
               <box-icon name='shopping-bag'></box-icon> Entregas
           </router-link>

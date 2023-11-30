@@ -15,10 +15,10 @@ const ROLES = {
   PRENDA: 'PRENDA',
   PROCESOLAVADO: 'PROCESO LAVADO',
   HISTORIALLAVADO: 'HISTORIAL LAVADO',
-  ALMACENENTRADA: 'ALMACEN ENTRADA',
+  ALMACENENTRADA: 'ENTRADAS',
   CONFIRMAORDEN: 'CONFIRMA ORDEN',
   PROCESOORDEN: 'PROCESO ORDEN',
-  ALMACENENTREGA: 'ALMACEN ENTREGA',
+  ALMACENENTREGA: 'ENTREGAS',
   CANCELACION: 'CANCELACION',
   ROLES: 'ROLES',
   DEFAULT: 'DEFAULT',
@@ -118,7 +118,7 @@ const routes = [
     path: '/entregas',
     name: 'entregas',
     component: () => import('../views/EntregaView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ALMACEN ENTREGA"]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ENTREGAS"]}
   },
   {
     path: '/procesoPrendas',
@@ -130,7 +130,7 @@ const routes = [
     path: '/llegada',
     name: 'llegada',
     component: () => import('../views/LlegadaView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ALMACEN ENTRADA"]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ENTRADAS"]}
   },
   {
     path: '/ordenes',
