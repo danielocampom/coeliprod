@@ -105,32 +105,32 @@ const routes = [
     path: '/registroLavado',
     name: 'registroLavado',
     component: () => import('../views/registroLavadoView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.PROCESOLAVADO]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "PROCESO LAVADO"]}
   },
 
   {
     path: '/procesoLavado',
     name: 'procesoLavado',
     component: () => import('../views/procesoLavadoView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.PROCESOLAVADO]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "PROCESO LAVADO"]}
   },
   {
     path: '/entregas',
     name: 'entregas',
     component: () => import('../views/EntregaView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.ALMACENENTREGA]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ALMACEN ENTREGA"]}
   },
   {
     path: '/procesoPrendas',
     name: 'procesoPrendas',
     component: () => import('../views/procesoPrendas.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.PROCESOORDEN]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "PROCESO ORDEN"]}
   },
   {
     path: '/llegada',
     name: 'llegada',
     component: () => import('../views/LlegadaView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.ALMACENENTRADA]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ALMACEN ENTRADA"]}
   },
   {
     path: '/ordenes',
@@ -157,7 +157,7 @@ const routes = [
     path: '/historico',
     name: 'historico',
     component: () => import('../views/historicoOrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.HISTORIALLAVADO]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "HISTORIAL LAVADO"]}
   },
 
   {

@@ -74,7 +74,7 @@
                                                             </div>
                                                         </b-col>
                                                         <b-col lg="6" sm="8" class="mt-4">
-                                                            <vs-input v-model="cantidad" primary label-placeholder="Cantidad en Piezas">
+                                                            <vs-input v-model="cantidad" type="number" primary label-placeholder="Cantidad en Piezas">
                                                                 <template #icon>
                                                                     <box-icon name='dialpad-alt'></box-icon>
                                                                 </template>
@@ -138,7 +138,7 @@
                     </b-tab>
                     <b-tab title="Ordenes">
                         <b-container class="bv-example-row">
-                            <b-card v-for="(orden, i) in ordenesEspera" :key="i">
+                            <b-card class="mt-4" v-for="(orden, i) in ordenesEspera" :key="i">
                                 <b-row >
                                     <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(prenda, i) in orden.prendas" :key="i">
                                         <cardLlegada @updatePage="updatePage" :data="{idCiente:orden.idCliente, prenda: prenda, fechaEntrega: orden.fechaEntrega, idOrden: orden.idOrden}"></cardLlegada>
@@ -146,6 +146,10 @@
                                 </b-row>  
                                 <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CONFIRMA ORDEN'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
                                     Confirmar
+                                </vs-button>
+                                
+                                <vs-button danger v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
+                                    Cancelar
                                 </vs-button>
                             </b-card>
                             <vs-alert v-if="sinData" class="mt-5" shadow danger>

@@ -31,6 +31,10 @@
         <vs-button success block @click="modalShowDetail = !modalShowDetail">
             Ver Detalles
         </vs-button>
+        
+        <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" danger block>
+            Ver Detalles
+        </vs-button>
         <b-modal size="lg" centered v-model="modalShowDetail">
             <template #modal-header="{ close }">
                 <h5>Detalles <b>{{ nomCliente }}</b></h5>

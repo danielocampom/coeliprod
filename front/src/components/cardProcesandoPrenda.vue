@@ -5,7 +5,7 @@
             <b-skeleton animation="throb" width="55%"></b-skeleton>
             <b-skeleton animation="throb" width="70%"></b-skeleton>
             <b-skeleton type="input"></b-skeleton>
-            <b-skeleton type="input" v-if="data.idEstado == 10 && $session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
+            <b-skeleton type="input" v-if="data.idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"></b-skeleton>
             <b-skeleton type="input" v-if="data.idEstado != 10 "></b-skeleton>
             <b-skeleton type="input" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card>        
@@ -26,7 +26,7 @@
             <vs-button class="d-none" block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
             <vs-button v-if="data.idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.idHist)"> Autorizar </vs-button>
             <vs-button v-if="data.idEstado != 10" block flat danger @click="terminar(data.idHist)"> Terminar </vs-button>
-            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
                     <h4 class="not-margin">
@@ -91,7 +91,7 @@
                 </template>
                 
             </b-modal>
-            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" block flat warn @click="modalReiniciar =! modalReiniciar" > Reiniciar </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat warn @click="modalReiniciar =! modalReiniciar" > Reiniciar </vs-button>
             <vs-dialog blur  v-model="modalReiniciar">
                 <template #header>
                     <h4 class="not-margin">
