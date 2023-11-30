@@ -136,7 +136,7 @@ const routes = [
     path: '/ordenes',
     name: 'ordenes',
     component: () => import('../views/OrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.ALMACENENTRADA, ROLES.PROCESOORDEN]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN]}
   },
   
   {
@@ -150,21 +150,21 @@ const routes = [
     path: '/roles',
     name: 'roles',
     component: () => import('../views/rolesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN]}
   },
   
   {
     path: '/historico',
     name: 'historico',
     component: () => import('../views/historicoOrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN, ROLES.HISTORIALLAVADO]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN]}
   },
 
   {
     path: '/rastreo',
     name: 'rastreo',
     component: () => import('../views/rastreoOrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ROLES, ROLES.ADMIN, ROLES.RASTREO]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.RASTREO]}
   },
   
   {

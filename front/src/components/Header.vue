@@ -168,7 +168,7 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="ordenes">
+          <vs-sidebar-item :class="{ 'active': isActive('/ordenes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" id="ordenes">
             <template #icon>
               <box-icon name='folder-open'></box-icon>
             </template>
@@ -177,7 +177,7 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="rastreo" >
+          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" id="rastreo" >
             <template #icon>
               <box-icon name='book-reader'></box-icon>
             </template>

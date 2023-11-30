@@ -143,9 +143,9 @@
                                     <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(prenda, i) in orden.prendas" :key="i">
                                         <cardLlegada @updatePage="updatePage" :data="{idCiente:orden.idCliente, prenda: prenda, fechaEntrega: orden.fechaEntrega, idOrden: orden.idOrden}"></cardLlegada>
                                     </b-col>
-                                </b-row>            
-                                <vs-button primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
-                                    Enviar
+                                </b-row>  
+                                <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CONFIRMA ORDEN'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
+                                    Confirmar
                                 </vs-button>
                             </b-card>
                             <vs-alert v-if="sinData" class="mt-5" shadow danger>
