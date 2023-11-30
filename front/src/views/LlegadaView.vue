@@ -6,7 +6,7 @@
         <b-container fluid class="mt-5">
             <b-card no-body>
                 <b-tabs card>
-                    <b-tab title="Nueva Orden" active>
+                    <b-tab title="Nueva Orden" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ENTRADAS'].includes(role))" active>
                         <template>
                             <div>
                                 <b-row>
@@ -136,7 +136,7 @@
                             </div>
                         </template>
                     </b-tab>
-                    <b-tab title="Ordenes">
+                    <b-tab title="Ordenes" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CONFIRMA ORDEN'].includes(role))" active>
                         <b-container class="bv-example-row">
                             <b-card class="mt-4" v-for="(orden, i) in ordenesEspera" :key="i">
                                 <b-row >
@@ -148,7 +148,7 @@
                                     Confirmar
                                 </vs-button>
                                 
-                                <vs-button danger v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
+                                <vs-button danger v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" primary block @click="cancelar(orden.idOrden)">
                                     Cancelar
                                 </vs-button>
                             </b-card>
@@ -244,6 +244,29 @@ export default {
         prendaSeleccionada(){
             if (this.SelectPrenda) {
                 this.nombrePrenda = this.array_prendas.find(prenda => prenda.id === this.SelectPrenda)
+            }
+        },
+        async cancelar(id){
+           
+            let token = this.$session.get('token')
+            const res = await fetch(this.url+`orden/delete/${id}`,{
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+            })
+            const data = await res.json();
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.refresh()
+                this.openNotification(`Exito: Orden procesada`, `Se ha Cancelado Correctamente la Orden`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                // ordenPrendas = []
+                this.mostrarOrdenes()
+            }else{
+                console.warn(data)
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
         async enviarDatos(idOrden, prendas){

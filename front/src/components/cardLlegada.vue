@@ -32,8 +32,8 @@
             Ver Detalles
         </vs-button>
         
-        <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" danger block>
-            Ver Detalles
+        <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" danger block @click="cancelar(idOrdenPrenda)">
+            Cancelar
         </vs-button>
         <b-modal size="lg" centered v-model="modalShowDetail">
             <template #modal-header="{ close }">
@@ -188,7 +188,29 @@ export default {
                 }
             })
         },
-        
+        async cancelar(idOrdenPrenda){
+           
+           let token = this.$session.get('token')
+           const res = await fetch(this.url+`orden/delete/ordenprenda/${idOrdenPrenda}`,{
+               method: "POST",
+               headers: {
+                   'Content-Type': 'application/json',
+                   'Access-Control-Allow-Origin': "*",
+                   'Authorization': token
+               },
+           })
+           const data = await res.json();
+           if(data.status == 401){ this.activarReboot = true }
+           if(data.status == 200){
+               this.refresh()
+               this.openNotification(`Exito: Orden procesada`, `Se ha Cancelado Correctamente la Orden`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+               // ordenPrendas = []
+               this.mostrarOrdenes()
+           }else{
+               console.warn(data)
+               this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+           }
+       },
         async mostrarDetailPrendas(id, cantidad){
             this.detail = []
             if(id){

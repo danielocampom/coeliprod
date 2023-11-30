@@ -13,7 +13,7 @@
             &nbsp;
           </router-link>
         </vs-navbar-item>
-        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ENTRADAS'].includes(role))" id="llegada">
+        <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ENTRADAS', 'CONFIRMA ORDEN'].includes(role))" id="llegada">
           <router-link to="/llegada" class="nav-link">
               <box-icon name='grid-alt'></box-icon> Llegada
           </router-link>

@@ -130,7 +130,7 @@ const routes = [
     path: '/llegada',
     name: 'llegada',
     component: () => import('../views/LlegadaView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ENTRADAS"]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ENTRADAS", "CONFIRMA ORDEN"]}
   },
   {
     path: '/ordenes',
