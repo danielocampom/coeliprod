@@ -51,7 +51,7 @@
                             </b-col>
                         </b-row>
                     </b-card>
-                    <b-card class="mt-5" title="Perisos de lavados">
+                    <b-card class="mt-5" title="Permisos de lavados">
                         <b-row>
                             <b-col class="mt-3" cols="2" v-for="(rol, i) in allRoles.slice(17)" :key="i">
                                 <vs-switch  :val="''+rol.id" v-model="optionsRoles">
