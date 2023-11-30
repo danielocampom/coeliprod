@@ -66,24 +66,10 @@
                 <b-card :title="cliente" :style="{ 'border-left': `solid 5px ${fechaEntregaColor} !important` }">
                     <b-row>
                         <b-col lg="3" md="6" sm="12">
-                            <apexchart-all class="mt-4" v-if="seriesRadial.length > 0" type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
-                            <b-card no-body class="overflow-hidden" v-else>
-                                <v-skeleton-loader
-                                    height="300"
-                                    type="image, image, image"
-                                >
-                                </v-skeleton-loader>
-                            </b-card>
+                            <apexchart-all class="mt-4"  type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
                         </b-col>
                         <b-col lg="9" md="6" sm="12">
-                            <apexchart-all v-if="seriesLine.length > 0" type="line" height="350" :options="chartOptionsLine" :series="seriesLine"></apexchart-all>
-                            <b-card no-body class="overflow-hidden" v-else>
-                                <v-skeleton-loader
-                                    height="300"
-                                    type="image, image, image"
-                                >
-                                </v-skeleton-loader>
-                            </b-card>
+                          <apexchart-all type="line" height="350" :options="chartOptionsLine" :series="seriesLine"></apexchart-all>
                         </b-col>
                     </b-row>
                 </b-card>
@@ -104,11 +90,13 @@
               </b-card>
           </b-col>
           <b-col class="mt-4" lg="12" md="12" sm="12">
-              <b-card title="Frecuencia de los clientes">
-                <apexchart-all type="bar" height="350" :options="chartOptionsejemplo" :series="seriesejemplo"></apexchart-all>
+            <graficaClientes class="m-1"  :data="{clientesGraf}"></graficaClientes>
+
+              <!-- <b-card title="Frecuencia de los clientes"> -->
+                <!-- <apexchart-all type="bar" height="350" :options="chartOptionsejemplo" :series="seriesejemplo"></apexchart-all> -->
 
                   <!-- <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all> -->
-              </b-card>
+              <!-- </b-card> -->
           </b-col>
         </b-row>
         <div v-if="activarReboot">
@@ -121,6 +109,7 @@
 <script>
 import HeaderComponent from '@/components/Header.vue';
 import lavadoraDashboard from '@/components/cardLavadoraDashboard.vue';
+import graficaClientes from '@/components/graficaClientes.vue';
 import loginComponent from '@/components/cardLogin.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import numeral from 'numeral';
@@ -132,6 +121,7 @@ export default {
         HeaderComponent,
         lavadoraDashboard, 
         loginComponent,
+        graficaClientes
     },
     
     data: () => ({
@@ -437,30 +427,30 @@ export default {
         },
 
         clientesGraf: [ ],
-        seriesejemplo: [ ],
-        chartOptionsejemplo: {
-          chart: {
-            height: 350,
-            type: 'bar'
-          },
-          plotOptions: {
-            bar: {
-              columnWidth: '60%'
-            }
-          },
-          colors: ['#4eeba2'],
-          dataLabels: {
-            enabled: false
-          },
-          legend: {
-            show: true,
-            showForSingleSeries: true,
-            customLegendItems: ['Mes Actual', 'Mes Pasado'],
-            markers: {
-              fillColors: ['#4eeba2', '#fb5f4f']
-            }
-          }
-        },
+        // seriesejemplo: [ ],
+        // chartOptionsejemplo: {
+        //   chart: {
+        //     height: 350,
+        //     type: 'bar'
+        //   },
+        //   plotOptions: {
+        //     bar: {
+        //       columnWidth: '60%'
+        //     }
+        //   },
+        //   colors: ['#4eeba2'],
+        //   dataLabels: {
+        //     enabled: false
+        //   },
+        //   legend: {
+        //     show: true,
+        //     showForSingleSeries: true,
+        //     customLegendItems: ['Mes Actual', 'Mes Pasado'],
+        //     markers: {
+        //       fillColors: ['#4eeba2', '#fb5f4f']
+        //     }
+        //   }
+        // },
           
         
     }),
@@ -477,10 +467,10 @@ export default {
         
         this.chartOptionsBarCode.labels = this.barCodeNameCli
         
-        this.seriesejemplo = [{
-          name: 'Mes Actual',
-          data: [ this.clientesGraf ]
-        }]
+        // this.seriesejemplo = [{
+        //   name: 'Mes Actual',
+        //   data: [ this.clientesGraf ]
+        // }]
         
         // console.log(this.clientesGraf)
 
