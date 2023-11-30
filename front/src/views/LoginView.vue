@@ -14,7 +14,7 @@
           <input type="text" id="usuario" class="fadeIn second" name="usuario"  autocomplete="off" placeholder="usuario" v-model="usuario">
           <!-- <input type="password" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password"> -->
           <input type="password" pattern="[0-9]*" inputmode="numeric" id="password" class="fadeIn third" name="login" placeholder="Contraseña" v-model="password" @keyup="enter">
-          <input type="submit" class="fadeIn fourth btnLog">
+          <input type="submit" style="width:18rem;" class="fadeIn fourth btnLog">
         </form>
 
       </div>
@@ -76,6 +76,8 @@ export default {
         this.$session.set('roles', data.datos.roles)
         this.$session.set('username', data.datos.username)
         this.$session.set('idUsuario', data.datos.idUsuario)
+        // console.log(this.$session.get('roles'))
+        // console.log(data.datos.roles)
         this.$router.push("home")
         this.toggleFullscreen()
         

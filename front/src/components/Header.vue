@@ -7,12 +7,18 @@
         </vs-button>
           <box-icon name='last-page'></box-icon> {{ breadcrumb }} /
       </template>
+      
+      <vs-navbar-item >
+          <router-link to="/home" class="nav-link">
+            &nbsp;
+          </router-link>
+        </vs-navbar-item>
         <vs-navbar-item :active=" isActive('/llegada')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ALMACEN ENTRADA'].includes(role))" id="llegada">
           <router-link to="/llegada" class="nav-link">
               <box-icon name='grid-alt'></box-icon> Llegada
           </router-link>
         </vs-navbar-item>
-        <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'USUARIOS'].includes(role))" id="procesoPrendas">
+        <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESO ORDEN'].includes(role))" id="procesoPrendas">
           <router-link to="/procesoPrendas" class="nav-link">
               <box-icon name='briefcase'></box-icon> Proceso Prendas
           </router-link>

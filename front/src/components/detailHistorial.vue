@@ -21,27 +21,7 @@
                     {{ dataHitorial.historial.pasoProceso.idTipoLavado ? tipoLavado : "No aplica tipo de lavado" }} 
                 </strong>
             </div>
-            <div class="mt-1">
-                <label for="tipoLavado">Programa de lavado: </label>                                    
-                
-                    <ul v-if="dataHitorial.historial.pasoProceso.idProgramaLavado">
-                        <li>
-                            Nombre: <strong >{{ programaLavado.historial.nombre }}</strong>
-                        </li>
-                        <li>
-                            Descripcion: <strong >{{  programaLavado.historial.descripcion }}</strong>
-                        </li>
-                        <li>
-                            cantidad Minima: <strong >{{ programaLavado.historial.cantidadMinima }}</strong>
-                        </li>
-                        <li>
-                            cantidad Maxima: <strong >{{ programaLavado.historial.cantidadMaxima }}</strong>
-                        </li>
-                    </ul>
-                <strong v-else>
-                    No aplica programa de lavado
-                </strong>
-            </div>
+           
             <div class="mt-1">
                 <label for="tipoLavado">Lavadora en uso: </label>                                    
                 <strong>
@@ -73,7 +53,6 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     mounted(){
-        console.log(this.dataHitorial)
         this.dataHitorial.historial.pasoProceso.idTipoLavado ? this.mostrarTipoLavado(this.dataHitorial.historial.pasoProceso.idTipoLavado) : ''
         this.dataHitorial.historial.pasoProceso.idProgramaLavado ? this.mostrarProgramaLavado(this.dataHitorial.historial.pasoProceso.idProgramaLavado) : '' 
         this.dataHitorial.historial.lavadora ? this.mostrarLavadoraEnUso(this.dataHitorial.historial.lavadora) : '' 
