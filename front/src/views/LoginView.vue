@@ -78,7 +78,11 @@ export default {
         this.$session.set('idUsuario', data.datos.idUsuario)
         // console.log(this.$session.get('roles'))
         // console.log(data.datos.roles)
-        this.$router.push("home")
+        if(data.datos.roles.some(role => ['SISTEMAS', 'ADMIN', 'DASHPROD'].includes(role))){
+          this.$router.push("dashboard")
+        }else{
+          this.$router.push("home")
+        }
         this.toggleFullscreen()
         
       }else{
