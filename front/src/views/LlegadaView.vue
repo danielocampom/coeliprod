@@ -141,13 +141,12 @@
                             <b-card class="mt-4" v-for="(orden, i) in ordenesEspera" :key="i">
                                 <b-row >
                                     <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(prenda, i) in orden.prendas" :key="i">
-                                        <cardLlegada @updatePage="updatePage" :data="{idCiente:orden.idCliente, prenda: prenda, fechaEntrega: orden.fechaEntrega, idOrden: orden.idOrden}"></cardLlegada>
+                                        <cardLlegada @updatePage="updatePage" :data="{idCiente:orden.idCliente, prenda: prenda, fechaEntrega: orden.fechaEntrega, idOrden: orden.idOrden, totalOrdenes: orden.prendas.length}"></cardLlegada>
                                     </b-col>
                                 </b-row>  
                                 <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CONFIRMA ORDEN'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
                                     Confirmar
                                 </vs-button>
-                                
                                 <vs-button danger v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" primary block @click="cancelar(orden.idOrden)">
                                     Cancelar
                                 </vs-button>
@@ -250,7 +249,7 @@ export default {
            
             let token = this.$session.get('token')
             const res = await fetch(this.url+`orden/delete/${id}`,{
-                method: "POST",
+                method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': "*",

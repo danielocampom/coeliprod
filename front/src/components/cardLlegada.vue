@@ -9,12 +9,13 @@
     
     <b-card v-else
         :title="nomCliente"
-        :sub-title = "detail.nombre"
         tag="article"
         style="max-width: 20rem;"
         class="mb-2"
     >
-        <b-card-text>
+    <small class="mt-3 mb-3" for="nombre">{{detail.nombre}}</small>
+        
+        <b-card-text class="mt-2">
             <p>
                 Fecha de entrega
                 <strong>{{ fecha(data.fechaEntrega) }}</strong>    
@@ -32,7 +33,7 @@
             Ver Detalles
         </vs-button>
         
-        <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" danger block @click="cancelar(idOrdenPrenda)">
+        <vs-button v-if="data.totalOrdenes > 1 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" danger block @click="cancelar(idOrdenPrenda)">
             Cancelar
         </vs-button>
         <b-modal size="lg" centered v-model="modalShowDetail">
@@ -192,7 +193,7 @@ export default {
            
            let token = this.$session.get('token')
            const res = await fetch(this.url+`orden/delete/ordenprenda/${idOrdenPrenda}`,{
-               method: "POST",
+               method: "DELETE",
                headers: {
                    'Content-Type': 'application/json',
                    'Access-Control-Allow-Origin': "*",
@@ -206,6 +207,8 @@ export default {
                this.openNotification(`Exito: Orden procesada`, `Se ha Cancelado Correctamente la Orden`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                // ordenPrendas = []
                this.mostrarOrdenes()
+               this.$emit('updatePage', '200')
+
            }else{
                console.warn(data)
                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
