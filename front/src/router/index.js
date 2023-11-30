@@ -157,7 +157,7 @@ const routes = [
     path: '/historico',
     name: 'historico',
     component: () => import('../views/historicoOrdenesView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.HISTORIALLAVADO]}
   },
 
   {

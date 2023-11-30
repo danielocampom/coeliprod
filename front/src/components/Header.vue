@@ -177,7 +177,7 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" id="rastreo" >
+          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'HISTORIAL LAVADO'].includes(role))" id="rastreo" >
             <template #icon>
               <box-icon name='book-reader'></box-icon>
             </template>
