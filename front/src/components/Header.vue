@@ -39,7 +39,7 @@
         </vs-navbar-item>
       </template>
     </vs-navbar>
-    <vs-sidebar absolute :open.sync="activeSidebar">
+    <vs-sidebar fixed :open.sync="activeSidebar">
       <template #logo>
           <img src="@/assets/logo_coeli.png" alt="urvina-coeli">
       </template>
