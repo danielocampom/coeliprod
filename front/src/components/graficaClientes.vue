@@ -1,9 +1,8 @@
 <template>
     <div>
         <b-card title="Frecuencia de los clientes">
-            <apexchart-all type="bar" height="350" :options="chartOptionsejemplo" :series="seriesejemplo"></apexchart-all>
-
-            <!-- <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all> -->
+            <apexchart-all v-if="reload" type="bar" height="350" :options="chartOptions" :series="series"></apexchart-all>
+            
         </b-card>
     </div>
 </template>
@@ -18,16 +17,42 @@ export default {
     data: () => ({
         url: process.env.VUE_APP_SERVICE_URL_API,
         reload: false,
-        seriesejemplo: [ ],
-        chartOptionsejemplo: {
+        series: [ ],
+        chartOptions: {
           chart: {
             height: 350,
-            type: 'bar'
-          },
-          plotOptions: {
-            bar: {
-              columnWidth: '60%'
+            type: 'bar',
+            zoom: {
+              enabled: true
             }
+          },
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              legend: {
+                position: 'bottom',
+                offsetX: -10,
+                offsetY: 0
+              }
+            }
+          }],
+          plotOptions: {
+            // bar: {
+            //   columnWidth: '60%'
+            // }
+            bar: {
+                horizontal: false,
+                borderRadius: 10,
+                dataLabels: {
+                  total: {
+                    enabled: true,
+                    style: {
+                      fontSize: '13px',
+                      fontWeight: 900
+                    }
+                  }
+                }
+              },
           },
           colors: ['#4eeba2'],
           dataLabels: {
@@ -46,11 +71,15 @@ export default {
         
     }),
     mounted(){
-        this.seriesejemplo = [{
+      setTimeout(() => {
+        this.series = [{
           name: 'Mes Actual',
-          data: [ this.data.clientesGraf ]
+          data: this.data.clientesGraf 
         }]
+        
         console.log(this.data.clientesGraf)
+        this.reload = true
+      }, 5000);
         
     },
     methods: {

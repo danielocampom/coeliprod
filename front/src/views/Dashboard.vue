@@ -85,18 +85,7 @@
         
         <b-row>
           <b-col class="mt-4" lg="12" md="12" sm="12">
-              <b-card title="Frecuencia de los clientes">
-                  <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all>
-              </b-card>
-          </b-col>
-          <b-col class="mt-4" lg="12" md="12" sm="12">
             <graficaClientes class="m-1"  :data="{clientesGraf}"></graficaClientes>
-
-              <!-- <b-card title="Frecuencia de los clientes"> -->
-                <!-- <apexchart-all type="bar" height="350" :options="chartOptionsejemplo" :series="seriesejemplo"></apexchart-all> -->
-
-                  <!-- <apexchart-all type="line" height="450" :options="chartOptionsBarCode" :series="seriesBarCode"></apexchart-all> -->
-              <!-- </b-card> -->
           </b-col>
         </b-row>
         <div v-if="activarReboot">
@@ -201,43 +190,6 @@ export default {
             xaxis: {
                 categories: ['Mes Pasado', 'Mes Actual' ],
             }
-        },
-
-        barCodeActual: [],
-        barCodeAnterior: [],
-        barCodeNameCli: [],
-        seriesBarCode: [],
-        chartOptionsBarCode: {
-            chart: {
-              height: 350,
-              type: 'line',
-            },
-            stroke: {
-              width: [0, 4]
-            },
-            title: {
-              text: 'Visitas'
-            },
-            dataLabels: {
-              enabled: true,
-              enabledOnSeries: [1]
-            },
-            labels: [],
-
-            xaxis: {
-              type: 'text'
-            },
-            yaxis: [{
-              title: {
-                text: 'Mes Actual',
-              },
-            
-            }, {
-              opposite: true,
-              title: {
-                text: 'Mes Anterior'
-              }
-            }]
         },
 
         seriesRadial: [],
@@ -352,106 +304,7 @@ export default {
             }
         },
 
-
-        series: [{
-            data: [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380]
-        }],
-        chartOptions: {
-          chart: {
-            type: 'bar',
-            height: 380
-          },
-          plotOptions: {
-            bar: {
-              barHeight: '100%',
-              distributed: true,
-              horizontal: true,
-              dataLabels: {
-                position: 'bottom'
-              },
-            }
-          },
-          colors: ['#33b2df', '#546E7A', '#d4526e', '#13d8aa', '#A5978B', '#2b908f', '#f9a3a4', '#90ee7e',
-            '#f48024', '#69d2e7'
-          ],
-          dataLabels: {
-            enabled: true,
-            textAnchor: 'start',
-            style: {
-              colors: ['#fff']
-            },
-            formatter: function (val, opt) {
-              return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val
-            },
-            offsetX: 0,
-            dropShadow: {
-              enabled: true
-            }
-          },
-          stroke: {
-            width: 1,
-            colors: ['#fff']
-          },
-          xaxis: {
-            categories: ['South Korea', 'Canada', 'United Kingdom', 'Netherlands', 'Italy', 'France', 'Japan',
-              'United States', 'China', 'India'
-            ],
-          },
-          yaxis: {
-            labels: {
-              show: false
-            }
-          },
-          title: {
-              text: 'Custom DataLabels',
-              align: 'center',
-              floating: true
-          },
-          subtitle: {
-              text: 'Category Names as DataLabels inside bars',
-              align: 'center',
-          },
-          tooltip: {
-            theme: 'dark',
-            x: {
-              show: false
-            },
-            y: {
-              title: {
-                formatter: function () {
-                  return ''
-                }
-              }
-            }
-          }
-        },
-
         clientesGraf: [ ],
-        // seriesejemplo: [ ],
-        // chartOptionsejemplo: {
-        //   chart: {
-        //     height: 350,
-        //     type: 'bar'
-        //   },
-        //   plotOptions: {
-        //     bar: {
-        //       columnWidth: '60%'
-        //     }
-        //   },
-        //   colors: ['#4eeba2'],
-        //   dataLabels: {
-        //     enabled: false
-        //   },
-        //   legend: {
-        //     show: true,
-        //     showForSingleSeries: true,
-        //     customLegendItems: ['Mes Actual', 'Mes Pasado'],
-        //     markers: {
-        //       fillColors: ['#4eeba2', '#fb5f4f']
-        //     }
-        //   }
-        // },
-          
         
     }),
     created(){
@@ -465,14 +318,6 @@ export default {
         this.Lavadoras()
         this.getOrdenes()
         
-        this.chartOptionsBarCode.labels = this.barCodeNameCli
-        
-        // this.seriesejemplo = [{
-        //   name: 'Mes Actual',
-        //   data: [ this.clientesGraf ]
-        // }]
-        
-        // console.log(this.clientesGraf)
 
         this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
         setTimeout(() => {
@@ -673,9 +518,6 @@ export default {
 
                     this.seriesMPA.push({ name: 'Ordenes', data: [data.datos.entradasMesAnterior, data.datos.entradasMes]})
                     data.datos.clientes.forEach( cli => {
-                      this.barCodeActual.push(cli.visitasMes)
-                      this.barCodeAnterior.push(cli.visitasMesAnterior)
-                      this.barCodeNameCli.push(cli.cliente)
                       this.clientesGraf.push({
                         x: cli.cliente,
                         y: cli.visitasMes,
@@ -683,26 +525,16 @@ export default {
                           {
                             name: 'Mes Pasado',
                             value: cli.visitasMesAnterior,
-                            strokeHeight: 5,
+                            strokeHeight: 10,
+                            strokeWidth: 0,
+                            strokeLineCap: 'round',
+
                             strokeColor: '#fb5f4f'
                           }
                         ]
                       })
                     });
-                      // console.log(clientesGraf)
-                      // console.log(this.seriesejemplo[0].data)
                     
-                    
-                    this.seriesBarCode = [{
-                        name: 'Visitas del mes actual',
-                        type: 'column',
-                        data: this.barCodeActual
-                    }, {
-                        name: 'Visitas del mes anterior',
-                        type: 'line',
-                        data: this.barCodeAnterior
-                    }]
-
 
                 }
 

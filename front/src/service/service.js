@@ -8,20 +8,20 @@ export const fetchApi = async (url, metod, token) => {
                 'Authorization': token
             },
         })
+        // console.log(res.status)
         if(!res.ok){
-            console.log(res.status)
             throw new Error("Respuesta erronea")
         }else{
             return await res.json()
         }
     } catch (error) {
-        let resuesta = {
+        let respuesta = {
             "datos": [],
             "mensaje": "Sin  que mostrar",
             "status": 204,
          }
         // console.log(error)        
-        return resuesta
+        return respuesta
     }
 }
 
