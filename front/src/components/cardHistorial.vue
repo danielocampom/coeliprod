@@ -7,19 +7,18 @@
             <h4 class="mb-1 ">
                 {{ dataClient.nombreCliente }}
             </h4>
-            <strong>{{ fecha(dataClient.fechaEntrega) }}</strong>
-            <b-row>
-                <b-col cols="12">
-                    <h5 class="mb-1 mt-2">
-                        {{ nombrePrenda }}
-                    </h5>
-                    <h5 class="mb-1">
-                       Numero Orden {{ dataClient.idOrden }} 
-                    </h5>
-                    <br>
-                    Cantidad: {{ dataClient.ordenPrenda.cantidad }} 
-                </b-col>
-            </b-row>
+            <h5 class="mb-1 mt-2">
+                {{ nombrePrenda }}
+            </h5>
+            <h5 class="mb-1">
+                Numero Orden {{ dataClient.idOrden }} 
+            </h5>
+            <br>
+            Cantidad: {{ dataClient.ordenPrenda.cantidad }} 
+            <br>
+            <small class="mt-3">Fecha de Entrega {{ fecha(dataClient.fechaEntrega) }}</small>
+            <br>
+            <small class="mt-3">Ultimo Estado {{ fecha(dataClient.ordenPrenda.ultimoEstado) }}</small>
             <vs-button success flat block @click="modalShowDetail = !modalShowDetail">
                 Ver Historial
             </vs-button>
@@ -87,6 +86,7 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     mounted(){
+        console.log(this.dataClient)
         this.mostrarDataPrenda(this.dataClient.ordenPrenda.idPrenda)
         setInterval(() => {
             this.render = true
@@ -100,8 +100,9 @@ export default {
             }) 
         },
         fecha(fecha){
+            let fechaCorta = fecha.split("T")
             moment.locale('es')
-            return moment(fecha).format("LLLL");  
+            return moment(fechaCorta[0]).format("LL");  
         },
         
         mostrarDataPrenda(id){

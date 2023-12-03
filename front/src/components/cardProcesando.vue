@@ -8,7 +8,8 @@
                 <b-skeleton type="button" width="100%" class="mb-2"></b-skeleton>
                 <b-skeleton type="button" width="100%"></b-skeleton>
             </b-card>        
-            <b-card v-else :title="data.data.nomCliente+' '+data.data.prenda" :style="{ 'border-left': `solid 5px #0d6efd !important` }">
+            <b-card v-else :title="data.data.nomCliente" :style="{ 'border-left': `solid 5px #0d6efd !important` }">
+                <small>{{ data.data.prenda }}</small>
                 <div class="badge bg-success text-wrap float-end" >
                     {{ data.data.nombreEstado }}
                 </div>

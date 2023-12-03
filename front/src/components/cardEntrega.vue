@@ -15,7 +15,7 @@
                 <p class="fw-light text-muted">Clave Cliente {{ claveCli }}</p>
                 <p class="fw-light text-muted">Folio {{ data.dt.numEnvio }}</p>
                 <p class="fw-light text-muted">Id Orden {{ data.dt.idOrden }}</p>
-                <p class="fw-light text-muted">Fecha Termino {{ date }}</p>
+                <p class="fw-light text-muted">Fecha Entrega {{ date }}</p>
                 <vs-button block primary @click="entregar(data.dt.idOrden)"> Entregar </vs-button>
                 <vs-button block success @click="mostraCliDetail"> Ver Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">

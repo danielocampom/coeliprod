@@ -17,7 +17,7 @@
         
         <b-card-text class="mt-2">
             <p>
-                Fecha de Termino
+                Fecha de entrega
                 <strong>{{ fecha(data.fechaEntrega) }}</strong>    
             </p>
             <p>

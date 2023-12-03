@@ -10,7 +10,9 @@
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.nomCliente" :sub-title="data.prenda">
             <strong>{{ data.descripcionEstado }}</strong>
-            <p>{{ date }}</p>
+            <br>
+            <p v-if="this.data.fechaInicio">{{ date }}</p>
+            <br v-else>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
             <div class="badge bg-primary text-wrap float-end" >

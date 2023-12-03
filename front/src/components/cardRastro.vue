@@ -80,8 +80,10 @@ export default {
         },
         
         fecha(fecha){
+            let fechaCorta = fecha.split("T")
+
             moment.locale('es')
-            return moment(fecha).format("LLLL");  
+            return moment(fechaCorta[0]).format("LL");  
         },
         
         buscarUsuario(id, tipo){
