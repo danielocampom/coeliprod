@@ -201,7 +201,8 @@ export default {
         fields: [
             { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
             { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
-            { key: 'nombre', label: 'Nombre / Descripción', sortable: true, sortDirection: 'desc' },
+            { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
+            { key: 'descripcion', label: 'Descripción', sortable: true, sortDirection: 'desc' },
             { key: 'cantidadKilos', label: 'Cantidad Por Kilo', sortable: true, sortDirection: 'desc' },
             { key: 'cantidadBolsa', label: 'Cantidad pieza/par', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
