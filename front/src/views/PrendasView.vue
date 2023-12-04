@@ -24,7 +24,11 @@
                                     <box-icon name='wind'></box-icon>
                                 </template>
                             </vs-input>
-                            
+                            <vs-input class="mt-3" success type="text" v-model="descripcion" label-placeholder="Descripcion">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
                             <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Cantidad por kilos">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
@@ -37,11 +41,6 @@
                             </vs-input>
                             <div class="con-selects mt-4">
                                 <b-skeleton type="input" v-if="clientes.length == 0"></b-skeleton>
-                                <!-- <vs-select style="width:100%;" class="mt-4" v-else success label-placeholder="Cliente" color="success"  v-model="cliente" >
-                                    <vs-option  v-for="(cli, i) in clientes" :key="i" :label="cli.nombre" :value="cli.id">
-                                        {{cli.nombre}}
-                                    </vs-option>
-                                </vs-select> -->
                                 <v-select
                                     v-model="cliente"
                                     :options="clientes"
@@ -54,11 +53,6 @@
                             </div>
                             <div class="con-selects mt-5">
                                 <b-skeleton type="input" v-if="tiposProceso.length == 0"></b-skeleton>
-                                <!-- <vs-select style="width:100%;"  class="mt-5" v-else success label-placeholder="Tipo de proceso" color="success"  v-model="tipoProceso" >
-                                    <vs-option  v-for="(proceso, i) in tiposProceso" :key="i" :label="proceso.nombre" :value="proceso.id">
-                                        {{proceso.nombre}}
-                                    </vs-option>
-                                </vs-select> -->
                                 <v-select
                                     v-model="tipoProceso"
                                     :options="tiposProceso"
@@ -229,6 +223,7 @@ export default {
         sinData: false,
         activeModal: false,
         nombre: '',
+        descripcion: '',
         kilos: '',
         cantidadBolsa: '',
         tipoProceso: '',
@@ -317,6 +312,7 @@ export default {
 
             let json = {
                 "nombre": this.nombre,
+                "descripcion": this.descripcion,
                 "idProceso": this.tipoProceso,
                 "idCliente": this.cliente,
                 "cantidadBolsa": this.cantidadBolsa,

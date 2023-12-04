@@ -19,7 +19,11 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
-                    
+                    <vs-input class="mt-3" success type="text" v-model="descripcion" label-placeholder="Descripcion">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
                     <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Cantidad por kilos">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
@@ -119,6 +123,7 @@ export default {
         active2: false,
         tipoLavado: '',
         nombre: '',
+        descripcion: '',
         cantidadBolsa: '',
         kilos: '',
         btnElimina: 0,
@@ -151,6 +156,7 @@ export default {
             this.selectProceso = this.data.row.item.proceso.id
             this.selectCliente = this.data.row.item.idCliente
             this.nombre = this.data.row.item.nombre
+            this.descripcion = this.data.row.item.descripcion
             this.cantidadBolsa = this.data.row.item.cantidadBolsa
             this.kilos = this.data.row.item.cantidadKilos
             this.estado = this.data.row.item.estado == 1 ? true : false
@@ -252,6 +258,7 @@ export default {
             let json = {
                 "idCliente": this.selectCliente,
                 "nombre": this.nombre,
+                "descripcion": this.descripcion,
                 "idPrenda": this.data.row.item.id,
                 "idProceso": this.selectProceso,
                 "cantidadBolsa": this.cantidadBolsa,
