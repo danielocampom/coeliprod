@@ -5,38 +5,33 @@
     
         <b-container fluid class="mt-5">
             <template>
-                <div style="max-width: 350px;" class="mx-auto p-1">
-                    <vs-switch class="mt-3" v-model="buscar" @click="mostrarAct()">
-                        <template #off>
-                            <box-icon name='check'></box-icon> Ordenes Concluidas
-                        </template>
-                        <template #on>
-                            <box-icon name='x' color="#fff"></box-icon> Prendas Concluidas
-                        </template>
-                    </vs-switch>
-                </div>
-                <b-row v-if="procesando">
-                    <vs-alert class="mt-5" v-if="!mostraProcesos" shadow danger>
-                        <template #title>
-                            No se han encontrado datos
-                        </template>
-                    </vs-alert>
-                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos[1]" :key="i">
-                        <ProcesandoComponent @updatePage="updatePage" :data="{data:dt}"></ProcesandoComponent>
-                    </b-col>
-                </b-row>
-                <b-row v-else>
-                    <vs-alert class="mt-5" v-if="!mostraEntregas" shadow danger>
-                        <template #title>
-                            No se han encontrado datos
-                        </template>
-                    </vs-alert>
-                    <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos[0]" :key="i">
-                        <EntregasComponent @updatePage="updatePage" :data="{dt}"></EntregasComponent>
-                        <!-- <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena, fechaEntrega:dt.fechaEntrega}"></EntregasComponent> -->
-                    </b-col>
-                </b-row>
-                
+                <b-tabs content-class="mt-3" align="center"  @click="updatePage(200)">
+                    <b-tab title="Ordenes Concluidas"  @click="updatePage(200)" active>
+                        <b-row>
+                            <vs-alert class="mt-5" v-if="!mostraEntregas" shadow danger>
+                                <template #title>
+                                    No se han encontrado datos
+                                </template>
+                            </vs-alert>
+                            <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos[0]" :key="i">
+                                <EntregasComponent @updatePage="updatePage" :data="{dt}"></EntregasComponent>
+                                <!-- <EntregasComponent @updatePage="updatePage" :data="{idOrden: dt.idOrden, idCliente: dt.idCliente, nombreEstado: dt.nombreEstado, prendas: dt.prendas, idOrdenPrena: dt.idOrdenPrena, fechaEntrega:dt.fechaEntrega}"></EntregasComponent> -->
+                            </b-col>
+                        </b-row>
+                    </b-tab>
+                    <b-tab title="Prendas Concluidas" @click="updatePage(200)">
+                        <b-row>
+                            <vs-alert class="mt-5" v-if="!mostraProcesos" shadow danger>
+                                <template #title>
+                                    No se han encontrado datos
+                                </template>
+                            </vs-alert>
+                            <b-col  class="mt-4" lg="3" md="4" sm="6" v-for="(dt, i) in getDatos[1]" :key="i">
+                                <ProcesandoComponent @updatePage="updatePage" :data="{data:dt}"></ProcesandoComponent>
+                            </b-col>
+                        </b-row>
+                    </b-tab>
+                </b-tabs>
             </template>
         </b-container>
         <div v-if="activarReboot">
@@ -48,7 +43,6 @@
 
 <script>
 import HeaderComponent from '@/components/Header.vue';
-// import CardAsignacionPrendaComponent from '@/components/cardAsignacionPrenda.vue';
 import { refreshSession, fetchApi } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 import EntregasComponent from '@/components/cardEntrega.vue';
@@ -71,8 +65,6 @@ export default {
         loginComponent,
         EntregasComponent,
         ProcesandoComponent
-        // CardAsignacionPrendaComponent,
-
     },
     created(){
         refreshSession(this.url ,this.$session.get('token')).then( data => {
@@ -90,14 +82,6 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-        mostrarAct(){
-            if(!this.procesando){
-                this.procesando = true
-            }else{
-                this.procesando = false
-            }
-            this.mostraPrendas()
-        },
         async mostraPrendas(){
             this.getDatos = []
             fetchApi(this.url+`orden/terminados`, 'GET', this.$session.get('token'))
@@ -113,7 +97,6 @@ export default {
                 }else{
                     this.getDatos[0] = []
                     this.getDatos[1] = []
-                    // this.openNotification('Ocurrio un error al obtener los datos', `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
                 if(this.getDatos[1].length){
                     this.mostraProcesos = true

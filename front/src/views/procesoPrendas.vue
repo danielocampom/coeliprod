@@ -7,32 +7,28 @@
             <template>
                 <b-tabs content-class="mt-3" align="center"  @click="updatePage(200)">
                     <b-tab title="Por Procesar" active>
-                        <!-- <b-container class="bv-example-row"> -->
-                            <b-row>
-                                <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
-                                    <CardProcesoPrendaComponent @updatePage="updatePage" :data="{idOrdenLavado:cons.idOrdenLavado, estado:cons.idEstado, prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso, fechaInicio: cons.fechaInicio, nomCliente: cons.nomCliente, idHist:cons.idHist, infoLavadoras: cons.infoLavadoras}"></CardProcesoPrendaComponent>
-                                </b-col>
-                            </b-row>            
-                            <vs-alert class="mt-5" v-if="sinData" shadow danger>
-                                <template #title>
-                                    No se han encontrado datos
-                                </template>
-                            </vs-alert>
-                        <!-- </b-container> -->
+                        <b-row>
+                            <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
+                                <CardProcesoPrendaComponent @updatePage="updatePage" :data="{idOrdenLavado:cons.idOrdenLavado, estado:cons.idEstado, prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso, fechaInicio: cons.fechaInicio, nomCliente: cons.nomCliente, idHist:cons.idHist, infoLavadoras: cons.infoLavadoras}"></CardProcesoPrendaComponent>
+                            </b-col>
+                        </b-row>            
+                        <vs-alert class="mt-5" v-if="sinData" shadow danger>
+                            <template #title>
+                                No se han encontrado datos
+                            </template>
+                        </vs-alert>
                     </b-tab>
                     <b-tab title="Procesando"  @click="updatePage(200)" >
-                        <!-- <b-container class="bv-example-row"> -->
-                            <b-row>
-                                <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cp, i) in consultasProcesando" :key="i">
-                                    <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="{idOrdenLavado:cp.idOrdenLavado, idOrdenPrenda: cp.idOrdenPrenda, idPrenda: cp.idPrenda, idHist:cp.idHist, nombrePaso: cp.nombrePaso, nombrePrenda: cp.nombrePrenda, nombreProgramaLavado: cp.nombreProgramaLavado, nombreSigPaso: cp.nombreSigPaso, tipoLavado: cp.tipoLavado, cantidad: cp.cantidadPrendas, idSigPaso: cp.idSigPaso, nombrePaso: cp.nombrePaso, idEstado: cp.idEstado, idHist: cp.idHist, idLavadora: cp.idLavadora, cantidadMaxima: cp.cantidadMaxima, cantidadMinima: cp.cantidadMinima, fechaInicio: cp.fechaInicio, nomCliente: cp.nomCliente }"></CardProcesandoPrendaComponent>
-                                </b-col>
-                            </b-row>            
-                            <vs-alert class="mt-5" v-if="sinDataProcesando" shadow danger>
-                                <template #title>
-                                    No se han encontrado datos
-                                </template>
-                            </vs-alert>
-                        <!-- </b-container> -->
+                        <b-row>
+                            <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cp, i) in consultasProcesando" :key="i">
+                                <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="{idOrdenLavado:cp.idOrdenLavado, idOrdenPrenda: cp.idOrdenPrenda, idPrenda: cp.idPrenda, idHist:cp.idHist, nombrePaso: cp.nombrePaso, nombrePrenda: cp.nombrePrenda, nombreProgramaLavado: cp.nombreProgramaLavado, nombreSigPaso: cp.nombreSigPaso, tipoLavado: cp.tipoLavado, cantidad: cp.cantidadPrendas, idSigPaso: cp.idSigPaso, nombrePaso: cp.nombrePaso, idEstado: cp.idEstado, idHist: cp.idHist, idLavadora: cp.idLavadora, cantidadMaxima: cp.cantidadMaxima, cantidadMinima: cp.cantidadMinima, fechaInicio: cp.fechaInicio, nomCliente: cp.nomCliente }"></CardProcesandoPrendaComponent>
+                            </b-col>
+                        </b-row>            
+                        <vs-alert class="mt-5" v-if="sinDataProcesando" shadow danger>
+                            <template #title>
+                                No se han encontrado datos
+                            </template>
+                        </vs-alert>
                     </b-tab>
                 </b-tabs>
             </template>
