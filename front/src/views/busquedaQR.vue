@@ -13,29 +13,28 @@
                 </b-col>                 -->
                 <b-col lg="5" md="12" sm="12" class="mt-5 container p-3">
                     <b-card title="Buscar estado de la prenda">
-                        <div class="row">
-                            <div class="col" sm="10" md="10" lg="10">
-                                <vs-input
-                                    class="mt-5 buscarPrenda"
-                                    primary
-                                    label-placeholder="Numero de la papeleta"
-                                    v-model="buscarPrenda" pattern="[0-9]*">
-                                    <template #icon>
-                                        <box-icon name='barcode-reader'></box-icon>
-                                    </template>
-                                </vs-input>
-                            </div>
-                            <div class="col" sm="2" md="2" lg="2">
-                                <vs-button
-                                    class="mt-5"
-                                    success
-                                    circle
-                                    @click="buscar"
-                                >
-                                    <box-icon name='search-alt-2' color="#fff"></box-icon>
-                                </vs-button>
-                            </div>
-                        </div>
+                                
+                        <!-- <label for="Numero de la papeleta">Numero de la papeleta</label>
+                        <b-input-group class="mt-3">
+                            <b-form-input placeholder="Digita el Codigo de barras" type="number" v-model="buscarPrenda"></b-form-input>
+                            <b-input-group-append>
+                                <b-button @click="buscar" variant="primary"><box-icon name='search-alt-2' color="#fff"></box-icon></b-button>
+                            </b-input-group-append>
+                        </b-input-group> -->
+                        <vs-input
+                            primary
+                            class="mt-4"
+                            block
+                            type="number"
+                            v-model="buscarPrenda"
+                            label-placeholder="Numero de la papeleta"
+                            icon-after
+                            @click-icon="buscar">
+                            <template #icon>
+                                <box-icon name='search-alt-2' color="#007bff"></box-icon>
+                            </template>
+
+                        </vs-input>
                     </b-card>
                     
                 </b-col>
@@ -103,13 +102,13 @@
                         </v-timeline>
 
                     </b-card>
-                        <div class="center" v-else>
-                            <vs-alert color="danger">
-                                <template #title>
-                                    Sin datos, ingrese el codigo el codigo de barras
-                                </template>
-                            </vs-alert>
-                        </div>
+                    <div class="center" v-else>
+                        <vs-alert color="danger">
+                            <template #title>
+                                Sin datos, ingrese el codigo el codigo de barras
+                            </template>
+                        </vs-alert>
+                    </div>
                 </b-col>
             </b-row>
 
@@ -235,7 +234,10 @@
                             this.openNotification(`Ooops!:`, `No existes coincidencias`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                         }
                     })
-                    .finally(() => this.showSpinner = false)
+                    .finally(() =>{
+                        this.showSpinner = false
+                        
+                    })
                 }else{
                     this.mostrarInfo = false;
 

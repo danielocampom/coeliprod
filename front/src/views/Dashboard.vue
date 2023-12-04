@@ -67,6 +67,13 @@
                     <b-row>
                         <b-col lg="3" md="6" sm="12">
                             <apexchart-all class="mt-4"  type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
+                            <label for="Buscar Orden de Lavado">Buscar Orden de Lavado</label>
+                            <b-input-group class="mt-3">
+                                <b-form-input placeholder="Orden de Lavado" type="number" v-model="buscarOrdenLavado"></b-form-input>
+                                <b-input-group-append>
+                                    <b-button @click="getDetalles(buscarOrdenLavado)" variant="primary"><box-icon name='search-alt-2' color="#fff"></box-icon></b-button>
+                                </b-input-group-append>
+                            </b-input-group>
                         </b-col>
                         <b-col lg="9" md="6" sm="12">
                           <apexchart-all type="line" height="350" :options="chartOptionsLine" :series="seriesLine"></apexchart-all>
@@ -117,9 +124,9 @@ export default {
         url: process.env.VUE_APP_SERVICE_URL_API,
         reload:true,
         activarReboot: false,
-
         fechaEntregaColor: '',
         cliente: '',
+        buscarOrdenLavado: '',
 
         ordenesAct: [],
         lavadoras: [],
@@ -139,7 +146,6 @@ export default {
 
         currentSlide: 0,
         entradasSalidas: [],
-        // erick
         chartOptionsSemiDonut: {
             chart: {
                 type: 'donut',
@@ -319,14 +325,14 @@ export default {
         this.getOrdenes()
         
 
-        this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
         setTimeout(() => {
+          this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
           this.reload = false
-        }, 2000);
+        }, 1000);
         
         setInterval(() => {
             this.getDetalles(this.ordenesAct[Math.floor(Math.random() * this.ordenesAct.length)])
-        }, 10000);
+        }, 30000);
             
         
     },
@@ -364,7 +370,6 @@ export default {
                     let totalPrendas = data.datos.numPrendasMes + data.datos.numCanceladasMes
                     let totalPrendasAnuales = data.datos.numPrendasAnio + data.datos.numCanceladasAnio
 
-                  // erick
                     this.chartOptionsEntregas ={
                       chart: {
                         type: 'donut',
@@ -434,7 +439,7 @@ export default {
                       xaxis: {
                         categories: ['Mes', 'Anual' ],
                       }
-                    },
+                    }
 
                     this.chartOptionsPrendas = {
                       chart: {
@@ -471,7 +476,7 @@ export default {
                         categories: ['Completas', 'Canceladas' ],
 
                       }
-                    },
+                    }
 
                     this.chartOptionsPrendasAnuales = {
 
@@ -509,9 +514,14 @@ export default {
                         categories: ['Completas', 'Canceladas' ],
                       }
 
-                    },
+                    }
                     
-                    this.entradasSalidas = [data.datos.entregas, data.datos.entradasMes]
+                    if(data.datos.entregas == 0 && data.datos.entradasMes == 0){
+                      this.entradasSalidas = [100,0]                      
+                    }else{
+                      this.entradasSalidas = [data.datos.entregas, data.datos.entradasMes]
+                    }
+
                     this.seriesVisitas.push({  name: 'Visitas', data: [data.datos.numClientesMes, data.datos.numClientesAnio]})
                     this.seriesPrendas.push({  name: 'Prendas', data: [data.datos.numPrendasMes, data.datos.numCanceladasMes]})
                     this.seriesPrendasAnuales.push({  name: 'Prendas', data: [data.datos.numPrendasAnio, data.datos.numCanceladasAnio]})

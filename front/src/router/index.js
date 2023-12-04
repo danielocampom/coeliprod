@@ -46,7 +46,16 @@ const routes = [
     name: 'log',
     component: () => import('../views/LogView.vue'),
 
-    meta: {requireAuth: false, roles:[ROLES.SISTEMAS, ROLES.ADMIN]}
+    meta: {requireAuth: false, roles:[ROLES.SISTEMAS]}
+
+  },
+  
+  {
+    path: '/query',
+    name: 'query',
+    component: () => import('../views/queryView.vue'),
+
+    meta: {requireAuth: false, roles:[ROLES.SISTEMAS]}
 
   },
   {

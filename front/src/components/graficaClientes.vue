@@ -77,7 +77,6 @@ export default {
           data: this.data.clientesGraf 
         }]
         
-        console.log(this.data.clientesGraf)
         this.reload = true
       }, 5000);
         
