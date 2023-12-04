@@ -51,14 +51,6 @@ const routes = [
   },
   
   {
-    path: '/query',
-    name: 'query',
-    component: () => import('../views/queryView.vue'),
-
-    meta: {requireAuth: false, roles:[ROLES.SISTEMAS]}
-
-  },
-  {
     path: '/home',
     name: 'home',
     component: () => import('../views/HomeView.vue'),
@@ -133,13 +125,13 @@ const routes = [
     path: '/procesoPrendas',
     name: 'procesoPrendas',
     component: () => import('../views/procesoPrendas.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "PROCESO ORDEN"]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "PROCESO PRENDAS"]}
   },
   {
     path: '/llegada',
     name: 'llegada',
     component: () => import('../views/LlegadaView.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "ENTRADAS", "CONFIRMA ORDEN"]}
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, "LLEGADA", "CONFIRMA ORDEN"]}
   },
   {
     path: '/ordenes',

@@ -45,7 +45,7 @@ export default {
         },
         
         async getLogs(){
-            fetchApi(this.url+'utils/logs/ms-coeli-error-10-15-2023.log', 'GET', this.$session.get('token'))
+            fetchApi(this.url+'utils/logs/ms-coeli-error.log', 'GET', this.$session.get('token'))
             .then(data => {
                 this.prendas = []
                 if(data.status == 401){ this.activarReboot = true }
