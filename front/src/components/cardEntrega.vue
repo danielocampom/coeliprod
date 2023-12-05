@@ -15,7 +15,9 @@
                 <p class="fw-light text-muted">Clave Cliente {{ claveCli }}</p>
                 <p class="fw-light text-muted">Folio {{ data.dt.numEnvio }}</p>
                 <p class="fw-light text-muted">Id Orden {{ data.dt.idOrden }}</p>
-                <p class="fw-light text-muted">Fecha Entrega {{ date }}</p>
+                <p class="fw-light text-muted">Entrega <b>{{ fecha(data.dt.fechaEntrega) }}</b></p>
+                <p class="fw-light text-muted">Llegada <b>{{ fecha(data.dt.fechaRecepcion) }}</b></p>
+                <p class="fw-light text-muted">Ultimo mov. {{ fecha(data.dt.prendas[0].ultimoEstado) }}</p>
                 <vs-button block primary @click="entregar(data.dt.idOrden)"> Entregar </vs-button>
                 <vs-button block success @click="mostraCliDetail"> Ver Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
@@ -155,7 +157,6 @@ export default {
         modalPrint: false,
         prendas: [],
         nomCli: '',
-        date: '',
         claveCli: '',
         render: true,
         pathname: window.location.pathname,
@@ -166,7 +167,6 @@ export default {
         loginComponent
     },
     mounted(){
-        this.date = moment(this.data.dt.fechaEntrega).format('MM/DD/YYYY');
         this.mostraCli()
         setTimeout(() => {
             this.render = false
@@ -178,6 +178,11 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        fecha(fechaLarga){
+            let fecha = fechaLarga.split("T")
+            moment.locale('es')
+            return moment(fecha[0]).format("LL")
         },
         prefijos(cadena){
             let terminacion = cadena.split(' ').slice(-1)[0]

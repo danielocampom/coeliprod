@@ -3,9 +3,11 @@
         <vs-alert danger >
             <b-skeleton v-if="!dataClient.nombreCliente" type="button"></b-skeleton>
             <div>
-                <p class="fw-bold fs-4">{{ dataClient.nombrePrenda }} </p> 
+                <p class="fw-bold fs-5">{{ dataClient.nombrePrenda }} </p> 
                 <p class="fw-semibold">{{ dataClient.nombreCliente }}</p>
                 <p class="fw-semibold">Numero Orden {{ dataClient.idOrdenLavado }}</p>
+                <p class="mt-2 mb-3">Fecha de Cancelacion <b>{{ fecha(dataClient.fechaCancelacion) }}</b></p>
+
             </div>
             <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
             <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
@@ -27,6 +29,7 @@
 <script>
 import { refreshSession } from "@/service/service.js"
 import loginComponent from './cardLogin.vue';
+import moment from 'moment'
 
 export default {
     name:"CardOrdenCanceladasComponent",
@@ -49,6 +52,11 @@ export default {
 
     },
     methods:{
+        fecha(fechaLarga){
+            let fecha = fechaLarga.split("T")
+            moment.locale('es')
+            return moment(fecha[0]).format("LL")
+        },
         refresh(){
             refreshSession(this.url ,this.$session.get('token')).then( data => {
                 this.$session.start()

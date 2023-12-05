@@ -41,7 +41,7 @@
             <template>
                 <b-row v-if="dataOrden.length > 0" lg="3" md="4" sm="6">
                         <b-col class="mt-4" v-for="(orden, i) in dataOrden" :key="i" >
-                            <CardOrdenCanceladasComponent @updatePage="updatePage" :dataClient="{id: orden.id, nombrePrenda: orden.nombrePrenda, nombreCliente: orden.nombreCliente, idUsuario: orden.idUsuario, descripcion: orden.descripcion, cantidadAnterior: orden.cantidadAnterior, cantidadActual: orden.cantidadActual, idOrdenLavado:orden.idOrdenLavado}"></CardOrdenCanceladasComponent>
+                            <CardOrdenCanceladasComponent @updatePage="updatePage" :dataClient="{id: orden.id, nombrePrenda: orden.nombrePrenda, nombreCliente: orden.nombreCliente, idUsuario: orden.idUsuario, descripcion: orden.descripcion, cantidadAnterior: orden.cantidadAnterior, cantidadActual: orden.cantidadActual, idOrdenLavado:orden.idOrdenLavado, fechaCancelacion: orden.fechaAlta}"></CardOrdenCanceladasComponent>
                         </b-col>
                 </b-row>
                 <vs-alert v-else danger>
