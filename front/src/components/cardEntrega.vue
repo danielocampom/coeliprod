@@ -17,7 +17,7 @@
                 <p class="fw-light text-muted">Id Orden {{ data.dt.idOrden }}</p>
                 <p class="fw-light text-muted">Entrega <b>{{ fecha(data.dt.fechaEntrega) }}</b></p>
                 <p class="fw-light text-muted">Llegada <b>{{ fecha(data.dt.fechaRecepcion) }}</b></p>
-                <p class="fw-light text-muted">Ultimo mov. {{ fecha(data.dt.prendas[0].ultimoEstado) }}</p>
+                <p class="fw-light text-muted">Tiempo Proceso {{ difFecha(data.dt.prendas[0].fechaAlta, data.dt.prendas[0].ultimoEstado) }}</p>
                 <vs-button block primary @click="entregar(data.dt.idOrden)"> Entregar </vs-button>
                 <vs-button block success @click="mostraCliDetail"> Ver Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
@@ -183,6 +183,23 @@ export default {
             let fecha = fechaLarga.split("T")
             moment.locale('es')
             return moment(fecha[0]).format("LL")
+        },
+        difFecha(inicio, final){
+            let fechaCortaI = inicio.split("T")
+            let fechaCortaF = final.split("T")
+            let fecha1 = moment(`${fechaCortaI[0]} ${fechaCortaI[1].split(".")[0]}`, "YYYY-MM-DD HH:mm:ss")
+            let fecha2 = moment(`${fechaCortaF[0]} ${fechaCortaF[1].split(".")[0]}`, "YYYY-MM-DD HH:mm:ss")
+            console.log(fecha2.diff(fecha1, 'h'))
+            let res = ''
+            let diff = fecha2.diff(fecha1, 'd')
+
+            if(diff == 0){
+                diff = fecha2.diff(fecha1, 'h');
+                res = diff+" hora(s)"
+            }else{
+                res = diff+" día(s)"
+            }
+            return res
         },
         prefijos(cadena){
             let terminacion = cadena.split(' ').slice(-1)[0]
