@@ -9,11 +9,13 @@
                 <p class="mt-2 mb-3">Fecha de Cancelacion <b>{{ fecha(dataClient.fechaCancelacion) }}</b></p>
 
             </div>
+            <b-skeleton v-if="render" type="avatar"></b-skeleton>
             <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
             <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
             <b-skeleton v-if="render" animation="throb" width="40%"></b-skeleton>
             
             <div v-else>
+                <btn_ticket_cancel :idOrdenPrenda="dataClient.idOrdenPrenda" />
                 {{dataClient.descripcion}} 
                 <p>Cantidad Anterior <b>{{dataClient.cantidadAnterior}}</b></p>
                 <p>Cantidad Actual <b>{{dataClient.cantidadActual}}</b></p> 
@@ -28,7 +30,8 @@
   
 <script>
 import { refreshSession } from "@/service/service.js"
-import loginComponent from './cardLogin.vue';
+import loginComponent from './cardLogin.vue'
+import btn_ticket_cancel from './btn_ticket_cancel.vue'
 import moment from 'moment'
 
 export default {
@@ -37,7 +40,8 @@ export default {
         dataClient: Object,
     },
     components: {
-        loginComponent
+        loginComponent,
+        btn_ticket_cancel
     },
     data: () => ({
 
@@ -49,7 +53,6 @@ export default {
         setTimeout(() => {
             this.render = false
         }, 1500)
-
     },
     methods:{
         fecha(fechaLarga){
