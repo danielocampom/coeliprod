@@ -6,7 +6,7 @@
         <b-container fluid class="mt-5">
             <b-card no-body>
                 <b-tabs card>
-                    <b-tab title="Nueva Orden" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'ENTRADAS'].includes(role))" active>
+                    <b-tab title="Nueva Orden" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'LLEGADA'].includes(role))" active>
                         <template>
                             <div>
                                 <b-row>
