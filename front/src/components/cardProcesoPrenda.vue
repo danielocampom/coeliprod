@@ -30,14 +30,17 @@
 
                 <div class="con-form">
                     <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
+                    <vs-button circle icon floating primary @click="imprimirTicket()">
+                        <box-icon name='printer' color="#fff"></box-icon>
+                    </vs-button>
 
                     <vs-input
-                        class="mt-5"
+                        class="mt-2"
                         v-model="cantidad"
                         label-placeholder="cantidad a ingresar"
                     />
                     <div class="con-selects" v-if="data.idTipoLavado">
-                        <vs-select style="max-width:100%!important;"  class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora" >
+                        <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
                             <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
                                 {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
                             </vs-option>
@@ -139,8 +142,7 @@ export default {
         modalIniciar: false,
         cancelPredas: false,
         borderColor: '',
-
-        
+        mensaje: '',
         detail: [],
         pasos: [],
         idPasos: [],  
@@ -160,6 +162,7 @@ export default {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda)
         }, 100)  
+
     },
     methods: {
         refresh(){
@@ -167,6 +170,25 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        async imprimirTicket(){
+            let objbuilder = ``
+            // this.modalPrint = true
+            // console.log(idOrdenPrena)
+            fetchApi(this.url+`orden/reportes/prenda/card/${this.data.idOrdenPrenda}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
+                    let win = window.open("about:blank", "Entrega", "width=900px,height=600px");
+                    let title = "Entrega";
+                    win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                    win.document.write(objbuilder);
+                    win.document.write('</body></html>');
+                }else{
+                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
+            })
         },
         prefijos(cadena){
             let terminacion = cadena.split(' ').slice(-1)[0]
@@ -179,6 +201,7 @@ export default {
             });
             return letras.join("")+terminacion
         },
+       
         calcularTiempoTranscurrido(fechaInicial){
             const fechaActual = new Date();
             const diferencia = fechaActual - fechaInicial;
@@ -291,10 +314,16 @@ input {
 
 </style>
 <style lang="stylus">
+
 getColor(colorx, alpha = 1)
     unquote("rgba(var(--vs-"+colorx+"), "+alpha+")")
 getVar(var)
     unquote("var(--vs-"+var+")")
+
+.alert-example
+    .vs-button--active
+        transform translate(0, -5px)
+        border-radius 0px 0px 12px 12px
 
 .content-tooltip
   .body

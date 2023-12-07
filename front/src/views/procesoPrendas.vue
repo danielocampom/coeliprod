@@ -5,8 +5,8 @@
     
         <b-container fluid class="mt-5">
             <template>
-                <b-tabs content-class="mt-3" align="center"  @click="updatePage(200)">
-                    <b-tab title="Por Procesar" active>
+                <b-tabs content-class="mt-3" align="center" >
+                    <b-tab title="Por Procesar" active @click="updatePage(200)">
                         <b-row>
                             <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
                                 <CardProcesoPrendaComponent @updatePage="updatePage" :data="{idOrdenLavado:cons.idOrdenLavado, estado:cons.idEstado, prenda:cons.nombrePrenda, idPrenda: cons.idPrenda, descripcionEstado:cons.descripcionEstado, cantidadPrendas:cons.cantidadPrendas, idPaso: cons.idPaso, idOrdenPrenda: cons.idOrdenPrenda, idTipoLavado: cons.idTipoLavado, nombrePaso: cons.nombrePaso, fechaInicio: cons.fechaInicio, nomCliente: cons.nomCliente, idHist:cons.idHist, infoLavadoras: cons.infoLavadoras}"></CardProcesoPrendaComponent>

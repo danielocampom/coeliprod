@@ -18,7 +18,7 @@
               <box-icon name='grid-alt'></box-icon> Llegada
           </router-link>
         </vs-navbar-item>
-        <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESO ORDEN'].includes(role))" id="procesoPrendas">
+        <vs-navbar-item :active=" isActive('/procesoPrendas')" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'PROCESO PRENDAS'].includes(role))" id="procesoPrendas">
           <router-link to="/procesoPrendas" class="nav-link">
               <box-icon name='briefcase'></box-icon> Proceso Prendas
           </router-link>
