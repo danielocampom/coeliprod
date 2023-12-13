@@ -11,8 +11,14 @@
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #d9534f !important` }" v-else :title="data.nomCliente" :sub-title="data.nombrePrenda">
             <strong>
-                Cantidad de Prendas {{ data.cantidad }}
+                Cantidad de Prendas {{ data.cantidadPrendas }}
             </strong>
+            <div class='badge bg-primary text-wrap float-end mb-2' >
+                Paso {{ data.npaso }}
+            </div>
+            <vs-button v-if="data.npaso == 1 || $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  circle icon floating primary @click="imprimirTicket(data.idHist)">
+                <box-icon name='printer' color="#fff"></box-icon>
+            </vs-button>
             <p>{{ date }}</p>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
@@ -35,7 +41,7 @@
                 </template>
                 <div class="con-form">
                     <template>
-                        <p>Cantidad <b>{{ data.cantidad }}</b></p>
+                        <p>Cantidad <b>{{ data.cantidadPrendas }}</b></p>
                         <div class="center content-inputs">
                             <vs-input danger type="text" v-model="motivoElim" label-placeholder="Describe el motivo">
                                 <template #icon>
@@ -140,7 +146,7 @@
 <script>
 import ConfirmComponent from '@/components/confirm.vue'
 import loginComponent from './cardLogin.vue';
-import { refreshSession } from "@/service/service.js"
+import { refreshSession, fetchApi } from "@/service/service.js"
 
 
 export default {
@@ -184,6 +190,25 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        async imprimirTicket(id){
+            let objbuilder = ``
+            // this.modalPrint = true
+            // console.log(idOrdenPrena)
+            fetchApi(this.url+`orden/reportes/prenda/card/${id}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
+                    let win = window.open("about:blank", "Entrega", "width=900px,height=600px");
+                    let title = "Entrega";
+                    win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                    win.document.write(objbuilder);
+                    win.document.write('</body></html>');
+                }else{
+                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
+            })
         },
         calcularTiempoTranscurrido(fechaInicial){
             const fechaActual = new Date();
@@ -336,7 +361,7 @@ export default {
             if(status == 200){
                 let token = this.$session.get('token')
 
-                let prenEliminadas = parseInt(this.data.cantidad)-parseInt(this.cantidadElim)
+                let prenEliminadas = parseInt(this.data.cantidadPrendas)-parseInt(this.cantidadElim)
 
                 if(prenEliminadas < 0){
                     this.openNotification( `No puedes Eliminar mas prendas de la cantidad asignada `, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)

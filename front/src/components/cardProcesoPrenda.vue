@@ -8,7 +8,10 @@
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"></b-skeleton>
         </b-card>        
-        <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.nomCliente" :sub-title="data.prenda">
+        <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.nomCliente" :sub-title="data.nombrePrenda">
+            <div class='badge bg-primary text-wrap float-end mb-2' >
+                Paso {{ data.npaso }}
+            </div>
             <strong>{{ data.descripcionEstado }}</strong>
             <br>
             <p v-if="this.data.fechaInicio">{{ date }}</p>
@@ -30,9 +33,7 @@
 
                 <div class="con-form">
                     <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
-                    <vs-button circle icon floating primary @click="imprimirTicket()">
-                        <box-icon name='printer' color="#fff"></box-icon>
-                    </vs-button>
+                    
 
                     <vs-input
                         class="mt-2"
@@ -170,25 +171,6 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
-        },
-        async imprimirTicket(){
-            let objbuilder = ``
-            // this.modalPrint = true
-            // console.log(idOrdenPrena)
-            fetchApi(this.url+`orden/reportes/prenda/card/${this.data.idOrdenPrenda}`, 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
-                    let win = window.open("about:blank", "Entrega", "width=900px,height=600px");
-                    let title = "Entrega";
-                    win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
-                    win.document.write(objbuilder);
-                    win.document.write('</body></html>');
-                }else{
-                    this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-                }
-            })
         },
         prefijos(cadena){
             let terminacion = cadena.split(' ').slice(-1)[0]

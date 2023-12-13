@@ -26,9 +26,6 @@
             </p>
         
         </b-card-text>
-        <vs-button primary block @click="imprimitPapeleta(idOrdenPrenda)">
-            imprimir papeleta
-        </vs-button>
         <vs-button success block @click="modalShowDetail = !modalShowDetail">
             Ver Detalles
         </vs-button>
@@ -162,21 +159,6 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
-        },
-        async imprimitPapeleta(id){
-            let objbuilder = ``
-            fetchApi(this.url+`orden/reportes/prenda/card/${id}`, 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
-                    let win = window.open("about:blank", "Hoja Ruta", "width=900px,height=600px");
-                    let title = "my tab title";
-                    win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
-                    win.document.write(objbuilder);
-                    win.document.write('</body></html>');
-                }
-            })
         },
         async dataCliente(){
             fetchApi(this.url+`cliente/findById/${this.data.idCiente}`, 'GET', this.$session.get('token'))

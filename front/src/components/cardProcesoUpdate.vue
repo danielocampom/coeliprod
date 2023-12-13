@@ -117,7 +117,7 @@
                                     <vs-button
                                         primary
                                         block
-                                        @click="editarPaso(paso.id, paso.orden)"
+                                        @click="editarPaso(paso)"
                                     >
                                         <box-icon name='edit' color="#fff"></box-icon >Editar
                                     </vs-button>
@@ -425,16 +425,16 @@ export default {
             this.activeDetalles = true
             this.$forceUpdate();
         },
-        editarPaso(id, ordenPaso = ''){
-            let dataPaso = this.pasos.find(objeto => objeto.id === id)
+        editarPaso(pasos){
+
             this.activeEditar = true
             this.activeEditarPaso = true
-            this.nombre = dataPaso.nombre
-            this.descripcion = dataPaso.descripcion
-            this.tipoLavado = dataPaso.idTipoLavado
-            this.idPaso = id 
-            this.ordenPaso = ordenPaso
-            dataPaso.rolesCambio.forEach( rol => {
+            this.nombre = pasos.nombre
+            this.descripcion = pasos.descripcion
+            this.tipoLavado = pasos.idTipoLavado
+            this.idPaso = pasos.id 
+            this.ordenPaso = pasos.orden
+            pasos.rolesCambio.forEach( rol => {
                 this.optionsRoles.push(''+rol) 
             });
             

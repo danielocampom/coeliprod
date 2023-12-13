@@ -5,22 +5,9 @@
         
         <div class="container">
             <b-row class="container">
-                <!-- <b-col md="6" sm="6">
-                    <div id="camera-container" class="mt-5 container">
-                        <video id="video" autoplay></video>
-                        <div v-if="showDetectionBox" :style="detectionBoxStyle" class="detection-box"></div>
-                    </div>
-                </b-col>                 -->
                 <b-col lg="5" md="12" sm="12" class="mt-5 container p-3">
                     <b-card title="Buscar estado de la prenda">
                                 
-                        <!-- <label for="Numero de la papeleta">Numero de la papeleta</label>
-                        <b-input-group class="mt-3">
-                            <b-form-input placeholder="Digita el Codigo de barras" type="number" v-model="buscarPrenda"></b-form-input>
-                            <b-input-group-append>
-                                <b-button @click="buscar" variant="primary"><box-icon name='search-alt-2' color="#fff"></box-icon></b-button>
-                            </b-input-group-append>
-                        </b-input-group> -->
                         <vs-input
                             primary
                             class="mt-4"
@@ -66,6 +53,7 @@
                             </v-timeline-item>
                             <br>
                             <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(pa, i) in pasosAnt" :key="i">
+                                
                                 <b-card :title="pa.nombre" :sub-title="pa.descripcion">
                                     <div class="badge bg-primary text-wrap float-end" >
                                         {{ pa.estado }}
@@ -84,13 +72,21 @@
                                         <label for="pasoProceso">
                                             <strong>Proceso: </strong>{{ pa.pasoProceso.nombre }}<br>
                                             <strong>Descripcion: </strong>{{ pa.pasoProceso.descripcion }}<br>
-                                            <strong>Personal Asignado: </strong>{{ pa.usuario }}<br>
-                                            <strong>Lavadora Asignada: </strong>{{ pa.lavadora }}<br>
+                                            <strong>Personal Asignado: </strong>{{ pa.nomUsuario }}<br>
+                                            <strong>Lavadora Asignada: </strong>{{ pa.nomLavadora }}<br>
+                                            <p v-if="pa.idEstado == 8" class="fw-light text-muted">Tiempo Proceso {{ difFecha(pa.fechaInicio, pa.fechaFin) }}</p>
+                                            <p v-else class="fw-light text-muted">En proceso</p>
                                         </label>
-                                        <label for="Auth" v-if="pa.requiereAutorizacion">
+
+                                        <label for="Auth" v-if="pa.autorizacion != null">
                                             <hr>
                                             <strong>Fecha de Autorizacion: </strong>{{ fecha(new Date(pa.autorizacion.fechaAutoriza)) }}<br>
-                                            <strong>Quien Autorizo: </strong>{{ pa.autorizacion.idUsuario }}<br>
+                                            <strong>Quien Autorizo: </strong>{{ pa.autorizacion.nomUsuario }}<br>
+
+                                        </label>
+                                        
+                                        <label for="Auth" v-else>
+                                            <hr>
 
                                         </label>
                                     </p>
@@ -121,9 +117,9 @@
   
 <script>
     import HeaderComponent from '@/components/Header.vue';
-    import Quagga from 'quagga';
     import loginComponent from '@/components/cardLogin.vue';
     import { refreshSession, fetchApi } from "@/service/service.js"
+    import moment from 'moment';
 
     export default {
         data:() => ({
@@ -168,6 +164,23 @@
             fecha(fecha){
                 const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
                 return new Date(fecha).toLocaleDateString(undefined, opciones);
+            },
+            difFecha(inicio, final){
+                let fechaCortaI = inicio.split("T")
+                let fechaCortaF = final.split("T")
+                let fecha1 = moment(`${fechaCortaI[0]} ${fechaCortaI[1].split(".")[0]}`, "YYYY-MM-DD HH:mm:ss")
+                let fecha2 = moment(`${fechaCortaF[0]} ${fechaCortaF[1].split(".")[0]}`, "YYYY-MM-DD HH:mm:ss")
+                // console.log(fecha2.diff(fecha1, 'h'))
+                let res = ''
+                let diff = fecha2.diff(fecha1, 'h')
+
+                if(diff == 0){
+                    diff = fecha2.diff(fecha1, 'm');
+                    res = diff+" min(s)"
+                }else{
+                    res = diff+" hora(s)"
+                }
+                return res
             },
             calcularTiempoTranscurrido(fechaInicial){
                 const fechaActual = new Date();
@@ -256,73 +269,7 @@
                     text: text
                 })
             },
-            requestCameraAccess() {
-                const videoElement = document.getElementById('video');
-        
-                navigator.mediaDevices
-                .getUserMedia({ video: true })
-                .then((stream) => {
-                    videoElement.srcObject = stream;
-                    this.startDetection();
-                })
-                .catch((error) => {
-                    console.error('Error al acceder a la cámara:', error);
-                });
-            },
-            startDetection() {
-                Quagga.init(
-                {
-                    inputStream: {
-                    name: 'Live',
-                    type: 'LiveStream',
-                    target: document.querySelector('#video'),
-                    },
-                    frequency: 10, // Ajusta la frecuencia según sea necesario
-                    decoder: {
-                    readers: ['code_128_reader', 'ean_reader', 'ean_8_reader'],
-                    },
-                },
-                (err) => {
-                    if (err) {
-                    console.error(err);
-                    return;
-                    }
-                    Quagga.start();
-                }
-                );
-        
-                Quagga.onDetected((result) => {
-                this.showDetectionBox = true;
-                const { codeResult, line } = result;
-        
-                const topLeft = line.reduce((acc, point) => {
-                    return {
-                    x: (point.x < acc.x) ? point.x : acc.x,
-                    y: (point.y < acc.y) ? point.y : acc.y,
-                    };
-                }, { x: Infinity, y: Infinity });
-        
-                const bottomRight = line.reduce((acc, point) => {
-                    return {
-                    x: (point.x > acc.x) ? point.x : acc.x,
-                    y: (point.y > acc.y) ? point.y : acc.y,
-                    };
-                }, { x: 0, y: 0 });
-        
-                this.detectionBoxStyle = {
-                    left: `${topLeft.x}px`,
-                    top: `${topLeft.y}px`,
-                    width: `${bottomRight.x - topLeft.x}px`,
-                    height: `${bottomRight.y - topLeft.y}px`,
-                };
-        
-                // También puedes tomar medidas adicionales, como mostrar el valor del código de barras detectado.
-                console.log(`Código de barras detectado: ${codeResult.code}`);
-                });
-            },
-        },
-        mounted() {
-            this.requestCameraAccess();
+            
         },
     };
 </script>
