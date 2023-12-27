@@ -16,7 +16,8 @@
                             v-model="buscarPrenda"
                             label-placeholder="Numero de la papeleta"
                             icon-after
-                            @click-icon="buscar">
+                            @click-icon="buscar"
+                            @keyup.enter="buscar">
                             <template #icon>
                                 <box-icon name='search-alt-2' color="#007bff"></box-icon>
                             </template>
@@ -52,7 +53,7 @@
                                 </template>
                             </v-timeline-item>
                             <br>
-                            <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(pa, i) in pasosAnt" :key="i">
+                            <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(pa, i) in pasosAnt" :key="'ant-' +i">
                                 
                                 <b-card :title="pa.nombre" :sub-title="pa.descripcion">
                                     <div class="badge bg-primary text-wrap float-end" >
@@ -92,7 +93,7 @@
                                     </p>
                                 </b-card>
                             </v-timeline-item>
-                            <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(pr, i) in pasosRestantes" :key="i">
+                            <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(pr, i) in pasosRestantes" :key="'rest-' +i">
                                 <b-card :title="pr.nombre" :sub-title="pr.descripcion"></b-card>
                             </v-timeline-item>
                         </v-timeline>
@@ -217,7 +218,9 @@
 
                 if(this.buscarPrenda != ''){
                     let t = this
-                    fetchApi(this.url+`orden/findByIdOrdenPrenda/${this.buscarPrenda}`, 'GET', this.$session.get('token'))
+                    let buscar = this.buscarPrenda.slice(0, -1)
+                    console.log(buscar)
+                    fetchApi(this.url+`orden/findByIdOrdenPrenda/${buscar}`, 'GET', this.$session.get('token'))
                     .then(data => {
                         if(data.status == 200){
                             this.mostrarInfo = true;
