@@ -16,12 +16,12 @@
                     <b-row>
                         <b-col md="6" sm="6">
                             <b-form-group class="mt-4" label="Selecciona la fecha inicio">
-                                <b-form-datepicker v-model="fechaInicio" :max="new Date()" @input="actualizarFechaFinal" required></b-form-datepicker>
+                                <b-form-datepicker :no-date-selected-text="'Seleccione una fecha'" v-model="fechaInicio" :max="new Date()" @input="actualizarFechaFinal" required></b-form-datepicker>
                             </b-form-group>
                         </b-col>
                         <b-col md="6" sm="6">
                             <b-form-group class="mt-4" label="Selecciona la fecha final">
-                                <b-form-datepicker v-model="fechaFinal" :min="fechaInicio" :max="calcularFechaMaxima()" required></b-form-datepicker>
+                                <b-form-datepicker :no-date-selected-text="'Seleccione una fecha'" v-model="fechaFinal" :min="fechaInicio" :max="calcularFechaMaxima()" required></b-form-datepicker>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -60,8 +60,8 @@ export default {
             personalizado: null
         },
         tipoReporte: 'semana',
-        fechaInicio: null,
-        fechaFinal: null,
+        fechaInicio: new Date(),
+        fechaFinal: new Date(),
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
     components: {
