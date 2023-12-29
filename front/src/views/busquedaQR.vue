@@ -9,6 +9,7 @@
                     <b-card title="Buscar estado de la prenda">
                                 
                         <vs-input
+                            ref="buscarPrenda"
                             primary
                             class="mt-4"
                             block
@@ -27,6 +28,7 @@
                     
                 </b-col>
                 <b-col lg="7" md="12" sm="12" class="mt-5 container p-3">
+                   
                     <div class="spinner text-center" v-if="showSpinner">
                         <box-icon name='loader-circle' animation='spin' flip='horizontal' size="7rem"></box-icon>
                     </div>
@@ -34,6 +36,10 @@
                         <div class="badge bg-success text-wrap float-end" >
                             {{ nombreEstado }}
                         </div>
+                        <label>
+                            Número de papeleta <br>
+                            <strong>{{ numeroPapeleta }}</strong>
+                        </label>
                         <p>
                             <label for="Ingreso">
                                 <strong>Ingreso: </strong> {{ fecha(new Date(fechaAlta)) }} 
@@ -127,6 +133,7 @@
             showSpinner: false,
             mostrarInfo: false,
             buscarPrenda: '',
+            numeroPapeleta: '',
             numeroOrden: '',
             cantidadTotal: '',
             nombreEstado: '',
@@ -218,11 +225,14 @@
 
                 if(this.buscarPrenda != ''){
                     let t = this
+                    this.numeroPapeleta = this.buscarPrenda
                     let buscar = this.buscarPrenda.slice(0, -1)
                     console.log(buscar)
                     fetchApi(this.url+`orden/findByIdOrdenPrenda/${buscar}`, 'GET', this.$session.get('token'))
                     .then(data => {
                         if(data.status == 200){
+                            
+
                             this.mostrarInfo = true;
 
                             this.cliente = data.datos.nomCliente
@@ -243,7 +253,12 @@
                                 pasos = dataPenda.datos.proceso.pasos
                                 const objetosFiltrados = pasos.filter(objeto => !idsPasos.includes(objeto.id));
                                 t.pasosRestantes = objetosFiltrados
+
+                                
                             })
+                            this.$refs.buscarPrenda.focus = true;
+
+                            this.buscarPrenda = ''
                         }else{
                             this.mostrarInfo = false;
 

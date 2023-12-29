@@ -215,6 +215,15 @@
             </router-link>
           </vs-sidebar-item>
     
+          <vs-sidebar-item :class="{ 'active': isActive('/reportes') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'REPORTES'].includes(role))" id="reportes" >
+            <template #icon>
+              <box-icon name='folder'></box-icon>
+            </template>
+            <router-link to="/reportes" class="nav-link">
+                Reportes
+            </router-link>
+          </vs-sidebar-item>
+
           <vs-sidebar-item id="cambioNip" >
             <template #icon >
               <box-icon name='dialpad-alt' @click="passModal"></box-icon>

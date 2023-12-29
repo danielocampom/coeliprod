@@ -19,6 +19,7 @@ const ROLES = {
   CONFIRMAORDEN: 'CONFIRMA ORDEN',
   PROCESOORDEN: 'PROCESO ORDEN',
   ALMACENENTREGA: 'ENTREGAS',
+  REPORTES: 'REPORTES',
   CANCELACION: 'CANCELACION',
   ROLES: 'ROLES',
   DEFAULT: 'DEFAULT',
@@ -173,6 +174,14 @@ const routes = [
     name: 'busqueda',
     component: () => import('../views/busquedaQR.vue'),
     meta: {requireAuth: true, roles:[ROLES.DEFAULT]}
+  },
+
+  
+  {
+    path: '/reportes',
+    name: 'reportes',
+    component: () => import('../views/reportes.vue'),
+    meta: {requireAuth: true, roles:[ROLES.SISTEMAS, ROLES.ADMIN, ROLES.REPORTES]}
   },
   
   {
