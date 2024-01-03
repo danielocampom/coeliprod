@@ -33,11 +33,9 @@
                         <box-icon name='loader-circle' animation='spin' flip='horizontal' size="7rem"></box-icon>
                     </div>
                     <b-card v-if="mostrarInfo" :title="cliente" :sub-title="cantidadTotal">
-                        <div class="badge text-wrap float-end" >
-                            <vs-button circle icon floating primary @click="imprimirTicket(idOrdenPrena)">
+                            <vs-button v-if="nombreEstado == 'TERMINADO'" circle icon floating primary @click="imprimirTicket(idOrdenPrena)">
                                 <box-icon name='printer' color="#fff"></box-icon>
                             </vs-button>
-                        </div>
                         <label>
                             Número de papeleta <br>
                             <strong>{{ numeroPapeleta }}</strong>
