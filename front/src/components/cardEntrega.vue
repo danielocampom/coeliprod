@@ -224,8 +224,6 @@ export default {
         },
         async imprimirTicket(idOrdenPrena){
             let objbuilder = ``
-            // this.modalPrint = true
-            // console.log(idOrdenPrena)
             fetchApi(this.url+`orden/reportes/prenda/${idOrdenPrena}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 401){ this.activarReboot = true }

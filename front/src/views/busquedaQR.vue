@@ -33,13 +33,18 @@
                         <box-icon name='loader-circle' animation='spin' flip='horizontal' size="7rem"></box-icon>
                     </div>
                     <b-card v-if="mostrarInfo" :title="cliente" :sub-title="cantidadTotal">
-                        <div class="badge bg-success text-wrap float-end" >
-                            {{ nombreEstado }}
+                        <div class="badge text-wrap float-end" >
+                            <vs-button circle icon floating primary @click="imprimirTicket(idOrdenPrena)">
+                                <box-icon name='printer' color="#fff"></box-icon>
+                            </vs-button>
                         </div>
                         <label>
                             Número de papeleta <br>
                             <strong>{{ numeroPapeleta }}</strong>
                         </label>
+                        <div class="badge bg-success text-wrap float-end" >
+                            {{ nombreEstado }}
+                        </div>
                         <p>
                             <label for="Ingreso">
                                 <strong>Ingreso: </strong> {{ fecha(new Date(fechaAlta)) }} 
@@ -132,6 +137,7 @@
         data:() => ({
             showSpinner: false,
             mostrarInfo: false,
+            idOrdenPrena: '',
             buscarPrenda: '',
             numeroPapeleta: '',
             numeroOrden: '',
@@ -172,6 +178,23 @@
             fecha(fecha){
                 const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
                 return new Date(fecha).toLocaleDateString(undefined, opciones);
+            },
+            async imprimirTicket(idOrdenPrena){
+                let objbuilder = ``
+                fetchApi(this.url+`orden/reportes/prenda/${idOrdenPrena}`, 'GET', this.$session.get('token'))
+                .then(data => {
+                    if(data.status == 401){ this.activarReboot = true }
+                    if(data.status == 200){
+                        objbuilder = `<embed type='application/pdf' width='100%' height='600px' style='margin-top: 35px; border: 1px solid #ccc;' src='data:application/pdf;base64,${data.datos.base64}'>`
+                        let win = window.open("about:blank", "Entrega", "width=900px,height=600px");
+                        let title = "Entrega";
+                        win.document.write('<html><title>'+ title +'</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+                        win.document.write(objbuilder);
+                        win.document.write('</body></html>');
+                    }else{
+                        this.openNotification('Ocurrio un error', `Al obtener los datosde imprecion`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    }
+                })
             },
             difFecha(inicio, final){
                 let fechaCortaI = inicio.split("T")
@@ -227,14 +250,13 @@
                     let t = this
                     this.numeroPapeleta = this.buscarPrenda
                     let buscar = this.buscarPrenda.slice(0, -1)
-                    console.log(buscar)
                     fetchApi(this.url+`orden/findByIdOrdenPrenda/${buscar}`, 'GET', this.$session.get('token'))
                     .then(data => {
                         if(data.status == 200){
                             
 
                             this.mostrarInfo = true;
-
+                            this.idOrdenPrena = data.datos.idOrdenPrena
                             this.cliente = data.datos.nomCliente
                             this.cantidadTotal = 'Cantidad total de prendas '+data.datos.cantidad
                             this.nombreEstado = data.datos.nombreEstado
