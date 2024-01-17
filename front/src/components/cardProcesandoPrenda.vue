@@ -22,6 +22,8 @@
             <p>{{ date }}</p>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
+            Lavadora {{ data.infoLavadora.lavadora }}
+            <br>
             <div class='badge bg-primary text-wrap float-end mb-2' >
                 {{ data.nombrePaso }}
             </div>
