@@ -224,11 +224,11 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item id="cambioNip" >
+          <vs-sidebar-item id="cambioNip">
             <template #icon >
-              <box-icon name='dialpad-alt' @click="passModal"></box-icon>
+              <box-icon name='dialpad-alt'  @click="passModal"></box-icon>
             </template>
-            Cambio de NIP
+            <b @click="passModal">Cambio de NIP</b>
           </vs-sidebar-item>
           
       </vs-sidebar-group>
@@ -244,21 +244,21 @@
               <div class="con-form">
                 <b-row>
                   <b-col lg="12" md="12" sm="12">
-                    <vs-input p class="mb-3" primary type="password" v-model="passNueva" label-placeholder="Contraseña Nueva">
+                    <vs-input p class="mb-3" pattern="[0-9]*" inputmode="numeric"  primary type="password" v-model="passNueva" label-placeholder="Contraseña Nueva">
                       <template #icon>
                         <box-icon type='solid' name='lock-open'></box-icon>
                       </template>
                     </vs-input>
                   </b-col>
                   <b-col lg="12" md="12" sm="12">
-                    <vs-input  class="mb-3" primary type="password" v-model="passConf" label-placeholder="Confirmar Contraseña">
+                    <vs-input  class="mb-3"  pattern="[0-9]*" inputmode="numeric" primary type="password" v-model="passConf" label-placeholder="Confirmar Contraseña">
                       <template #icon>
                         <box-icon type='solid' name='lock-open'></box-icon>
                       </template>
                     </vs-input>
                   </b-col>
                   <b-col lg="12" md="12" sm="12">
-                    <vs-input class="mb-3" primary type="password" v-model="passAct" label-placeholder="Contraseña Actual">
+                    <vs-input class="mb-3"  pattern="[0-9]*" inputmode="numeric" primary type="password" v-model="passAct" label-placeholder="Contraseña Actual">
                       <template #icon>
                         <box-icon type='solid' name='lock'></box-icon>
                       </template>
