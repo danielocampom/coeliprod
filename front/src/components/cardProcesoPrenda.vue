@@ -52,7 +52,8 @@
                 <template #footer>
                     <div class="footer-dialog">
                         <vs-button block @click="iniciar()">
-                            Iniciar
+                            <!-- <box-icon name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon> -->
+                            Iniciar 
                         </vs-button>
                     </div>
                 </template>
