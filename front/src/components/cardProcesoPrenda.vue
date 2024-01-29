@@ -14,14 +14,20 @@
             </div>
             <strong>{{ data.descripcionEstado }}</strong>
             <br>
+           
             <p v-if="this.data.fechaInicio">{{ date }}</p>
             <br v-else>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
+            <p class="mt-3" v-if="this.data.folio != null">Folio: {{ this.data.folio }}</p>
+            <strong v-if="this.data.fhAlta">Fecha Registro {{ obtenerFechaBonita(this.data.fhAlta) }}</strong>
+            <br>
+            <br>
+            <br>
             <div class="badge bg-primary text-wrap float-end" >
                 {{ data.nombrePaso }}
             </div>
-
+           
             <strong class="fw-light">Cantidad: {{ data.cantidadPrendas }}</strong>
             <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button>
             <vs-dialog blur  v-model="modalIniciar">
@@ -51,8 +57,8 @@
                 </div>
                 <template #footer>
                     <div class="footer-dialog">
-                        <vs-button block @click="iniciar()">
-                            <!-- <box-icon name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon> -->
+                        <vs-button block @click="iniciar()" :disabled="iniciarProceso">
+                            <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
                             Iniciar 
                         </vs-button>
                     </div>
@@ -150,6 +156,7 @@ export default {
         idPasos: [],  
         modalShowDetail: false,
         render: true,
+        iniciarProceso: false, 
         pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
@@ -172,6 +179,19 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        obtenerFechaBonita(fechaParametro) {
+            const fecha = new Date(fechaParametro);
+
+            const opciones = {
+                day: '2-digit',  
+                month: '2-digit',
+                year: 'numeric',
+            };
+
+            const formatoFecha = new Intl.DateTimeFormat('es-ES', opciones);
+
+            return formatoFecha.format(fecha);
         },
         prefijos(cadena){
             let terminacion = cadena.split(' ').slice(-1)[0]
@@ -217,37 +237,44 @@ export default {
       
         
         async iniciar(){
-            let token = this.$session.get('token')
+                this.iniciarProceso = true;
 
-            let json = {
-                "idOrdenPrenda": this.data.idOrdenPrenda,
-                "cantidad": this.cantidad,
-                "idPasoProceso": this.data.idPaso,
-                "idLavadora": this.tipoLavadora
-            };
-            let res = await fetch(this.url+"orden/proceso",{
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*",
-                    'Authorization': token
-                },
-                body: JSON.stringify(json)
-            })
-            let data = await res.json()
+                let token = this.$session.get('token')
 
-            if(data.status == 401){ this.activarReboot = true }
-            if(data.status == 200){
-                this.refresh()
-                this.modalIniciar = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
-                this.mostrarDetailPrendas(this.data.idPrenda)
-                this.$emit('updatePage', '200')
+                let json = {
+                    "idOrdenPrenda": this.data.idOrdenPrenda,
+                    "cantidad": this.cantidad,
+                    "idPasoProceso": this.data.idPaso,
+                    "idLavadora": this.tipoLavadora
+                };
+                let res = await fetch(this.url+"orden/proceso",{
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': "*",
+                        'Authorization': token
+                    },
+                    body: JSON.stringify(json)
+                })
+                let data = await res.json()
 
-            }else{
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.iniciarProceso = false;
 
-            }
+                    this.refresh()
+                    this.modalIniciar = false
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.mostrarDetailPrendas(this.data.idPrenda)
+                    this.$emit('updatePage', '200')
+
+                }else{
+                    this.iniciarProceso = false;
+                    console.log("entre")
+                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+
+                }
+                
         },
         async mostrarDetailPrendas(id){
             this.detail = []
