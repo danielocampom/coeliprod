@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-card :title="data.nombre" :sub-title="tipoLavado.nombre" v-if="reload">
-            <apexchart-all type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all>
+            <apexchart-all type="radialBar" :options="chartOptionsRadial" :series="seriesRadial"></apexchart-all> 
         </b-card>
         <b-card no-body class="overflow-hidden" v-else>
             <v-skeleton-loader
@@ -183,7 +183,7 @@ export default {
             stroke: {
               lineCap: 'round'
             },
-            labels: ['Capacidad'],
+            labels: ['Capacidad %',],
           },
 
         
@@ -226,5 +226,6 @@ body {
     border-radius: 1rem;
     /* height: 20rem; */
 }
+
 
 </style>
