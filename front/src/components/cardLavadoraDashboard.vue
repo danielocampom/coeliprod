@@ -209,8 +209,11 @@ export default {
         capacidad(id){
             fetchApi(this.url+`lavadora/capacidad/${id}`, 'GET', this.$session.get('token'))
             .then(dt => {
-                
-                this.seriesRadial = [dt.datos.porcentaje]
+              if(dt.datos.porcentaje > 100){
+                this.seriesRadial = [100]
+                }else{
+                  this.seriesRadial = [dt.datos.porcentaje]
+                }
             })
         }
     }

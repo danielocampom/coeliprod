@@ -270,7 +270,6 @@ export default {
 
                 }else{
                     this.iniciarProceso = false;
-                    console.log("entre")
                     this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
                 }

@@ -126,8 +126,8 @@
                                                 </vs-alert>
                                             </div>
                                             <div class="center" v-if="prendas.length > 0">
-                                                <vs-button block @click="add()">
-                                                    <box-icon name='save' color='#fbfbfb' ></box-icon> Guardar
+                                                <vs-button block @click="add()" :disabled="iniciarProceso">
+                                                    <box-icon name='save' color='#fbfbfb' ></box-icon> <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>Guardar
                                                 </vs-button>
                                             </div>
                                         </b-card>
@@ -144,7 +144,8 @@
                                         <cardLlegada @updatePage="updatePage" :data="{idCiente:orden.idCliente, prenda: prenda, fechaEntrega: orden.fechaEntrega, idOrden: orden.idOrden, totalOrdenes: orden.prendas.length}"></cardLlegada>
                                     </b-col>
                                 </b-row>  
-                                <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CONFIRMA ORDEN'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)">
+                                <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CONFIRMA ORDEN'].includes(role))" primary block @click="enviarDatos(orden.idOrden, orden.prendas)" :disabled="iniciarProceso">
+                                    <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
                                     Confirmar
                                 </vs-button>
                                 <vs-button danger v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" primary block @click="cancelar(orden.idOrden)">
@@ -198,6 +199,7 @@ export default {
         contador: 0,
         error: [],
         prendas: [],
+        iniciarProceso: false,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
     }),
@@ -269,6 +271,8 @@ export default {
             }
         },
         async enviarDatos(idOrden, prendas){
+            this.iniciarProceso = true;
+
             let ordenPrendas = []
             prendas.forEach( pr => {
                 ordenPrendas.push({"idOrdenPrenda": pr.idOrdenPrena, "cantidad": pr.cantidad})
@@ -296,8 +300,11 @@ export default {
                 this.openNotification(`Exito: Orden procesada`, `Se ha Enviado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 // ordenPrendas = []
                 this.mostrarOrdenes()
+                this.iniciarProceso = false;
+
             }else{
                 console.warn(data)
+                this.iniciarProceso = false;
                 this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
         },
@@ -350,6 +357,7 @@ export default {
             .catch(err => console.log(err))
         },
         async addPrenda(){
+
             let prenda = {
                 "id": this.contador,
                 "idPrenda": this.SelectPrenda,
@@ -368,6 +376,7 @@ export default {
                 this.contador++
                 this.cantidad = ''
                 this.SelectPrenda = ''
+
             }else{
                 this.openNotification(`Error: En los campos`, `${this.error}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
             }
@@ -376,6 +385,7 @@ export default {
             this.prendas = this.prendas.filter(pren => pren.id != id)
         },
         async add(){
+            this.iniciarProceso = true;
 
             this.sinData = false
 
@@ -411,7 +421,9 @@ export default {
                 this.refresh()
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                 this.updatePage(200)
+                this.iniciarProceso = false;
             }else{
+                this.iniciarProceso = false;
                 this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
 
             }
