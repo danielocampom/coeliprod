@@ -10,43 +10,44 @@
                             
                         <b-row>
                             <b-col class="mt-4" lg="12" md="12" sm="12">
-        <!-- Transición para animar la expansión/contracción -->
-        <transition name="scale-in-hor-left">
-            <b-card v-if="isExpanded" class="expanded-card">
-                <!-- Botón de cerrar -->
-                <div class="close-btn" @click="contractCard">
-                    <box-icon name='x' color="#007bff"></box-icon>
-                </div>
+                                <!-- Transición para animar la expansión/contracción -->
+                                <transition name="scale-in-hor-left">
+                                    <b-card v-if="isExpanded" class="expanded-card">
+                                        <!-- Botón de cerrar -->
+                                        <div class="close-btn" @click="contractCard">
+                                            <box-icon name='x' color="#007bff"></box-icon>
+                                        </div>
 
-                <!-- Título "Buscar Orden" -->
-                <h4 class="mb-4">Buscar Orden</h4>
+                                        <!-- Título "Buscar Orden" -->
+                                        <h4 class="mb-4">Buscar Orden</h4>
 
-                <!-- Campo de búsqueda -->
-                <vs-input
-                    ref="buscarPrenda"
-                    primary
-                    class="mt-4"
-                    block
-                    type="text"
-                    icon-after
-                >
-                    <template #icon>
-                        <box-icon name='search-alt-2' color="#007bff"></box-icon>
-                    </template>
-                </vs-input>
-            </b-card>
-        </transition>
+                                        <!-- Campo de búsqueda -->
+                                        <vs-input
+                                            ref="buscarPrenda"
+                                            primary
+                                            class="mt-4"
+                                            block
+                                            type="text"
+                                            icon-after
+                                            v-model="searchQuery"
+                                        >
+                                            <template #icon>
+                                                <box-icon name='search-alt-2' color="#007bff"></box-icon>
+                                            </template>
+                                        </vs-input>
+                                    </b-card>
+                                </transition>
 
-        <!-- Ícono de lupa (solo visible cuando el card no está expandido) -->
-        <div v-if="!isExpanded" class="icon-only" @click="expandCard">
-            <box-icon name='search-alt-2' color="#007bff"></box-icon>
-        </div>
-    </b-col>
-                            <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
+                                <!-- Ícono de lupa (solo visible cuando el card no está expandido) -->
+                                <div v-if="!isExpanded" class="icon-only" @click="expandCard">
+                                    <box-icon name='search-alt-2' color="#007bff"></box-icon>
+                                </div>
+                            </b-col>
+                            <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in filteredConsultas" :key="i">
                                 <CardProcesoPrendaComponent @updatePage="updatePage" :data="cons"></CardProcesoPrendaComponent>
                             </b-col>
                         </b-row>            
-                        <vs-alert class="mt-5" v-if="sinData" shadow danger>
+                        <vs-alert class="mt-5" v-if="filteredConsultas.length === 0" shadow danger>
                             <template #title>
                                 No se han encontrado datos
                             </template>
@@ -83,6 +84,8 @@ import loginComponent from '@/components/cardLogin.vue';
 
 export default {
     data: () => ({
+        searchQuery: "",
+        filteredConsultas: [],
         consultas: [],
         sinData: false,
         sinDataProcesando: false,
@@ -103,7 +106,7 @@ export default {
         })
     },
     mounted(){    
-        this.mostratConsultas()
+        this.mostratConsultas();
         
     },
     methods: {
@@ -125,43 +128,54 @@ export default {
         contractCard() {
             this.isExpanded = false; // Contrae el card
         },
-        async mostratConsultas(){
-            this.consultas = []
-            this.consultasProcesando = []
-            fetchApi(this.url+'orden/consulta', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    data.datos.forEach( value => {
-                        if(value.idEstado == null){
-                            this.consultas.push(value)
-                            this.sinData = false
+        filterConsultas() {
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase(); // Convertir a minúsculas para búsqueda insensible a mayúsculas
+                this.filteredConsultas = this.consultas.filter(consulta => {
+                    // Buscar en todas las propiedades relevantes
+                    return (
+                        (consulta.nomCliente && consulta.nomCliente.toLowerCase().includes(query)) ||
+                        (consulta.nombrePaso && consulta.nombrePaso.toLowerCase().includes(query)) ||
+                        (consulta.nombrePrenda && consulta.nombrePrenda.toLowerCase().includes(query))||
+                        (consulta.nombreSigPaso && consulta.nombreSigPaso.toLowerCase().includes(query))||
+                        (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
+                        (consulta.folio && consulta.folio.toLowerCase().includes(query))||
+                        (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))
+                    );
+                });
+            } else {
+                // Si no hay texto de búsqueda, muestra todas las cards
+                this.filteredConsultas = this.consultas;
+            }
 
-                        }else{
-                            this.consultasProcesando.push(value)
-                            this.sinDataProcesando = false
-
+        },
+        async mostratConsultas() {
+            this.consultas = [];
+            this.consultasProcesando = [];
+            fetchApi(this.url + 'orden/consulta', 'GET', this.$session.get('token'))
+                .then(data => {
+                    if (data.status == 401) { this.activarReboot = true; }
+                    if (data.status == 200) {
+                        data.datos.forEach(value => {
+                            if (value.idEstado == null) {
+                                this.consultas.push(value);
+                                this.sinData = false;
+                            } else {
+                                this.consultasProcesando.push(value);
+                                this.sinDataProcesando = false;
+                            }
+                        });
+                        // Actualiza filteredConsultas con los datos cargados
+                        this.filteredConsultas = this.consultas;
+                    } else {
+                        if (this.consultas.length == 0) {
+                            this.sinData = true;
                         }
-                    })
-                    if(this.consultas.length == 0 ){
-                        this.sinData = true
+                        if (this.consultasProcesando.length == 0) {
+                            this.sinDataProcesando = true;
+                        }
                     }
-                    if(this.consultasProcesando.length == 0 ){
-                        this.sinDataProcesando = true
-                    }
-                }else{
-                    if(this.consultas.length == 0 ){
-                        this.sinData = true
-                    }
-                    if(this.consultasProcesando.length == 0 ){
-                        this.sinDataProcesando = true
-                    }
-                    // this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-                }
-                
-            })
-
-           
+                });
         },
         updatePage(status){
             if(status == 200){
@@ -178,7 +192,14 @@ export default {
             text: text
           })
         }
-    }
+    },
+    watch: {
+        searchQuery() {
+            // Observa cambios en el texto de búsqueda y filtra las cards
+            this.filterConsultas();
+        },
+    },
+
 }
 </script>
 <style>
