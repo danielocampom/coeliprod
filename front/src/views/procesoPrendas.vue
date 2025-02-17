@@ -7,7 +7,41 @@
             <template>
                 <b-tabs content-class="mt-3" align="center" >
                     <b-tab title="Por Procesar" active @click="updatePage(200)">
+                            
                         <b-row>
+                            <b-col class="mt-4" lg="12" md="12" sm="12">
+        <!-- Transición para animar la expansión/contracción -->
+        <transition name="scale-in-hor-left">
+            <b-card v-if="isExpanded" class="expanded-card">
+                <!-- Botón de cerrar -->
+                <div class="close-btn" @click="contractCard">
+                    <box-icon name='x' color="#007bff"></box-icon>
+                </div>
+
+                <!-- Título "Buscar Orden" -->
+                <h4 class="mb-4">Buscar Orden</h4>
+
+                <!-- Campo de búsqueda -->
+                <vs-input
+                    ref="buscarPrenda"
+                    primary
+                    class="mt-4"
+                    block
+                    type="text"
+                    icon-after
+                >
+                    <template #icon>
+                        <box-icon name='search-alt-2' color="#007bff"></box-icon>
+                    </template>
+                </vs-input>
+            </b-card>
+        </transition>
+
+        <!-- Ícono de lupa (solo visible cuando el card no está expandido) -->
+        <div v-if="!isExpanded" class="icon-only" @click="expandCard">
+            <box-icon name='search-alt-2' color="#007bff"></box-icon>
+        </div>
+    </b-col>
                             <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in consultas" :key="i">
                                 <CardProcesoPrendaComponent @updatePage="updatePage" :data="cons"></CardProcesoPrendaComponent>
                             </b-col>
@@ -54,6 +88,7 @@ export default {
         sinDataProcesando: false,
         consultasProcesando: [],
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
+        isExpanded: false,
     }),
     components: {
         CardProcesoPrendaComponent,
@@ -77,6 +112,18 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        expandCard() {
+            this.isExpanded = true; // Expande el card
+            this.$nextTick(() => {
+                // Asegura que el campo de búsqueda esté en el DOM antes de enfocarlo
+                if (this.$refs.buscarPrenda && this.$refs.buscarPrenda.$el) {
+                    this.$refs.buscarPrenda.$el.querySelector('input').focus();
+                }
+            });
+        },
+        contractCard() {
+            this.isExpanded = false; // Contrae el card
         },
         async mostratConsultas(){
             this.consultas = []
@@ -165,4 +212,84 @@ input {
     width: 100%;
 }
 
+
+</style>
+
+<style scoped>
+/* Animación scale-in-hor-left */
+@keyframes scale-in-hor-left {
+    0% {
+        transform: scaleX(0);
+        transform-origin: 0% 0%;
+        opacity: 0;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: 0% 0%;
+        opacity: 1;
+    }
+}
+
+.scale-in-hor-left-enter-active {
+    animation: scale-in-hor-left 0.3s ease-out;
+}
+
+.scale-in-hor-left-leave-active {
+    animation: scale-in-hor-left 0.3s ease-out reverse;
+}
+
+/* Estilo del card cuando está expandido */
+.expanded-card {
+    width: 100%; /* Ocupa todo el ancho */
+    height: auto;
+    position: relative; /* Para posicionar el botón de cerrar */
+    padding-top: 40px; /* Espacio para el botón de cerrar */
+}
+
+/* Botón de cerrar */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    z-index: 1; /* Asegura que esté por encima del contenido */
+}
+
+.close-btn box-icon {
+    transition: transform 0.2s ease;
+}
+
+.close-btn:hover box-icon {
+    transform: scale(1.2); /* Efecto de escala al hacer hover */
+}
+
+/* Estilo inicial (solo ícono) */
+.icon-only {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto; /* Centrar el ícono */
+    background-color: #f8f9fa; /* Fondo para que se vea como un card */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.icon-only box-icon {
+    transition: transform 0.2s ease;
+}
+
+.icon-only:hover box-icon {
+    transform: scale(1.2); /* Efecto de escala al hacer hover */
+}
+
+/* Estilo del título "Buscar Orden" */
+h4 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #007bff; /* Color azul para coincidir con el ícono */
+    margin-bottom: 1rem; /* Espacio debajo del título */
+}
 </style>
