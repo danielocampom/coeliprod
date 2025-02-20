@@ -276,7 +276,6 @@ export default {
         searchQuery() {
             // Observa cambios en el texto de búsqueda y filtra las cards
             this.filterConsultas();
-            this.filterConsultasP();
         },
         searchQueryP() {
             // Observa cambios en el texto de búsqueda y filtra las cards
