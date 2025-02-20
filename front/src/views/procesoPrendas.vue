@@ -140,7 +140,9 @@ export default {
                         (consulta.nombreSigPaso && consulta.nombreSigPaso.toLowerCase().includes(query))||
                         (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
-                        (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))
+                        (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
+                        (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
+                        (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );
                 });
             } else {
@@ -183,6 +185,19 @@ export default {
             if(status == 200){
                 this.mostratConsultas()
             }
+        },
+        obtenerFechaBonita(fechaParametro) {
+            const fecha = new Date(fechaParametro);
+
+            const opciones = {
+                day: '2-digit',  
+                month: '2-digit',
+                year: 'numeric',
+            };
+
+            const formatoFecha = new Intl.DateTimeFormat('es-ES', opciones);
+
+            return formatoFecha.format(fecha);
         },
         openNotification( title, text, color, position = null, icon) {
           this.$vs.notification({
