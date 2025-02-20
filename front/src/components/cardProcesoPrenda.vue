@@ -85,7 +85,10 @@
                                     <strong>{{ detail.nombre }}</strong>
                                 </div>
                             </div>
-                            cantidad: <b>{{ detail.cantidadBolsa }}</b> <br>
+                            cantidad por bolsa: <b>{{ detail.cantidadBolsa }}</b> <br>
+                            cantidad prendas: <b>{{ data.cantidadPrendas }}  <box-icon name='edit' color="#0d6efd" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" @click="editCantidades"></box-icon></b>
+                           
+                            <br>
                             tipo de lavado:<b> {{detail.proceso.nombre}} ({{ detail.proceso.codigo}})</b> 
                             <br>
                             <hr>
@@ -173,6 +176,51 @@
                 </template>
                 <ConfirmComponent @confirm="regresando"/>
             </vs-dialog>
+            <vs-dialog blur v-model="editCount">
+                <template #header>
+                    <h4 class="not-margin">
+                        deseas modificar la cantidad de <b>{{data.nombrePrenda}}?</b>
+                    </h4>
+                </template>
+                <div class="con-form">
+                    <template>
+                        <p>Cantidad <b>{{ data.cantidadPrendas }}</b></p>
+                        <div class="center content-inputs">
+                            <vs-input danger type="text" v-model="motivoElim" label-placeholder="Describe el motivo">
+                                <template #icon>
+                                    <box-icon name='rename'></box-icon>
+                                </template>
+                            </vs-input>
+                        </div>
+                        <div class="center content-inputs">
+                            <vs-input danger type="number" v-model="cantidadElim" label-placeholder="Digita una cantidad">
+                                <template #icon>
+                                    <box-icon name='dialpad-alt' ></box-icon>
+                                </template>
+                            </vs-input>
+                        </div>
+                    </template>
+                </div>
+
+                <template #footer>
+                    <div class="con-footer mt-4">
+                        <vs-button danger
+                            block
+                            flat
+                            @click="comfirmCount=!comfirmCount">
+                            Modificar
+                        </vs-button>
+                    </div>
+                </template>
+            </vs-dialog>
+            <vs-dialog v-model="comfirmCount">
+                <template #header>
+                    <h4 class="not-margin">
+                        Estas seguro que deseas <b>Modifcar la Cantidad?</b>
+                    </h4>
+                </template>
+                <ConfirmComponent @confirm="modificarCount"/>
+            </vs-dialog>
             
         </b-card>
         <div v-if="activarReboot">
@@ -211,7 +259,10 @@ export default {
         render: true,
         iniciarProceso: false, 
         movePaso: false,
+        editCount: false,
+        comfirmCount: false,
         comfirm: false,
+        textAlertConfirm: '',
         pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
     }),
@@ -249,6 +300,16 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        editCantidades(){
+            this.textAlertConfirm = 
+            this.editCount = true;
+            this.modalShowDetail= false;
+        },
+        async modificarCount(){
+            if(status == 200){
+                console.log("modificarCantidad...")
+            }
         },
         selectPaso(){
             if(this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))){
