@@ -266,7 +266,7 @@ export default {
         },
         cancel(){
             this.modalShowDetail = false
-            this.cancelPredas = false
+            // this.cancelPredas = false
             this.cancelPredas = true
         },
         autorizar(id){

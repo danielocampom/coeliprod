@@ -147,6 +147,8 @@ export default {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultas = this.consultas;
             }
+            console.log(this.filteredConsultas)
+
 
         },
         async mostratConsultas() {
