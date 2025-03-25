@@ -177,6 +177,7 @@ export default {
                         (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
                         (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
+                        (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))||
                         (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
                         (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );
@@ -202,6 +203,7 @@ export default {
                         (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
                         (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
+                        (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))||
                         (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
                         (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );
@@ -221,14 +223,19 @@ export default {
                 .then(data => {
                     if (data.status == 401) { this.activarReboot = true; }
                     if (data.status == 200) {
-                        data.datos.forEach(value => {
-                            if (value.idEstado == null) {
+                        
+                        data.datos.pendientes.forEach(value => {
+                            // if (value.idEstado == null) {
                                 this.consultas.push(value);
                                 this.sinData = false;
-                            } else {
+                            // } else {
+                            //     this.consultasProcesando.push(value);
+                            //     this.sinDataProcesando = false;
+                            // }
+                        });
+                        data.datos.maquinadas.forEach(value => {
                                 this.consultasProcesando.push(value);
                                 this.sinDataProcesando = false;
-                            }
                         });
                         // Actualiza filteredConsultas con los datos cargados
                         this.filteredConsultas = this.consultas;

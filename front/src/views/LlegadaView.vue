@@ -413,7 +413,7 @@ export default {
             let json = {
                 "idCliente": this.SelectCliente,
                 "fechaEntrega": this.fechaEntrega,
-                "FechaEntrada": fechaOptional,
+                "fechaRecepcion": fechaOptional,
                 "ordenPrendas": this.prendas,
                 "numEnvio": this.folio
 

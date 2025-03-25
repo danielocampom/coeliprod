@@ -9,6 +9,63 @@
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"></b-skeleton>
         </b-card>        
         <b-card :style="{ 'border-left': `solid 5px #0d6efd !important` }" v-else :title="data.nomCliente" :sub-title="data.nombrePrenda">
+           
+
+            <div class="fixed">
+                <!-- Botón del dropdown -->
+                <b-dropdown 
+                    v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" 
+
+                    class="top"
+                    variant="outline-light" 
+                    toggle-class="text-decoration-none" 
+                    no-caret
+                    right  
+                    >
+                    <template #button-content>
+                        <box-icon name='dots-vertical-rounded'></box-icon>
+                    </template>
+
+                    <!-- Opciones del dropdown -->
+                    <!-- <b-dropdown-item @click="modalIniciarDropDown = true">
+                        <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()">Cancelar Prenda</vs-button>
+
+                    </b-dropdown-item> -->
+                    <vs-tooltip>
+                        <b-dropdown-item @click="openOrdenLavado=!openOrdenLavado">
+                            Cancelar orden de lavado
+                        </b-dropdown-item>
+                        <template #tooltip>
+                            Cancela el embarque completo
+                        </template>
+                    </vs-tooltip>
+
+                    <vs-tooltip>
+                        <b-dropdown-item @click="openOrdenPrenda=!openOrdenPrenda">
+                            Cancelar orden de prenda
+                        </b-dropdown-item>
+                        <template #tooltip>
+                                Cancela unicamente la orden sobre esta prenda
+                        </template>
+                    </vs-tooltip>
+
+
+                    <vs-tooltip>
+                        <b-dropdown-item 
+                            @click="openregresaPaso=!openregresaPaso"
+                        >
+                            Regresar paso 
+                        </b-dropdown-item>
+                        <template #tooltip>
+                                Regresa especificamente al paso anterior
+                        </template>
+
+                    </vs-tooltip>
+                </b-dropdown>
+
+            </div>
+
+           
             <div class='badge bg-primary text-wrap float-end mb-2'>
                 Paso {{ data.npaso }}
             </div>
@@ -32,7 +89,6 @@
            
             <strong class="fw-light">Cantidad: {{ data.cantidadPrendas }}</strong>
             <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button>
-            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
 
             <vs-dialog blur  v-model="modalIniciar">
                 <template #header>
@@ -176,6 +232,31 @@
                 </template>
                 <ConfirmComponent @confirm="regresando"/>
             </vs-dialog>
+            
+            <vs-dialog v-model="openOrdenLavado">
+                <template #header>
+                    <h4 class="not-margin">
+                        Estas seguro que Deseas cancelar <b>el embarque Completo?</b>
+                    </h4>
+                </template>
+                <ConfirmComponent @confirm="cancelOrdenLavado"/>
+            </vs-dialog>
+            <vs-dialog v-model="openOrdenPrenda">
+                <template #header>
+                    <h4 class="not-margin">
+                        Estas seguro que Deseas cancelar <b>la orden sobre esta prenda?</b>
+                    </h4>
+                </template>
+                <ConfirmComponent @confirm="cancelOrdenPrenda"/>
+            </vs-dialog>
+            <vs-dialog v-model="openregresaPaso">
+                <template #header>
+                    <h4 class="not-margin">
+                        Estas seguro que Deseas <b>Regresarlo?</b>
+                    </h4>
+                </template>
+                <ConfirmComponent @confirm="regresarPaso"/>
+            </vs-dialog>
             <vs-dialog blur v-model="editCount">
                 <template #header>
                     <h4 class="not-margin">
@@ -241,6 +322,11 @@ export default {
         data: Object,
     },
     data: () => ({
+        openOrdenLavado: false,
+        openOrdenPrenda: false,
+        openregresaPaso: false,
+        modalIniciarDropDown: false,
+        modalShowDetailDropDown: false,
         date: '',
         cantidad: '',
         motivoElim: '',
@@ -327,6 +413,7 @@ export default {
             this.cancelPredas = false
             this.cancelPredas = true
         },
+        
         async cancelPrednas(status){
             if(status == 200){
                 let token = this.$session.get('token')
@@ -341,7 +428,7 @@ export default {
                         "mensaje": this.motivoElim,
                         "cantidadCancela": this.cantidadElim,
                         "idOrdenPrenda": this.data.idOrdenPrenda,
-                        "idHist": this.data.idHist
+                        "idHist": this.data.idHist ? this.data.idHist : 0
 
                     };
                     
@@ -367,6 +454,96 @@ export default {
                     }else{
                         this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                     }
+                }
+            }
+        },
+        async cancelOrdenLavado(status){
+            if(status == 200){
+                console.log("entre")
+                let token = this.$session.get('token')
+    
+                let res = await fetch(`${this.url}orden/delete/${this.data.idOrdenLavado}`,{
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': "*",
+                        'Authorization': token
+                    },
+                })
+                let data = await res.json()
+    
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.refresh()
+                    this.comfirm = false
+                    this.openOrdenLavado = false
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.$emit('updatePage', '200')
+                }else{
+                    this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
+            }
+        },
+        async cancelOrdenPrenda(status){
+            if(status == 200){
+
+                let token = this.$session.get('token')
+    
+                let res = await fetch(`${this.url}orden/delete/ordenprenda/${this.data.idOrdenPrenda}`,{
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': "*",
+                        'Authorization': token
+                    },
+                })
+                let data = await res.json()
+    
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.refresh()
+                    this.comfirm = false
+                    this.openOrdenPrendas = false
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.$emit('updatePage', '200')
+                }else{
+                    this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                }
+            }
+        },
+        async regresarPaso(status){
+            if(status == 200){
+                let token = this.$session.get('token')
+    
+                let json = {
+                    "mensaje": this.motivoElim,
+                    "cantidadCancela": 0,
+                    "idOrdenPrenda": 0,
+                    "idHist": this.data.idHist ? this.data.idHist : 0
+    
+                };
+    
+                let res = await fetch(`${this.url}orden/paso/return`,{
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': "*",
+                        'Authorization': token
+                    },
+                    body: JSON.stringify(json)
+    
+                })
+                let data = await res.json()
+    
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.refresh()
+                    this.comfirm = false
+                    this.openregresaPaso = false
+                    this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                    this.$emit('updatePage', '200')
+                }else{
+                    this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }
         },
@@ -496,7 +673,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 body {
     font-family: "Poppins", sans-serif;
     height: 100vh;
@@ -515,6 +692,40 @@ input {
     min-height: 4rem !important;
 }
 
+.dropdown-menu {
+  border-radius: 8px !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+ul .dropdown-menu .show{
+    position: absolute;
+    transform: translate3d(-5px, 44px, 0px);
+    top: 0px;
+    right: 0px !important;
+    will-change: transform;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.mt{
+    margin-top: -4.5rem;
+}
+
+.fixed{
+    display: flex;
+}
+.top{
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
 </style>
 <style lang="stylus">
 
