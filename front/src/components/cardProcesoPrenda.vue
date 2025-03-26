@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div >
         <b-card  v-if="render">
             <b-skeleton animation="throb" width="85%"></b-skeleton>
             <b-skeleton animation="throb" width="55%"></b-skeleton>
@@ -8,7 +8,7 @@
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"></b-skeleton>
         </b-card>
-                
+              
         <b-card 
             draggable="true"
             @dragstart="dragStart($event, data)"
@@ -97,6 +97,8 @@
             <div class='badge bg-primary text-wrap float-end mb-2'>
                 Paso {{ data.npaso }}
             </div>
+
+            
             
 
             <strong>{{ data.descripcionEstado }}</strong>
@@ -106,7 +108,26 @@
             <br v-else>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
-            <p class="mt-3" v-if="this.data.folio != null">Folio: {{ this.data.folio }}</p>
+            <p class="mt-3" v-if="this.data.folio != null">
+                Folio: {{ this.data.folio }}
+            </p>
+            
+            <div v-if="cardAdd.length > 0">
+                <div 
+                class="badge bg-primary text-wrap float-start m-1 " 
+                v-for="(card, i) in cardAdd" 
+                :key="i"
+                >
+                    <vs-tooltip>
+                        {{ card.folioMerged }} / {{ card.cantidadPrendasConbinar }}
+                        <template #tooltip>
+                            el folio {{ card.folioMerged }} se a combinado con este lavado con la cantidad de {{ card.cantidadPrendasConbinar }} prendas
+                        </template>
+                    </vs-tooltip>
+                </div>
+                <br>
+            </div>
+            <br>
             <strong v-if="this.data.fhAlta">Fecha Registro {{ obtenerFechaBonita(this.data.fhAlta) }}</strong> <br>
             <strong v-if="this.data.fechaEntrega">Fecha Entrega {{ obtenerFechaBonita(this.data.fechaEntrega) }}</strong>
             <br>
@@ -116,44 +137,62 @@
                 {{ data.nombrePaso }}
             </div>
            
-            <strong class="fw-light">Cantidad: {{ data.cantidadPrendas }}</strong>
+            <strong class="fw-light">
+                Cantidad: {{ parseInt(data.cantidadPrendas)+parseInt(cantidadTotal) }}
+                <!-- <vs-tooltip>
+                    <template #tooltip>
+                        la Cantidad inicial es de {{ data.cantidadPrendas }} prendas
+                    </template>
+                </vs-tooltip> -->
+            </strong>
+
             <div class="mt-auto">
-                <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button>
-    
-                <vs-dialog blur  v-model="modalIniciar">
-                    <template #header>
-                        <h4 class="not-margin">
-                            Iniciar <b>Proceso</b>
-                        </h4>
-                    </template>
-    
-                    <div class="con-form">
-                        <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
-                        
-    
-                        <vs-input
-                            class="mt-2"
-                            v-model="cantidad"
-                            label-placeholder="cantidad a ingresar"
-                        />
-                        <div class="con-selects" v-if="data.idTipoLavado">
-                            <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
-                                <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
-                                    {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
-                                </vs-option>
-                            </vs-select>
+                <div v-if="cardAdd.length > 0">
+                    <vs-tooltip>
+                        <vs-button block flat warn > Iniciar proceso conbinado </vs-button> 
+                        <template #tooltip>
+                            Inicia el lavado conbinado indicando la cantidad de folios 
+                        </template>
+                    </vs-tooltip>
+                </div>
+                <div v-else>
+                    <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button> 
+                    <vs-dialog blur  v-model="modalIniciar">
+                        <template #header>
+                            <h4 class="not-margin">
+                                Iniciar <b>Proceso</b>
+                            </h4>
+                        </template>
+        
+                        <div class="con-form">
+                            <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
+                            
+        
+                            <vs-input
+                                class="mt-2"
+                                v-model="cantidad"
+                                label-placeholder="cantidad a ingresar"
+                            />
+                            <div class="con-selects" v-if="data.idTipoLavado">
+                                <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
+                                    <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
+                                        {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
+                                    </vs-option>
+                                </vs-select>
+                            </div>
+                            
                         </div>
-                        
-                    </div>
-                    <template #footer>
-                        <div class="footer-dialog">
-                            <vs-button block @click="iniciar()" :disabled="iniciarProceso">
-                                <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
-                                Iniciar 
-                            </vs-button>
-                        </div>
-                    </template>
-                </vs-dialog>
+                        <template #footer>
+                            <div class="footer-dialog">
+                                <vs-button block @click="iniciar()" :disabled="iniciarProceso">
+                                    <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
+                                    Iniciar 
+                                </vs-button>
+                            </div>
+                        </template>
+                    </vs-dialog>
+                </div>
+
                 <vs-button block flat success @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
                     <template #modal-header="{ close }">
@@ -210,6 +249,38 @@
                     
                 </b-modal>
             </div>
+
+            <vs-dialog blur v-model="cantidadCobinado">
+                <template #header>
+                    <h4 class="not-margin">
+                        Seguro que deseas fucionar <b>{{ nombres1 }} </b> con <b> {{ nombres2 }}</b>
+                    </h4>
+                </template>
+                <div class="con-form">
+                    <template>
+                        <p>Cantidad <b>{{ catidades }}</b></p>
+                        
+                        <div class="center content-inputs">
+                            <vs-input danger type="number" v-model="cantidadPrendasConbinar" label-placeholder="Digita una cantidad">
+                                <template #icon>
+                                    <box-icon name='dialpad-alt' ></box-icon>
+                                </template>
+                            </vs-input>
+                        </div>
+                    </template>
+                </div>
+
+                <template #footer>
+                    <div class="con-footer mt-4">
+                        <vs-button primary
+                            block
+                            flat
+                            @click="confirmMerge">
+                            confirmar
+                        </vs-button>
+                    </div>
+                </template>
+            </vs-dialog>
 
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
@@ -393,6 +464,15 @@ export default {
         textAlertConfirm: '',
         pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
+        cardAdd: [],
+        folioKey: '',
+        cantidadCobinado: false,
+        cantidadPrendasConbinar: '',
+        nombres1:'',
+        nombres2:'',
+        catidades:'',
+        folioMerged: '',
+        cantidadTotal: 0,
     }),
     computed: {
         
@@ -402,6 +482,7 @@ export default {
         ConfirmComponent,
 
     },
+    
     watch: {
         data: {
             immediate: true, // Coma añadida aquí
@@ -410,7 +491,8 @@ export default {
                     this.mostrarDetailPrendas(newVal.idPrenda);
                 }
             }
-        }
+        },
+        
     },
     mounted(){
         let fecha=new Date(this.data.fechaInicio);
@@ -420,7 +502,10 @@ export default {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda)
         }, 100)  
-
+        this.cardAdd = JSON.parse(localStorage.getItem(this.data.folio)) ? JSON.parse(localStorage.getItem(this.data.folio)) : []
+        this.cardAdd.forEach(cantidad => {
+            this.cantidadTotal += cantidad.cantidadPrendasConbinar
+        })
     },
     methods: {
         refresh(){
@@ -430,6 +515,15 @@ export default {
             }) 
         },
     
+        confirmMerge(){
+            this.cardAdd.push({folioMerged: this.folioMerged, cantidadPrendasConbinar: this.cantidadPrendasConbinar})
+            localStorage.setItem(this.folioKey, JSON.stringify(this.cardAdd))
+            this.cardAdd.forEach(cantidad => {
+                this.cantidadTotal += cantidad.cantidadPrendasConbinar
+            })
+            this.cantidadCobinado = false
+            this.cantidadPrendasConbinar = ''
+        },
         dragStart(event, item) {
             this.isDragging = true;
             this.draggedItem = item
@@ -481,11 +575,18 @@ export default {
                 if (this.hoveredItem.idTipoLavado === data.idTipoLavado) {
                     // Si la validación es correcta, muestra la animación de éxito
                     this.$set(this.hoveredItem, 'isValid', true);
-                    
+                    this.folioKey = this.hoveredItem.folio
                     // Agrega animación de éxito a la tarjeta
+                    this.nombres1 = this.hoveredItem.nomCliente +' Folio '+this.hoveredItem.folio
                     this.$nextTick(() => {
                         const cardElement = event.target.closest('.card');
                         if (cardElement) {
+                            this.folioMerged = data.folio
+                            this.cantidadCobinado = true
+                            this.nombres2 = data.nomCliente +' Folio '+data.folio
+                            this.catidades = data.cantidadPrendas
+                            
+                            // localStorage.setItem(data.folio, true)
                             cardElement.classList.add('card-success');
                             // Quitar la clase después de la animación para permitirla repetir
                             setTimeout(() => {
