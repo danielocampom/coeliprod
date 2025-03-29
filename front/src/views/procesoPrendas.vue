@@ -9,7 +9,7 @@
                     <b-tab title="Por Procesar" active @click="updatePage(200)">
                             
                         <b-row>
-                            <b-col class="mt-4" lg="12" md="12" sm="12">
+                            <b-col class="" lg="12" md="12" sm="12">
                                 <!-- Transición para animar la expansión/contracción -->
                                 <transition name="scale-in-hor-left">
                                     <b-card v-if="isExpanded" class="expanded-card">
@@ -43,8 +43,63 @@
                                     <box-icon name='search-alt-2' color="#007bff"></box-icon>
                                 </div>
                             </b-col>
+                            <b-col class="" lg="12" md="12" sm="12">
+                            
+                                <div 
+                                    class="drop-zone"
+                                    @dragover.prevent
+                                    @dragenter="onDragEnter"
+                                    @dragleave="onDragLeave"
+                                    @drop="onDrop"
+                                    ref="dropZone"
+                                    :class="{
+                                        'dragging': isDragging,
+                                        'card-error': showError,
+                                        'card-success': showSuccess
+                                    }"
+                                    >
+                                    <div class="icon-only-drop icon-only">
+                                        <vs-avatar badge badge-color="success" badge-position="top-right">
+                                            <template #badge>
+                                                {{droppedItemsCount}}
+                                            </template>
+                                            <box-icon type='solid' name='washer' color="#007bff"></box-icon>
+                                        </vs-avatar>
+                                    </div>
+                                    <b-row class="mt-2">
+                                        <b-col  v-for="(prenda, i) in prendas" :key="i">
+                                            
+                                            <b-card :title="prenda.nombreCliente" 
+                                            :sub-title="prenda.prenda">
+                                            <div class="fixed">
+                                                <div class="top m-2" @click="eliminar(i+1)" style="cursor: pointer;">
+                                                    <box-icon name='trash' type='solid' color="rgb(242, 19, 93)" ></box-icon>
+                                                </div>
+                                            </div>
+                                            <p class="text-center">
+                                                Folio: {{ prenda.folio }} <br>
+                                                cantidad: {{ prenda.cantidad }} <br>
+                                                Tipo Lavado: {{ prenda.tipoLavado }}
+                                            </p>
+                                            </b-card>
+                                        </b-col>
+                                    </b-row>
+                                </div>
+                            </b-col>
+
                             <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cons, i) in filteredConsultas" :key="i">
-                                <CardProcesoPrendaComponent @updatePage="updatePage" :data="cons"></CardProcesoPrendaComponent>
+                                <div 
+                                    class="card-wrapper"
+                                    draggable="true"
+                                    @dragstart="onDragStart($event, cons)"
+                                    @dragend="onDragEnd"
+                                    
+                                >
+                                    <CardProcesoPrendaComponent 
+                                        @updatePage="updatePage" 
+                                        :data="cons"
+                                    />
+                                </div>
                             </b-col>
                         </b-row>            
                         <vs-alert class="mt-5" v-if="filteredConsultas.length === 0" shadow danger>
@@ -90,7 +145,7 @@
                                 </div>
                             </b-col>
                             <b-col class="mt-4" lg="3" md="4" sm="6" v-for="(cp, i) in filteredConsultasP" :key="i">
-                                <CardProcesandoPrendaComponent v-if="cp.idEstado" @updatePage="updatePage" :data="cp"></CardProcesandoPrendaComponent>
+                                <CardProcesandoPrendaComponent @updatePage="updatePage" :data="cp"></CardProcesandoPrendaComponent>
                             </b-col>
                         </b-row>            
                         <vs-alert class="mt-5" v-if="filteredConsultasP.length === 0" shadow danger>
@@ -100,6 +155,41 @@
                         </vs-alert>
                     </b-tab>
                 </b-tabs>
+
+                <vs-dialog blur v-model="cantidadCobinado">
+                    <template #header>
+                        <h4 class="not-margin">
+                            Seguro que deseas agregar <b> la orden? </b>
+                        </h4>
+                    </template>
+                    <div class="con-form">
+                        <template>
+                            <p>Cliente <b> {{nombreCliente}} </b></p>
+                            <p>Prenda <b> {{prenda}} </b></p>
+                            <p>Folio <b> {{folio}} </b></p>
+                            <p>Cantidad <b> {{cantidadOriginal}} </b></p>
+                            
+                            <div class="center content-inputs">
+                                <vs-input danger type="number" v-model="cantidadPrendasConbinar" label-placeholder="Digita una cantidad">
+                                    <template #icon>
+                                        <box-icon name='dialpad-alt' ></box-icon>
+                                    </template>
+                                </vs-input>
+                            </div>
+                        </template>
+                    </div>
+
+                    <template #footer>
+                        <div class="con-footer mt-4">
+                            <vs-button primary
+                                block
+                                flat
+                                @click="confimar()">
+                                confirmar
+                            </vs-button>
+                        </div>
+                    </template>
+                </vs-dialog>
             </template>
         </b-container>
         <div v-if="activarReboot">
@@ -118,6 +208,8 @@ import loginComponent from '@/components/cardLogin.vue';
 
 export default {
     data: () => ({
+        tipoLavadora: '',
+        prendas:[],
         searchQuery: "",
         searchQueryP: "",
         filteredConsultas: [],
@@ -128,6 +220,22 @@ export default {
         consultasProcesando: [],
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
         isExpanded: false,
+        cantidadCobinado: false,
+        cantidadPrendasConbinar: "",
+        droppedItemsCount: 0,
+        isDragging: false,
+        cantidadOriginal: "",
+        nombreCliente:"",
+        prenda:"",
+        tipoLavado: "",
+        folio: "",
+        idPaso: "",
+        idTipoLavado: "",
+        idOrdenPrenda: "",
+        showError: false,
+        showSuccess: false,
+        currentDraggedItem: null,
+        nombreTipoLavado: "",
     }),
     components: {
         CardProcesoPrendaComponent,
@@ -151,6 +259,160 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+
+        onDragStart(event, item) {
+            // console.log('🚀 Inicio de arrastre - Item:', item)
+            this.isDragging = true
+            event.dataTransfer.setData('text/plain', JSON.stringify(item))
+            event.dataTransfer.effectAllowed = 'move'
+            
+            // Efecto visual durante el arrastre
+            event.target.classList.add('dragging')
+        },
+        
+        onDragEnd() {
+            // console.log('🏁 Fin de arrastre')
+            this.isDragging = false
+            document.querySelectorAll('.dragging').forEach(el => {
+                el.classList.remove('dragging')
+            })
+        },
+        
+        onDragEnter(event) {
+            // console.log('📍 Entrando en zona de drop')
+            event.target.classList.add('drag-over')
+        },
+        
+        onDragLeave(event) {
+            // console.log('👋 Saliendo de zona de drop')
+            event.target.classList.remove('drag-over')
+        },
+        
+        onDrop(event) {
+            // console.log('🎉 Elemento soltado!')
+            event.preventDefault()
+            event.target.classList.remove('drag-over')
+            
+            const data = event.dataTransfer.getData('text/plain')
+            if (!data) return
+            
+            const droppedItem = JSON.parse(data)
+            // console.log('📦 Item soltado:', droppedItem)
+            this.idTipoLavado = droppedItem.idTipoLavado
+            if(this.prendas.length > 0){
+                let prendaLider = this.prendas[0].idTipoLavado
+                if(prendaLider == this.idTipoLavado){
+                    this.handleValidDrop(droppedItem)
+                    this.cantidadCobinado = true
+
+                }else{
+                    this.handleInvalidDrop()
+                }
+            }
+
+            if(this.prendas.length == 0){
+                this.cantidadCobinado = true
+            }
+            this.nombreTipoLavado = droppedItem.tipoLavado
+            this.idOrdenPrenda = droppedItem.idOrdenPrenda
+            this.idPaso = droppedItem.idPaso
+            this.prenda = droppedItem.nombrePrenda
+            this.nombreCliente = droppedItem.nomCliente
+            this.folio = droppedItem.folio
+            this.cantidadOriginal = droppedItem.cantidadPrendas
+            
+            // Incrementar contador
+            
+            // Aquí puedes hacer lo que necesites con el elemento soltado
+            // Por ejemplo emitir un evento al padre:
+            this.$emit('item-dropped', droppedItem)
+        },
+        
+        confimar(){
+            this.prendas.push({
+                    "id": this.prendas.length+1,
+                    "idOrdenPrenda": this.idOrdenPrenda,
+                    "cantidad": this.cantidadPrendasConbinar,
+                    "idPasoProceso": this.idPaso,
+                    "idTipoLavado": this.idTipoLavado,
+                    "prenda": this.prenda,
+                    "folio": this.folio,
+                    "nombreCliente": this.nombreCliente,
+                    "tipoLavado": this.nombreTipoLavado
+            })
+            this.droppedItemsCount = this.prendas.length
+            this.cantidadPrendasConbinar = ""
+            // console.log(this.prendas)
+            this.cantidadCobinado = false
+
+        },
+
+        handleValidDrop(item) {
+            this.showSuccess = true
+            this.showError = false
+            
+            
+            // Emitir evento al padre
+            this.$emit('item-dropped', item)
+            
+            // Resetear animación después de 1 segundo
+            setTimeout(() => {
+                this.showSuccess = false
+            }, 1000)
+        },
+        
+        handleInvalidDrop() {
+            this.showError = true
+            this.showSuccess = false
+            
+            // Resetear animación después de 1 segundo
+            setTimeout(() => {
+                this.showError = false
+            }, 1000)
+        },
+      
+        eliminar(eliminar){
+            const nuevoArray = this.prendas.filter(prenda => prenda.id !== eliminar);
+            console.log(nuevoArray)
+            this.prendas = nuevoArray
+        },
+        async iniciar(){
+            this.iniciarProceso = true;
+
+            let token = this.$session.get('token')
+
+            let json = {
+                "idLavadora": this.tipoLavadora,
+                "prendas": this.prendas,
+            };
+            let res = await fetch(this.url+"orden/proceso",{
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
+            })
+            let data = await res.json()
+
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.iniciarProceso = false;
+
+                this.refresh()
+                this.modalIniciar = false
+                this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+                this.mostrarDetailPrendas(this.data.idPrenda)
+                this.$emit('updatePage', '200')
+
+            }else{
+                this.iniciarProceso = false;
+                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+
+            }
+                
         },
         expandCard() {
             this.isExpanded = true; // Expande el card
@@ -186,7 +448,7 @@ export default {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultas = this.consultas;
             }
-            console.log(this.filteredConsultas)
+            // console.log(this.filteredConsultas)
 
 
         },
@@ -212,7 +474,7 @@ export default {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultasP = this.consultasProcesando;
             }
-            console.log(this.filteredConsultasP)
+            // console.log(this.filteredConsultasP)
 
 
         },
@@ -240,6 +502,7 @@ export default {
                         // Actualiza filteredConsultas con los datos cargados
                         this.filteredConsultas = this.consultas;
                         this.filteredConsultasP = this.consultasProcesando;
+                        // console.log(this.filteredConsultasP)
                     } else {
                         if (this.consultas.length == 0) {
                             this.sinData = true;
@@ -277,7 +540,8 @@ export default {
             title: title,
             text: text
           })
-        }
+        },
+        
     },
     watch: {
         searchQuery() {
@@ -388,6 +652,7 @@ input {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
 }
 
+
 .icon-only box-icon {
     transition: transform 0.2s ease;
 }
@@ -402,5 +667,152 @@ h4 {
     font-weight: bold;
     color: #007bff; /* Color azul para coincidir con el ícono */
     margin-bottom: 1rem; /* Espacio debajo del título */
+}
+
+
+/* drag and drop */
+.card-wrapper {
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.card-wrapper.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+  cursor: grabbing;
+}
+
+.drop-zone {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.drop-zone.drag-over {
+  border-color: #007bff;
+  background-color: rgba(0, 123, 255, 0.1);
+  transform: scale(1.02);
+}
+
+.icon-only-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon-only-drop p {
+  margin: 0;
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Efecto durante el arrastre sobre la zona de drop */
+.drop-zone.drag-over .icon-only-drop {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+
+
+
+/* Animaciones */
+.drop-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(13, 110, 253, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.drop-preview {
+  background-color: #0d6efd;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  animation: pulse 1.5s infinite;
+}
+
+.drop-info {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+.card-error {
+  animation: shake 0.6s ease-in-out;
+  border: 2px solid #dc3545;
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+@keyframes success {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.card-success {
+  animation: success 0.8s ease-out;
+  border: 2px solid #28a745;
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.fixed{
+    display: flex;
+}
+.top{
+    position: absolute;
+    top: 10px;
+    right: 0;
 }
 </style>

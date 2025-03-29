@@ -8,35 +8,14 @@
             <b-skeleton type="input" class="mt-2"></b-skeleton>
             <b-skeleton type="input" class="mt-2" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"></b-skeleton>
         </b-card>
-              
+
         <b-card 
-            draggable="true"
-            @dragstart="dragStart($event, data)"
-            @dragend="dragEnd"
-            @dragover.prevent="dragOver"
-            @dragenter.prevent="dragEnter($event, data)"
-            @dragleave="dragLeave"
-            @drop.prevent="dropHandler"
-            :class="{'dragging': isDragging}"
-            :style="{ 
-                'border-left': 'solid 5px #0d6efd !important', 
-                position: 'relative',
-                'user-select': 'none' /* Evita selección de texto durante el drag */
-            }" 
+             :style="{ 'border-left': `solid 5px #0d6efd !important` }"
             v-else 
             :title="data.nomCliente" 
             :sub-title="data.nombrePrenda"
         >
             
-             <div v-if="isDropTarget" class="drop-overlay">
-                <div class="drop-preview">
-                    Soltar aquí
-                </div>
-            </div>
-            <div v-if="hoveredItem && hoveredItem.nomCliente === data.nomCliente && draggedItem" 
-                class="drop-info">
-                Moviendo: <strong>{{ draggedItem.nomCliente }}</strong> - {{ draggedItem.nombrePrenda }}
-            </div>
            
 
             <div class="fixed">
@@ -112,21 +91,7 @@
                 Folio: {{ this.data.folio }}
             </p>
             
-            <div v-if="cardAdd.length > 0">
-                <div 
-                class="badge bg-primary text-wrap float-start m-1 " 
-                v-for="(card, i) in cardAdd" 
-                :key="i"
-                >
-                    <vs-tooltip>
-                        {{ card.folioMerged }} / {{ card.cantidadPrendasConbinar }}
-                        <template #tooltip>
-                            el folio {{ card.folioMerged }} se a combinado con este lavado con la cantidad de {{ card.cantidadPrendasConbinar }} prendas
-                        </template>
-                    </vs-tooltip>
-                </div>
-                <br>
-            </div>
+            
             <br>
             <strong v-if="this.data.fhAlta">Fecha Registro {{ obtenerFechaBonita(this.data.fhAlta) }}</strong> <br>
             <strong v-if="this.data.fechaEntrega">Fecha Entrega {{ obtenerFechaBonita(this.data.fechaEntrega) }}</strong>
@@ -136,62 +101,47 @@
             <div class="badge bg-primary text-wrap float-end" >
                 {{ data.nombrePaso }}
             </div>
-           
-            <strong class="fw-light">
-                Cantidad: {{ parseInt(data.cantidadPrendas)+parseInt(cantidadTotal) }}
-                <!-- <vs-tooltip>
-                    <template #tooltip>
-                        la Cantidad inicial es de {{ data.cantidadPrendas }} prendas
-                    </template>
-                </vs-tooltip> -->
-            </strong>
 
+            <strong class="fw-light">
+                Cantidad: {{ data.cantidadPrendas }}
+            </strong>
+        
             <div class="mt-auto">
-                <div v-if="cardAdd.length > 0">
-                    <vs-tooltip>
-                        <vs-button block flat warn > Iniciar proceso conbinado </vs-button> 
-                        <template #tooltip>
-                            Inicia el lavado conbinado indicando la cantidad de folios 
-                        </template>
-                    </vs-tooltip>
-                </div>
-                <div v-else>
-                    <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button> 
-                    <vs-dialog blur  v-model="modalIniciar">
-                        <template #header>
-                            <h4 class="not-margin">
-                                Iniciar <b>Proceso</b>
-                            </h4>
-                        </template>
-        
-                        <div class="con-form">
-                            <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
-                            
-        
-                            <vs-input
-                                class="mt-2"
-                                v-model="cantidad"
-                                label-placeholder="cantidad a ingresar"
-                            />
-                            <div class="con-selects" v-if="data.idTipoLavado">
-                                <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
-                                    <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
-                                        {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
-                                    </vs-option>
-                                </vs-select>
-                            </div>
-                            
+                <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button> 
+                <vs-dialog blur  v-model="modalIniciar">
+                    <template #header>
+                        <h4 class="not-margin">
+                            Iniciar <b>Proceso</b>
+                        </h4>
+                    </template>
+    
+                    <div class="con-form">
+                        <strong class="fw-light">Cantidad total de prendas: {{ data.cantidadPrendas }}</strong>
+                        
+    
+                        <vs-input
+                            class="mt-2"
+                            v-model="cantidad"
+                            label-placeholder="cantidad a ingresar"
+                        />
+                        <div class="con-selects" v-if="data.idTipoLavado">
+                            <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
+                                <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
+                                    {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
+                                </vs-option>
+                            </vs-select>
                         </div>
-                        <template #footer>
-                            <div class="footer-dialog">
-                                <vs-button block @click="iniciar()" :disabled="iniciarProceso">
-                                    <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
-                                    Iniciar 
-                                </vs-button>
-                            </div>
-                        </template>
-                    </vs-dialog>
-                </div>
+                        
+                    </div>
+                    <template #footer>
+                        <div class="footer-dialog">
+                            <vs-button block @click="iniciar()" :disabled="iniciarProceso">
+                                <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
+                                Iniciar 
+                            </vs-button>
+                        </div>
+                    </template>
+                </vs-dialog>
 
                 <vs-button block flat success @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
@@ -250,37 +200,7 @@
                 </b-modal>
             </div>
 
-            <vs-dialog blur v-model="cantidadCobinado">
-                <template #header>
-                    <h4 class="not-margin">
-                        Seguro que deseas fucionar <b>{{ nombres1 }} </b> con <b> {{ nombres2 }}</b>
-                    </h4>
-                </template>
-                <div class="con-form">
-                    <template>
-                        <p>Cantidad <b>{{ catidades }}</b></p>
-                        
-                        <div class="center content-inputs">
-                            <vs-input danger type="number" v-model="cantidadPrendasConbinar" label-placeholder="Digita una cantidad">
-                                <template #icon>
-                                    <box-icon name='dialpad-alt' ></box-icon>
-                                </template>
-                            </vs-input>
-                        </div>
-                    </template>
-                </div>
-
-                <template #footer>
-                    <div class="con-footer mt-4">
-                        <vs-button primary
-                            block
-                            flat
-                            @click="confirmMerge">
-                            confirmar
-                        </vs-button>
-                    </div>
-                </template>
-            </vs-dialog>
+            
 
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
@@ -431,10 +351,7 @@ export default {
         data: Object,
     },
     data: () => ({
-        hoveredItem: null, // Almacena la tarjeta sobre la que se va a soltar
-        draggedItem: null,  // Nuevo: Almacena el item que estamos arrastrando
-        isDragging: false,
-        isDropTarget: false,
+        
         openOrdenLavado: false,
         openOrdenPrenda: false,
         openregresaPaso: false,
@@ -464,15 +381,7 @@ export default {
         textAlertConfirm: '',
         pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
-        cardAdd: [],
-        folioKey: '',
-        cantidadCobinado: false,
-        cantidadPrendasConbinar: '',
-        nombres1:'',
-        nombres2:'',
-        catidades:'',
-        folioMerged: '',
-        cantidadTotal: 0,
+       
     }),
     computed: {
         
@@ -502,10 +411,7 @@ export default {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda)
         }, 100)  
-        this.cardAdd = JSON.parse(localStorage.getItem(this.data.folio)) ? JSON.parse(localStorage.getItem(this.data.folio)) : []
-        this.cardAdd.forEach(cantidad => {
-            this.cantidadTotal += cantidad.cantidadPrendasConbinar
-        })
+       
     },
     methods: {
         refresh(){
@@ -514,109 +420,7 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-    
-        confirmMerge(){
-            this.cardAdd.push({folioMerged: this.folioMerged, cantidadPrendasConbinar: this.cantidadPrendasConbinar})
-            localStorage.setItem(this.folioKey, JSON.stringify(this.cardAdd))
-            this.cardAdd.forEach(cantidad => {
-                this.cantidadTotal += cantidad.cantidadPrendasConbinar
-            })
-            this.cantidadCobinado = false
-            this.cantidadPrendasConbinar = ''
-        },
-        dragStart(event, item) {
-            this.isDragging = true;
-            this.draggedItem = item
-            event.dataTransfer.setData('text/plain', JSON.stringify(item));
-            event.target.style.opacity = '0.7'; // Hacemos ligeramente transparente el elemento que arrastramos
-            event.dataTransfer.effectAllowed = 'move';
-        },
-        dragOver(event) {
-            event.preventDefault();
-            event.dataTransfer.dropEffect = 'move';
-        },
-        dragEnter(event, item) {
-            // Evita que se active en el mismo elemento que arrastramos
-            if (!this.isDragging) {
-                this.isDropTarget = true;
-                this.hoveredItem = item; // Almacena el item sobre el que se va a soltar
-                // console.log('Posible drop sobre:', item); // 🖥️ Mostrar en consola sobre qué se va a soltar
-                // console.log('Elemento arrastrado:', event); // 🖥️ Mostrar en consola el item que se está arrastrando
-            
-            }
-            event.preventDefault();
-        },
-        dragEnd(event) {
-            this.isDragging = false;
-            this.isDropTarget = false;
-            this.draggedItem = null;
-            event.target.style.opacity = '1';
-        },
-        dragLeave(event) {
-            // Verifica que el mouse realmente salió del elemento
-            if (!event.currentTarget.contains(event.relatedTarget)) {
-                this.isDropTarget = false;
-                this.hoveredItem = null; // Resetea el hoveredItem al salir
-            }
-        },
-        dropHandler(event) {
-            event.preventDefault();
-            this.isDropTarget = false;
-
-            // Verifica que no estamos soltando sobre nosotros mismos
-            if (!this.isDragging) {
-                const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(50); // Vibración de 50ms
-                }
-
-                // Validación de los datos
-                if (this.hoveredItem.idTipoLavado === data.idTipoLavado) {
-                    // Si la validación es correcta, muestra la animación de éxito
-                    this.$set(this.hoveredItem, 'isValid', true);
-                    this.folioKey = this.hoveredItem.folio
-                    // Agrega animación de éxito a la tarjeta
-                    this.nombres1 = this.hoveredItem.nomCliente +' Folio '+this.hoveredItem.folio
-                    this.$nextTick(() => {
-                        const cardElement = event.target.closest('.card');
-                        if (cardElement) {
-                            this.folioMerged = data.folio
-                            this.cantidadCobinado = true
-                            this.nombres2 = data.nomCliente +' Folio '+data.folio
-                            this.catidades = data.cantidadPrendas
-                            
-                            // localStorage.setItem(data.folio, true)
-                            cardElement.classList.add('card-success');
-                            // Quitar la clase después de la animación para permitirla repetir
-                            setTimeout(() => {
-                                cardElement.classList.remove('card-success');
-                            }, 800); // Duración de la animación
-                        }
-                    });
-                } else {
-                    // Si la validación falla, agrega la animación de error (como antes)
-                    this.$set(this.hoveredItem, 'isValid', false);
-                    this.$nextTick(() => {
-                        const cardElement = event.target.closest('.card');
-                        if (cardElement) {
-                            cardElement.classList.add('card-error');
-                            // Quitar la clase después de la animación para permitirla repetir
-                            setTimeout(() => {
-                                cardElement.classList.remove('card-error');
-                            }, 600); // Duración de la animación
-                        }
-                    });
-                }
-
-                // Emitir el evento de que el elemento ha sido soltado
-                this.$emit('item-dropped', { droppedItem: data, targetItem: this.hoveredItem });
-
-                // Resetear hoveredItem
-                this.hoveredItem = null;
-            }
-        },
-
+        
         editCantidades(){
             this.textAlertConfirm = 
             this.editCount = true;
@@ -839,10 +643,12 @@ export default {
                 let token = this.$session.get('token')
 
                 let json = {
-                    "idOrdenPrenda": this.data.idOrdenPrenda,
-                    "cantidad": this.cantidad,
-                    "idPasoProceso": this.data.idPaso,
-                    "idLavadora": this.tipoLavadora
+                    "idLavadora": this.tipoLavadora,
+                    "prendas": [{
+                        "idOrdenPrenda": this.data.idOrdenPrenda,
+                        "cantidad": this.cantidad,
+                        "idPasoProceso": this.data.idPaso,
+                    }],
                 };
                 let res = await fetch(this.url+"orden/proceso",{
                     method: "POST",
@@ -957,122 +763,6 @@ ul .dropdown-menu .show{
 }
 
 
-.dragging {
-    opacity: 0.7;
-    cursor: grabbing;
-}
-
-.drop-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(13, 110, 253, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    border-radius: inherit;
-    pointer-events: none; /* Permite eventos a través del overlay */
-}
-
-.drop-preview {
-    background-color: #0d6efd;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* Evita la selección de texto durante el drag */
-.card[draggable="true"] {
-    -webkit-user-drag: element;
-    user-select: none;
-}
-
-
-.drop-info {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    white-space: nowrap;
-}
-
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    50% { transform: translateX(10px); }
-    75% { transform: translateX(-10px); }
-    100% { transform: translateX(0); }
-}
-
-.card-error {
-    animation: shake 0.6s ease-in-out; /* Agitar durante 0.6 segundos */
-    border: 2px solid #dc3545; /* Borde rojo brillante */
-    box-shadow: 0 0 10px rgba(220, 53, 69, 0.5); /* Sombra roja */
-    background-color: rgba(220, 53, 69, 0.1); /* Fondo ligeramente rosado */
-    z-index: 10;
-    pointer-events: none; /* Para evitar que se interfiera con otros eventos */
-    position: relative; /* Necesario para que el borde se vea correctamente */
-    border-radius: 1rem; /* Bordes redondeados */
-    transition: background-color 0.3s ease, border-color 0.3s ease; /* Transiciones suaves */
-}
-
-/* Para restaurar el fondo y borde después de la animación */
-.card-error-reset {
-    background-color: initial;
-    border-color: initial;
-    box-shadow: initial;
-}
-@keyframes success {
-    0% {
-        transform: scale(0.5);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-/* Clase para la tarjeta con éxito */
-.card-success {
-    animation: success 0.8s ease-out; /* Animación de 0.8 segundos */
-    border: 2px solid #28a745; /* Borde verde para éxito */
-    box-shadow: 0 0 10px rgba(40, 167, 69, 0.6); /* Sombra verde suave */
-    background-color: rgba(40, 167, 69, 0.1); /* Fondo verde claro */
-    z-index: 10;
-    pointer-events: none; /* Para evitar que se interfiera con otros eventos */
-    position: relative; /* Necesario para que el borde se vea correctamente */
-    border-radius: 1rem; /* Bordes redondeados */
-    transition: background-color 0.3s ease, border-color 0.3s ease; /* Transiciones suaves */
-}
-
-/* Para restaurar el fondo y borde después de la animación */
-.card-success-reset {
-    background-color: initial;
-    border-color: initial;
-    box-shadow: initial;
-}
 </style>
 <style lang="stylus">
 
