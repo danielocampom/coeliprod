@@ -15,9 +15,6 @@
             :title="data.nomCliente" 
             :sub-title="data.nombrePrenda"
         >
-            
-           
-
             <div class="fixed">
                 <!-- Botón del dropdown -->
                 <b-dropdown 
@@ -67,14 +64,9 @@
                 </b-dropdown>
 
             </div>
-
-           
             <div class='badge bg-primary text-wrap float-end mb-2'>
                 Paso {{ data.npaso }}
             </div>
-
-            
-            
 
             <strong>{{ data.descripcionEstado }}</strong>
             <br>
@@ -86,8 +78,6 @@
             <p class="mt-3" v-if="this.data.folio != null">
                 Folio: {{ this.data.folio }}
             </p>
-            
-            
             <br>
             <strong v-if="this.data.fhAlta">Fecha Registro {{ obtenerFechaBonita(this.data.fhAlta) }}</strong> <br>
             <strong v-if="this.data.fechaEntrega">Fecha Entrega {{ obtenerFechaBonita(this.data.fechaEntrega) }}</strong>
@@ -195,8 +185,6 @@
                     
                 </b-modal>
             </div>
-
-            
 
             <vs-dialog blur v-model="cancelPredas">
                 <template #header>
