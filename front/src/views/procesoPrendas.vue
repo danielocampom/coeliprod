@@ -262,7 +262,6 @@ export default {
         },
 
         onDragStart(event, item) {
-            // console.log('🚀 Inicio de arrastre - Item:', item)
             this.isDragging = true
             event.dataTransfer.setData('text/plain', JSON.stringify(item))
             event.dataTransfer.effectAllowed = 'move'
@@ -272,7 +271,6 @@ export default {
         },
         
         onDragEnd() {
-            // console.log('🏁 Fin de arrastre')
             this.isDragging = false
             document.querySelectorAll('.dragging').forEach(el => {
                 el.classList.remove('dragging')
@@ -280,17 +278,14 @@ export default {
         },
         
         onDragEnter(event) {
-            // console.log('📍 Entrando en zona de drop')
             event.target.classList.add('drag-over')
         },
         
         onDragLeave(event) {
-            // console.log('👋 Saliendo de zona de drop')
             event.target.classList.remove('drag-over')
         },
         
         onDrop(event) {
-            // console.log('🎉 Elemento soltado!')
             event.preventDefault()
             event.target.classList.remove('drag-over')
             
@@ -298,7 +293,6 @@ export default {
             if (!data) return
             
             const droppedItem = JSON.parse(data)
-            // console.log('📦 Item soltado:', droppedItem)
             this.idTipoLavado = droppedItem.idTipoLavado
             if(this.prendas.length > 0){
                 let prendaLider = this.prendas[0].idTipoLavado
@@ -343,7 +337,6 @@ export default {
             })
             this.droppedItemsCount = this.prendas.length
             this.cantidadPrendasConbinar = ""
-            // console.log(this.prendas)
             this.cantidadCobinado = false
 
         },
@@ -374,7 +367,6 @@ export default {
       
         eliminar(eliminar){
             const nuevoArray = this.prendas.filter(prenda => prenda.id !== eliminar);
-            console.log(nuevoArray)
             this.prendas = nuevoArray
         },
         async iniciar(){
@@ -448,7 +440,6 @@ export default {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultas = this.consultas;
             }
-            // console.log(this.filteredConsultas)
 
 
         },
@@ -474,7 +465,6 @@ export default {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultasP = this.consultasProcesando;
             }
-            // console.log(this.filteredConsultasP)
 
 
         },

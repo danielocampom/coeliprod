@@ -86,7 +86,6 @@ export default {
             this.render = false
         }, 1000)   
 
-        console.log(this.data)
     },
     methods: {
         refresh(){

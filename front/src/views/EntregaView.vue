@@ -171,8 +171,6 @@ export default {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultasP = [...this.getDatos[1], ...this.getDatos[2]];
             }
-            // console.log(this.filteredConsultasP)
-
 
         },
         async mostraPrendas(){
@@ -194,8 +192,6 @@ export default {
                     this.getDatos = []
                 }
                 
-                // console.log(this.getDatos)
-
             })
             .catch(err => console.log(err))
         },
