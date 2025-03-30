@@ -84,6 +84,28 @@
                                             </b-card>
                                         </b-col>
                                     </b-row>
+                                        <vs-button class="mt-5" v-if="prenda.length > 0" block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button> 
+                                        <vs-dialog blur  v-model="modalIniciar">
+                                            <template #header>
+                                                <h4 class="not-margin">
+                                                    Iniciar <b>Proceso Conbinado?</b>
+                                                </h4>
+                                            </template>
+                            
+                                            <div class="con-form">
+                                                <div class="con-selects">
+                                                   
+                                                </div>
+                                            </div>
+                                            <template #footer>
+                                                <div class="footer-dialog">
+                                                    <vs-button  class="mt-5" block @click="iniciar()" :disabled="iniciarProceso">
+                                                        <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
+                                                        Iniciar 
+                                                    </vs-button>
+                                                </div>
+                                            </template>
+                                        </vs-dialog>
                                 </div>
                             </b-col>
 
@@ -208,6 +230,8 @@ import loginComponent from '@/components/cardLogin.vue';
 
 export default {
     data: () => ({
+        modalIniciar: false,
+        iniciarProceso: false, 
         tipoLavadora: '',
         prendas:[],
         searchQuery: "",

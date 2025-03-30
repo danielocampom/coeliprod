@@ -33,11 +33,7 @@
                         <box-icon name='dots-vertical-rounded'></box-icon>
                     </template>
 
-                    <!-- Opciones del dropdown -->
-                    <!-- <b-dropdown-item @click="modalIniciarDropDown = true">
-                        <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()">Cancelar Prenda</vs-button>
-
-                    </b-dropdown-item> -->
+                 
                     <vs-tooltip>
                         <b-dropdown-item @click="openOrdenLavado=!openOrdenLavado">
                             Cancelar orden de lavado
