@@ -93,7 +93,7 @@
             </strong>
         
             <div class="mt-auto">
-                <vs-button block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button> 
+                <vs-button block flat primary @click="modalIniciar=!modalIniciar" > Iniciar </vs-button> 
                 <vs-dialog blur  v-model="modalIniciar">
                     <template #header>
                         <h4 class="not-margin">
@@ -110,12 +110,20 @@
                             v-model="cantidad"
                             label-placeholder="cantidad a ingresar"
                         />
-                        <div class="con-selects" v-if="data.idTipoLavado">
+                        
+                        <div class="center  con-selects" v-if="this.data.idTipoLavado != null" >
+                            
                             <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
-                                <vs-option  v-for="(lavadora, i) in data.infoLavadoras" :key="i" :label="lavadora.lavadora" :value="lavadora.id">
-                                    {{lavadora.lavadora}}  Max.: {{ lavadora.cantidadMaxima }}  Min.: {{ lavadora.cantidadMinima }}
-                                </vs-option>
+                                <vs-option-group>
+                                    <div slot="title">
+                                        Selecciona una opcion
+                                    </div>
+                                    <vs-option  v-for="(lavado, i) in getLavado" :key="i" :label="lavado.lavadora + ' - Max: ' + lavado.max + ' Min: ' + lavado.min" :value="lavado.idLavadora">
+                                        {{ lavado.lavadora }}  Max.: {{ lavado.max }}  Min.: {{ lavado.min }}
+                                    </vs-option>
+                                </vs-option-group>
                             </vs-select>
+
                         </div>
                         
                     </div>
@@ -335,7 +343,7 @@ export default {
         data: Object,
     },
     data: () => ({
-        
+        getLavado: [],
         openOrdenLavado: false,
         openOrdenPrenda: false,
         openregresaPaso: false,
@@ -373,7 +381,6 @@ export default {
     components: {
         loginComponent,
         ConfirmComponent,
-
     },
     
     watch: {
@@ -394,8 +401,11 @@ export default {
         setTimeout(() => {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda)
-        }, 100)  
-       
+        }, 100) 
+            if(this.data.idTipoLavado != null){
+                this.mostrarLavadoras(this.data.idTipoLavado)
+            }
+
     },
     methods: {
         refresh(){
@@ -404,11 +414,14 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-        
         editCantidades(){
             this.textAlertConfirm = 
             this.editCount = true;
             this.modalShowDetail= false;
+        },
+        onNoResults(searchText) {
+            // Lógica para manejar el caso en que no se encuentran resultados
+            console.log(`No se encontraron resultados para: ${searchText}`);
         },
         async modificarCount(){
             if(status == 200){
@@ -431,7 +444,24 @@ export default {
             this.cancelPredas = false
             this.cancelPredas = true
         },
-        
+        async mostrarLavadoras(id){
+            // let item = []
+            fetchApi(this.url+`lavadora/findByTipoLavado/${id}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 200){
+                    // data.datos.forEach(lavado => {
+                    //     if(lavado.estado !== "OCUPADO"){
+                    //         item.push({id: lavado.idLavadora, lavadora: lavado.lavadora, max: lavado.max, min: lavado.min })
+                    //     }
+                    // });
+                    this.getLavado = data.datos 
+                } 
+            })
+
+        },
+        prendaSeleccionada(){
+            console.log("data")
+        },
         async cancelPrednas(status){
             if(status == 200){
                 let token = this.$session.get('token')
@@ -477,7 +507,6 @@ export default {
         },
         async cancelOrdenLavado(status){
             if(status == 200){
-                console.log("entre")
                 let token = this.$session.get('token')
     
                 let res = await fetch(`${this.url}orden/delete/${this.data.idOrdenLavado}`,{
@@ -651,6 +680,8 @@ export default {
 
                     this.refresh()
                     this.modalIniciar = false
+                    this.tipoLavadora = ''
+                    this.cantidad = ''
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.mostrarDetailPrendas(this.data.idPrenda)
                     this.$emit('updatePage', '200')
@@ -745,6 +776,12 @@ ul .dropdown-menu .show{
     top: 10px;
     right: 0;
 }
+.form-select{
+    width: 95%;
+    border-radius: 1rem;
+    height: 1rem;
+}
+
 
 
 </style>

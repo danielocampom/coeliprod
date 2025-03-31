@@ -503,10 +503,10 @@ input {
     height: 1rem;
 }
 .v-select.vs--single.vs--searchable {
-    margin-top:-4px;
+    margin-top:-6px;
 }
-.vs--searchable .vs__dropdown-toggle{
-    border-radius: 0.7rem;
+.v-select.vs--single.vs--searchable .vs__dropdown-toggle{
+    border-radius: 0.7rem !important;
 }
 input[type="search"] {
     padding: 10px;

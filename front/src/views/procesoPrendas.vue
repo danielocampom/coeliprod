@@ -84,7 +84,7 @@
                                             </b-card>
                                         </b-col>
                                     </b-row>
-                                        <vs-button class="mt-5" v-if="prenda.length > 0" block flat primary @click="modalIniciar =! modalIniciar" > Iniciar </vs-button> 
+                                        <vs-button class="mt-5" v-if="prendas.length > 1" block flat primary @click="modalIniciar =! modalIniciar"> Iniciar </vs-button> 
                                         <vs-dialog blur  v-model="modalIniciar">
                                             <template #header>
                                                 <h4 class="not-margin">
@@ -93,13 +93,23 @@
                                             </template>
                             
                                             <div class="con-form">
-                                                <div class="con-selects">
-                                                   
+                                                <div class="center  con-selects" >
+                                                    <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
+                                                        <vs-option-group>
+                                                            <div slot="title">
+                                                                Selecciona una opcion
+                                                            </div>
+                                                            <vs-option  v-for="(lavado, i) in getLavado" :key="i" :label="lavado.lavadora + ' - Max: ' + lavado.max + ' Min: ' + lavado.min" :value="lavado.idLavadora">
+                                                                {{ lavado.lavadora }}  Max.: {{ lavado.max }}  Min.: {{ lavado.min }}
+                                                            </vs-option>
+                                                        </vs-option-group>
+                                                    </vs-select>
+
                                                 </div>
                                             </div>
                                             <template #footer>
-                                                <div class="footer-dialog">
-                                                    <vs-button  class="mt-5" block @click="iniciar()" :disabled="iniciarProceso">
+                                                <div class="footer-dialog" >
+                                                    <vs-button  class="mt-3" block @click="iniciar()" :disabled="iniciarProceso">
                                                         <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
                                                         Iniciar 
                                                     </vs-button>
@@ -260,6 +270,7 @@ export default {
         showSuccess: false,
         currentDraggedItem: null,
         nombreTipoLavado: "",
+        getLavado: [],
     }),
     components: {
         CardProcesoPrendaComponent,
@@ -275,7 +286,6 @@ export default {
     },
     mounted(){    
         this.mostratConsultas();
-        
     },
     methods: {
         refresh(){
@@ -284,7 +294,14 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
-
+        async mostrarLavadoras(id){
+            fetchApi(this.url+`lavadora/findByTipoLavado/${id}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 200){
+                    this.getLavado = data.datos 
+                } 
+            })
+        },
         onDragStart(event, item) {
             this.isDragging = true
             event.dataTransfer.setData('text/plain', JSON.stringify(item))
@@ -318,14 +335,17 @@ export default {
             
             const droppedItem = JSON.parse(data)
             this.idTipoLavado = droppedItem.idTipoLavado
+            
             if(this.prendas.length > 0){
                 let prendaLider = this.prendas[0].idTipoLavado
                 if(prendaLider == this.idTipoLavado){
+                    this.mostrarLavadoras(prendaLider)
                     this.handleValidDrop(droppedItem)
                     this.cantidadCobinado = true
 
                 }else{
                     this.handleInvalidDrop()
+
                 }
             }
 
@@ -392,6 +412,7 @@ export default {
         eliminar(eliminar){
             const nuevoArray = this.prendas.filter(prenda => prenda.id !== eliminar);
             this.prendas = nuevoArray
+            this.tipoLavadora = ''
         },
         async iniciar(){
             this.iniciarProceso = true;
