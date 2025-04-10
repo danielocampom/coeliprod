@@ -9,16 +9,32 @@
             <b-skeleton type="input" v-if="data.idEstado != 10 "></b-skeleton>
             <b-skeleton type="input" v-if="$session.get('roles') == 'SISTEMAS' || $session.get('roles') == 'ADMIN' "></b-skeleton>
         </b-card> 
-        <b-card v-if="data.detalleMaquinada.length > 1" :title="data.lavadora ? '': data.lavadora" :sub-title="'carga utilizada '+limitDecimal(data.kilosMaquinada)+' kg'">
-            <!-- <vs-avatar badge badge-color="success" badge-position="top-right">
-                <template #badge>
-                    3
-                </template>
-                <box-icon type='solid' name='washer' color="#007bff"></box-icon>
-            </vs-avatar> -->
+        <b-card v-if="data.detalleMaquinada.length > 1" :style="{ 'border-left': `solid 5px #d9534f !important` }" :title="data.lavadora ? '': data.lavadora" :sub-title="'carga utilizada '+limitDecimal(data.kilosMaquinada)+' kg'">
+           
+            <!-- From Uiverse.io by naveenkumarr-onyx --> 
+            <div class="card1"  v-for="(prenda, i) in data.detalleMaquinada" :key="i">
+                <b-card :title="prenda.nombreCliente + i" :sub-title="prenda.nombrePrenda" :class="'item item--1 '+ (i > 0 ? 'mt-card':'') ">
+                    <div class='badge bg-primary text-wrap float-end mb-2' >
+                        Paso {{ prenda.pasoProceso.orden }}
+                    </div>
+                    <p class="mt-3" >Folio: {{ prenda.folio }}</p>
+                    <strong class="text text--1" v-if="prenda.fhAlta">Fecha Registro {{ obtenerFechaBonita(prenda.fhAlta) }}</strong><br>
+                    <strong class="text text--1" v-if="prenda.fechaEntrega">Fecha Entrega {{ obtenerFechaBonita(prenda.fechaEntrega) }}</strong>
+                </b-card>
+            </div>
+
+            <vs-button v-if="data.detalleMaquinada[0].idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.requiereAuth)"> Autorizar </vs-button>
+            <vs-button v-if="data.detalleMaquinada[0].idEstado != 10" block flat danger @click="terminar(data.id)"> Terminar </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
             
+            <!-- end -->
+            <!-- <vs-button class="d-none" block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
+            <vs-button v-if="data.detalleMaquinada[0].idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.detalleMaquinada[0].idHist)"> Autorizar </vs-button>
+            <vs-button v-if="data.detalleMaquinada[0].idEstado != 10" block flat danger @click="terminar(data.id)"> Terminar </vs-button>
+            <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
+            -->
         </b-card>    
-        <b-card v-if="data.detalleMaquinada.length == 1" :style="{ 'border-left': `solid 5px #d9534f !important` }" :title="data.detalleMaquinada[0].nombreCliente" :sub-title="data.detalleMaquinada[0].nombrePrenda">
+        <b-card v-if="data.detalleMaquinada.length == 1" :style="{ 'border-left': `solid 5px #007bff !important` }" :title="data.detalleMaquinada[0].nombreCliente" :sub-title="data.detalleMaquinada[0].nombrePrenda">
             <strong>
                 Cantidad de Prendas {{ data.detalleMaquinada[0].cantidad }}
             </strong>
@@ -47,7 +63,7 @@
             </div>
             <p class="fw-light" v-if="data.detalleMaquinada[0].lavadora">Lavadora {{ data.detalleMaquinada[0].lavadora }}</p>
             <vs-button class="d-none" block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
-            <vs-button v-if="data.detalleMaquinada[0].idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.detalleMaquinada[0].idHist)"> Autorizar </vs-button>
+            <vs-button v-if="data.detalleMaquinada[0].idEstado == 10 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.requiereAuth)"> Autorizar </vs-button>
             <vs-button v-if="data.detalleMaquinada[0].idEstado != 10" block flat danger @click="terminar(data.id)"> Terminar </vs-button>
             <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>
             <vs-dialog blur v-model="cancelPredas">
@@ -451,30 +467,6 @@ export default {
     }
 }
 </script>
-<style>
-body {
-    font-family: "Poppins", sans-serif;
-    height: 100vh;
-    background: #f1f1f1 !important;
-}
-
-.card{
-    border-radius: 1rem;
-    min-height: 9rem; 
-    min-width: 12rem;
-}
-input {
-    width: 100%;
-}
-.ml-5 .vs-card{
-    margin-left: auto!important
-}
-
-.vs-card{
-    padding: 0.5rem;
-}
-
-</style>
 <style lang="stylus">
 getColor(colorx, alpha = 1)
     unquote("rgba(var(--vs-"+colorx+"), "+alpha+")")
@@ -516,4 +508,88 @@ getVar(var)
     line-height 1rem
     padding-bottom 5px
     padding-left 8px
+</style>
+<style>
+body {
+    font-family: "Poppins", sans-serif;
+    height: 100vh;
+    background: #f1f1f1 !important;
+}
+
+.card{
+    border-radius: 1rem;
+    min-height: 9rem; 
+    min-width: 12rem;
+}
+input {
+    width: 100%;
+}
+.ml-5 .vs-card{
+    margin-left: auto!important
+}
+
+.vs-card{
+    padding: 0.5rem;
+}
+
+
+/* From Uiverse.io by naveenkumarr-onyx */ 
+/* .card {
+  width: 190px;
+  height: 254px;
+  color: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5px;
+  overflow: visible;
+} */
+
+.card .item {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  /* flex-direction: column;
+  align-items: center;
+  justify-content: center; */
+}
+
+.item:hover {
+  transform: scale(1.1);
+  transition: all 1s ease-in-out;
+  /* rotate: 360deg; */
+  z-index:9;
+}
+
+.item svg {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 7px;
+}
+
+.item--1 {
+  background: #e0e0e1;
+}
+
+
+.quantity {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.text {
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.text--1 {
+  color: rgb(181, 181, 181);
+}
+
+.mt-card{
+    margin-top: -5rem;
+}
+
 </style>

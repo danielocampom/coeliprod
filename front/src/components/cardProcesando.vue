@@ -17,6 +17,8 @@
                     <box-icon name='printer' color="#fff"></box-icon>
                 </vs-button>
                 <p class="fw-light text-muted">id Orden {{ data.idOrden }}.</p>
+                <p class="fw-light text-muted">Folio: {{data.folio}}</p>
+
                 <p>{{ date }}</p>
                 cantidad de prendas
                 <div class="badge bg-success text-wrap float-end" >
@@ -33,7 +35,8 @@
                 <vs-button circle icon floating primary @click="imprimirTicket(data.idOrdenPrena)">
                     <box-icon name='printer' color="#fff"></box-icon>
                 </vs-button>
-                <p class="fw-light text-muted">Folio: folio</p>
+                <p class="fw-light text-muted">Folio: {{data.folio}}</p>
+                <p>{{ date }}</p>
                 <br>
                 Prendas Terminadas
                 <div class="badge bg-success text-wrap" >
