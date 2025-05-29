@@ -86,7 +86,7 @@
                                             </b-card>
                                         </b-col>
                                     </b-row>
-                                        <vs-button class="mt-5" v-if="prendas.length > 1" block flat primary @click="modalIniciar =! modalIniciar"> Iniciar ({{ canTotal }} KG a ingresar)</vs-button> 
+                                        <vs-button class="mt-5" v-if="prendas.length > 1" block flat primary @click="modalIniciar =! modalIniciar"> Iniciar ({{ Number(canTotal.toFixed(4)) }} KG a ingresar)</vs-button> 
                                         <vs-dialog blur  v-model="modalIniciar">
                                             <template #header>
                                                 <h4 class="not-margin">
@@ -337,9 +337,9 @@ export default {
             this.isDragging = true
             event.dataTransfer.setData('text/plain', JSON.stringify(item))
             event.dataTransfer.effectAllowed = 'move'
-            
             // Efecto visual durante el arrastre
             event.target.classList.add('dragging')
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         
         onDragEnd() {
