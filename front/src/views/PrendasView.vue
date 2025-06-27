@@ -19,6 +19,11 @@
                         </template>
             
                         <div class="con-form">
+                            <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Codigo">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
                             <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
@@ -29,11 +34,23 @@
                                     <box-icon name='wind'></box-icon>
                                 </template>
                             </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Cantidad por kilos">
+                            <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Unidad por kilos">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
                                 </template>
                             </vs-input>
+                            <div class="con-selects mt-5">
+                                <b-skeleton type="input" v-if="tiposProceso.length == 0"></b-skeleton>
+                                <v-select
+                                    v-model="unidadKg"
+                                    :options="unidades"
+                                    label="nombre"
+                                    placeholder="Tipo de unidad"
+                                    :reduce="option => option.id"
+                                    :searchable="true"
+                                    :clearable="false"
+                                />
+                            </div>
                             <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
@@ -202,7 +219,12 @@ export default {
             { key: 'cantidadBolsa', label: 'Cantidad pieza/par', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
-        
+        unidades: [
+            {"id": 0, "nombre": 'Pieza'}, 
+            {"id": 1, "nombre": 'Par'}, 
+            {"id": 2, "nombre": 'Conjunto'}, 
+        ],
+        clave: '',
         totalRows: 1,
         currentPage: 1,
         perPage: 5,
@@ -228,6 +250,7 @@ export default {
         kilos: '',
         cantidadBolsa: '',
         tipoProceso: '',
+        unidadKg: '',
         cliente: '',
         btnGuardar: 0,
         buscarAct: false,
@@ -302,7 +325,7 @@ export default {
                         this.items.push(val)
                     })
 
-                    console.log(this.items)
+                    // console.log(this.items)
                     this.totalRows = this.items.length
                 }else{
                     this.sinData = true
@@ -314,12 +337,14 @@ export default {
             let token = this.$session.get('token')
 
             let json = {
+                "clave": this.clave,
                 "nombre": this.nombre,
                 "descripcion": this.descripcion,
                 "idProceso": this.tipoProceso,
                 "idCliente": this.cliente,
                 "cantidadBolsa": this.cantidadBolsa,
                 "kilos": this.kilos,
+                "unidad": this.unidadKg
             };
             let res = await fetch(this.url+"prenda/register",{
                 method: "POST",
