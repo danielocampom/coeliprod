@@ -376,8 +376,16 @@ export default {
                     this.cantidadCobinado = true
                 }else{
                     this.handleInvalidDrop()
-
                 }
+
+            }
+            
+
+            const clavesUnicas = ['cantidadPrendas', 'folio', 'idOrdenLavado', 'idOrdenPrenda', 'idPaso'];
+
+            if (this.existeDuplicado(this.prendas, droppedItem, clavesUnicas)) {
+                this.handleInvalidDrop()
+                this.cantidadCobinado = false
             }
 
             if(this.prendas.length == 0){
@@ -394,11 +402,18 @@ export default {
             this.cantidadOriginal = droppedItem.cantidadPrendas
             this.cantidadPorKilo = droppedItem.cantidadPorKilo
             
+            // console.log(droppedItem)
             // Incrementar contador
             
             // Aquí puedes hacer lo que necesites con el elemento soltado
             // Por ejemplo emitir un evento al padre:
             this.$emit('item-dropped', droppedItem)
+        },
+
+        existeDuplicado(arr, nuevoObj, clavesUnicas = []) {
+            return arr.some(item =>
+                clavesUnicas.some(clave => item[clave] === nuevoObj[clave])
+            );
         },
         
         confimar(){
@@ -414,6 +429,7 @@ export default {
                     "tipoLavado": this.nombreTipoLavado,
                     "cantidadPorKilo": this.cantidadPorKilo
             })
+            // console.log(this.prendas)
             this.droppedItemsCount = this.prendas.length
             this.cantidadPrendasConbinar = ""
             this.cantidadCobinado = false
@@ -456,6 +472,7 @@ export default {
             const nuevoArray = this.prendas.filter(prenda => prenda.id !== eliminar);
             this.prendas = nuevoArray
             this.tipoLavadora = ''
+            this.droppedItemsCount = this.prendas.length
         },
         async iniciar(){
             
@@ -491,7 +508,7 @@ export default {
 
             }else{
                 this.iniciarProceso = false;
-                this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.openNotification(`Error: inesperado`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`, 'none')
 
             }
                 
@@ -581,8 +598,8 @@ export default {
                         });
                         // Actualiza filteredConsultas con los datos cargados
                         this.filteredConsultas = this.consultas;
+                        // console.log(this.filteredConsultas)
                         this.filteredConsultasP = this.consultasProcesando;
-                        // console.log(this.filteredConsultasP)
                     } else {
                         if (this.consultas.length == 0) {
                             this.sinData = true;
@@ -611,8 +628,9 @@ export default {
 
             return formatoFecha.format(fecha);
         },
-        openNotification( title, text, color, position = null, icon) {
+        openNotification( title, text, color, position = null, icon, duration = '6000') {
           this.$vs.notification({
+            duration,
             progress: 'auto',
             icon,
             color,

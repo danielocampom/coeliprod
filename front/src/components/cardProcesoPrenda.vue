@@ -524,7 +524,7 @@ export default {
                         this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                         this.$emit('updatePage', '200')
                     }else{
-                        this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                        this.openNotification(`Error: inesperado al intentar cancelar`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                     }
                 }
             }
@@ -551,7 +551,7 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado al intentar cancelar`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }
         },
@@ -578,7 +578,7 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado al intentar cancelar`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }
         },
@@ -614,7 +614,7 @@ export default {
                     this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
-                    this.openNotification(`Error: inesperado al intentar cancelar`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado al intentar cancelar`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
             }
         },
@@ -681,6 +681,8 @@ export default {
 
                 let json = {
                     "idLavadora": this.tipoLavadora,
+                    "idMotivoMaquinada": this.idMotivoMaquinada,
+
                     "prendas": [{
                         "idOrdenPrenda": this.data.idOrdenPrenda,
                         "cantidad": this.cantidad,
@@ -706,13 +708,14 @@ export default {
                     this.modalIniciar = false
                     this.tipoLavadora = ''
                     this.cantidad = ''
+                    this.idMotivoMaquinada = ''
                     this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.mostrarDetailPrendas(this.data.idPrenda)
                     this.$emit('updatePage', '200')
-                    this.getLavado = []
+                    this.idLavadora = ''
                 }else{
                     this.iniciarProceso = false;
-                    this.openNotification(`Error: inesperado`, `Si el problema persiste, comunicate con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                    this.openNotification(`Error: inesperado`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`, 'none')
 
                 }
                 
@@ -735,8 +738,9 @@ export default {
                 this.mostrarDetailPrendas(this.data.idPrenda)
             }
         },
-        openNotification( title, text, color, position = null, icon) {
+        openNotification( title, text, color, position = null, icon, duration = '6000') {
           this.$vs.notification({
+            duration,
             progress: 'auto',
             icon,
             color,
