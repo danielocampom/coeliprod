@@ -412,8 +412,10 @@ export default {
         
     },
     mounted(){
-        let fecha=new Date(this.data.fechaInicio);
-        this.date = this.calcularTiempoTranscurrido(fecha);
+        
+        // let fecha=new Date(this.data.fechaInicio);
+        // console.log(this.data.fechaInicio)
+        this.date = this.calcularTiempoTranscurrido(this.data.fechaInicio);
         this.mostrarMotivo()
         setTimeout(() => {
             this.render = false
@@ -643,34 +645,68 @@ export default {
             return letras.join("")+terminacion
         },
        
-        calcularTiempoTranscurrido(fechaInicial){
-            const fechaActual = new Date();
-            const diferencia = fechaActual - fechaInicial;
+        calcularTiempoTranscurrido(fechaInicialStr){
+             // Validar que la entrada sea una cadena no vacía
+            if (!fechaInicialStr || typeof fechaInicialStr !== 'string') {
+                return "Error: La fecha inicial no está definida o no es una cadena.";
+            }
 
+            // Convertir la cadena a objeto Date
+            const fechaInicial = new Date(fechaInicialStr);
+
+            // Validar que la fecha sea válida
+            if (isNaN(fechaInicial.getTime())) {
+                return "Error: La fecha proporcionada no es válida.";
+            }
+
+            const fechaActual = new Date();
+            // Normalizar a UTC para evitar problemas de zona horaria
+            const diferencia = fechaActual.getTime() - fechaInicial.getTime();
+
+            // Verificar si la fecha es futura
             if (diferencia < 0) {
                 return "La fecha proporcionada es en el futuro.";
             }
 
+            // Calcular unidades de tiempo
             const segundos = Math.floor(diferencia / 1000);
             const minutos = Math.floor(segundos / 60);
             const horas = Math.floor(minutos / 60);
             const dias = Math.floor(horas / 24);
-            const meses = Math.floor(dias / 30.44); // Promedio de días en un mes
+            const meses = Math.floor(dias / 30.42); // Promedio de días por mes
             const años = Math.floor(meses / 12);
 
+            // Construir la cadena de resultado
+            const partes = [];
             if (años > 0) {
-                return `${años} año${años > 1 ? 's' : ''}, ${meses % 12} m${meses % 12 > 1 ? 'es' : ''}, ${dias % 30} d${dias % 30 > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
-            } else if (meses > 0) {
-                return `${meses} m${meses > 1 ? 'es' : ''}, ${dias % 30} d${dias % 30 > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
-            } else if (dias > 0) {
-                return `${dias} d${dias > 1 ? 's' : ''}, ${horas % 24} h${horas % 24 > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
-            } else if (horas > 0) {
-                return `${horas} h${horas > 1 ? 's' : ''}, ${minutos % 60} min${minutos % 60 > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
-            } else if (minutos > 0) {
-                return `${minutos} min${minutos > 1 ? 's' : ''}, ${segundos % 60} seg${segundos % 60 > 1 ? 's' : ''}`;
-            } else {
-                return `${segundos} seg${segundos > 1 ? 's' : ''}`;
+                partes.push(`${años} año${años > 1 ? 's' : ''}`);
             }
+            if (meses % 12 > 0 || años > 0) {
+                partes.push(`${meses % 12} mes${meses % 12 > 1 ? 'es' : ''}`);
+            }
+            if (dias % 30 > 0 || meses > 0) {
+                partes.push(`${dias % 30} día${dias % 30 > 1 ? 's' : ''}`);
+            }
+            if (horas % 24 > 0 || dias > 0) {
+                partes.push(`${horas % 24} hora${horas % 24 > 1 ? 's' : ''}`);
+            }
+            if (minutos % 60 > 0 || horas > 0) {
+                partes.push(`${minutos % 60} minuto${minutos % 60 > 1 ? 's' : ''}`);
+            }
+            if (segundos % 60 > 0 || minutos > 0) {
+                partes.push(`${segundos % 60} segundo${segundos % 60 > 1 ? 's' : ''}`);
+            }
+
+            // Si no hay partes, significa que el tiempo transcurrido es menor a 1 segundo
+            if (partes.length === 0) {
+                return "Menos de un segundo";
+            }
+
+            // Unir las partes con comas y agregar "y" antes de la última
+            if (partes.length === 1) {
+                return partes[0];
+            }
+            return partes.slice(0, -1).join(", ") + " y " + partes[partes.length - 1];
         },
       
         
