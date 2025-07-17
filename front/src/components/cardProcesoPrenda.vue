@@ -71,7 +71,7 @@
             <strong>{{ data.descripcionEstado }}</strong>
             <br>
            
-            <p v-if="this.data.fechaInicio">{{ date }}</p>
+            <p v-if="this.data.fechaInicio">{{ calcularTiempoTranscurrido(data.fechaInicio) }}</p>
             <br v-else>
             Numero Orden {{ data.idOrdenLavado }}
             <br>
@@ -81,6 +81,7 @@
             <br>
             <strong v-if="this.data.fhAlta">Fecha Registro {{ obtenerFechaBonita(this.data.fhAlta) }}</strong> <br>
             <strong v-if="this.data.fechaEntrega">Fecha Entrega {{ obtenerFechaBonita(this.data.fechaEntrega) }}</strong>
+            
             <br>
             <br>
             <br>
@@ -415,7 +416,7 @@ export default {
         
         // let fecha=new Date(this.data.fechaInicio);
         // console.log(this.data.fechaInicio)
-        this.date = this.calcularTiempoTranscurrido(this.data.fechaInicio);
+        // this.date = this.calcularTiempoTranscurrido(this.data.fechaInicio);
         this.mostrarMotivo()
         setTimeout(() => {
             this.render = false

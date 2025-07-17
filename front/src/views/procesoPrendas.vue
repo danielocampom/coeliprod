@@ -529,6 +529,7 @@ export default {
             if (this.searchQuery) {
                 const query = this.searchQuery.toLowerCase(); // Convertir a minúsculas para búsqueda insensible a mayúsculas
                 this.filteredConsultas = this.consultas.filter(consulta => {
+                    console.log(consulta)
                     // Buscar en todas las propiedades relevantes
                     return (
                         (consulta.nomCliente && consulta.nomCliente.toLowerCase().includes(query)) ||
@@ -539,8 +540,9 @@ export default {
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
                         (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
                         (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))||
-                        (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
-                        (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
+                        (consulta.tipoLavado && consulta.tipoLavado.toString().includes(query))
+                        // (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
+                        // (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );
                 });
             } else {
