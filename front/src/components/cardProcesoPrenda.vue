@@ -621,16 +621,17 @@ export default {
             }
         },
         obtenerFechaBonita(fechaParametro) {
-            const fecha = new Date(fechaParametro);
+            // Si la fecha no incluye hora, agregar T00:00:00
+            const fechaStr = fechaParametro.includes('T') ? fechaParametro : `${fechaParametro}T00:00:00`;
+            const fecha = new Date(fechaStr);
 
             const opciones = {
-                day: '2-digit',  
+                day: '2-digit',
                 month: '2-digit',
                 year: 'numeric',
             };
 
             const formatoFecha = new Intl.DateTimeFormat('es-ES', opciones);
-
             return formatoFecha.format(fecha);
         },
         prefijos(cadena){
@@ -648,7 +649,7 @@ export default {
         calcularTiempoTranscurrido(fechaInicialStr){
              // Validar que la entrada sea una cadena no vacía
             if (!fechaInicialStr || typeof fechaInicialStr !== 'string') {
-                return "Error: La fecha inicial no está definida o no es una cadena.";
+                return "La fecha no está definida";
             }
 
             // Convertir la cadena a objeto Date
@@ -656,7 +657,7 @@ export default {
 
             // Validar que la fecha sea válida
             if (isNaN(fechaInicial.getTime())) {
-                return "Error: La fecha proporcionada no es válida.";
+                return "La fecha no es válida.";
             }
 
             const fechaActual = new Date();
@@ -665,7 +666,7 @@ export default {
 
             // Verificar si la fecha es futura
             if (diferencia < 0) {
-                return "La fecha proporcionada es en el futuro.";
+                return "La fecha en el futuro.";
             }
 
             // Calcular unidades de tiempo

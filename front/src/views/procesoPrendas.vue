@@ -90,7 +90,7 @@
                                         <vs-dialog blur  v-model="modalIniciar">
                                             <template #header>
                                                 <h4 class="not-margin">
-                                                    Iniciar <b>Proceso Conbinado?</b>
+                                                    Iniciar <b>Proceso Combinado?</b>
                                                 </h4>
                                             </template>
                             
