@@ -39,6 +39,11 @@
                                     <box-icon name='wind'></box-icon>
                                 </template>
                             </vs-input>
+                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
+                                <template #icon>
+                                    <box-icon name='wind'></box-icon>
+                                </template>
+                            </vs-input>
                             <div class="con-selects mt-5">
                                 <b-skeleton type="input" v-if="tiposProceso.length == 0"></b-skeleton>
                                 <v-select
@@ -51,11 +56,7 @@
                                     :clearable="false"
                                 />
                             </div>
-                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
+                            
                             <div class="con-selects mt-4">
                                 <b-skeleton type="input" v-if="clientes.length == 0"></b-skeleton>
                                 <v-select
@@ -337,13 +338,13 @@ export default {
             let token = this.$session.get('token')
 
             let json = {
-                "clave": this.clave,
+                "idCliente": this.cliente,
                 "nombre": this.nombre,
                 "descripcion": this.descripcion,
                 "idProceso": this.tipoProceso,
-                "idCliente": this.cliente,
                 "cantidadBolsa": this.cantidadBolsa,
                 "kilos": this.kilos,
+                "clave": this.clave,
                 "unidad": this.unidadKg
             };
             let res = await fetch(this.url+"prenda/register",{

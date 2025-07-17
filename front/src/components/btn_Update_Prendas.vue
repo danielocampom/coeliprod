@@ -13,7 +13,11 @@
 
             <div class="con-form">
                 <template>
-
+                    <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Codigo">
+                        <template #icon>
+                            <box-icon name='wind'></box-icon>
+                        </template>
+                    </vs-input>
                     <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
@@ -24,7 +28,7 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
-                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Cantidad por kilos">
+                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Unidad por kilos">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
                         </template>
@@ -34,6 +38,19 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
+                    <div class="con-selects mt-5">
+                        <v-select
+                            v-model="unidadKg"
+                            :options="unidades"
+                            label="nombre"
+                            placeholder="Tipo de unidad"
+                            :reduce="option => option.id"
+                            :searchable="true"
+                            :clearable="false"
+                        />
+                    </div>
+                    
+                    
                     <b-skeleton class="mt-4" type="input" v-if="clienteSelect.length == 0"></b-skeleton>
                     <div class="con-selects mt-4" v-else>
                         <v-select
@@ -122,10 +139,18 @@ export default {
         active: false,
         active2: false,
         tipoLavado: '',
+        unidades: [
+            {"id": 0, "nombre": 'Pieza'}, 
+            {"id": 1, "nombre": 'Par'}, 
+            {"id": 2, "nombre": 'Conjunto'}, 
+        ],
         nombre: '',
         descripcion: '',
         cantidadBolsa: '',
         kilos: '',
+        clave: '',
+        unidadKg: '',
+
         btnElimina: 0,
         btnActualizar: 0,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
@@ -143,6 +168,7 @@ export default {
             this.mostraTipoProceso()
             this.mostraTipoClientes()
         }, 1500)
+        // console.log(this.data.row.item)
     },
     methods: {
         refresh(){
@@ -160,6 +186,8 @@ export default {
             this.cantidadBolsa = this.data.row.item.cantidadBolsa
             this.kilos = this.data.row.item.cantidadKilos
             this.estado = this.data.row.item.estado == 1 ? true : false
+            this.clave = this.data.row.item.clave
+            this.unidadKg = this.data.row.item.unidad
         },
     
         async mostraCliente(){
@@ -259,10 +287,12 @@ export default {
                 "idCliente": this.selectCliente,
                 "nombre": this.nombre,
                 "descripcion": this.descripcion,
-                "idPrenda": this.data.row.item.id,
                 "idProceso": this.selectProceso,
                 "cantidadBolsa": this.cantidadBolsa,
                 "kilos": this.kilos,
+                "clave": this.clave,
+                "unidad": this.unidadKg,
+                "idPrenda": this.data.row.item.id,
 
             };
             let res = await fetch(this.url+"prenda/update",{
