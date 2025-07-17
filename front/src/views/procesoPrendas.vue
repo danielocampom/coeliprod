@@ -481,10 +481,12 @@ export default {
             let token = this.$session.get('token')
 
             let json = {
-                "idMotivoMaquinada": this.idMotivoMaquinada,
                 "idLavadora": this.tipoLavadora,
                 "prendas": this.prendas,
             };
+            if(this.idMotivoMaquinada){
+                json.idMotivoMaquinada = this.idMotivoMaquinada
+            }
             let res = await fetch(this.url+"orden/proceso",{
                 method: "POST",
                 headers: {
@@ -529,7 +531,7 @@ export default {
             if (this.searchQuery) {
                 const query = this.searchQuery.toLowerCase(); // Convertir a minúsculas para búsqueda insensible a mayúsculas
                 this.filteredConsultas = this.consultas.filter(consulta => {
-                    console.log(consulta)
+                    // console.log(consulta)
                     // Buscar en todas las propiedades relevantes
                     return (
                         (consulta.nomCliente && consulta.nomCliente.toLowerCase().includes(query)) ||

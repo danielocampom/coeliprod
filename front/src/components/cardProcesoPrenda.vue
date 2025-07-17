@@ -719,7 +719,6 @@ export default {
 
                 let json = {
                     "idLavadora": this.tipoLavadora,
-                    "idMotivoMaquinada": this.idMotivoMaquinada,
 
                     "prendas": [{
                         "idOrdenPrenda": this.data.idOrdenPrenda,
@@ -727,6 +726,10 @@ export default {
                         "idPasoProceso": this.data.idPaso,
                     }],
                 };
+
+                if(this.idMotivoMaquinada){
+                    json.idMotivoMaquinada = this.idMotivoMaquinada
+                }
                 let res = await fetch(this.url+"orden/proceso",{
                     method: "POST",
                     headers: {
