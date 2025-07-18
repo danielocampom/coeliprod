@@ -109,7 +109,7 @@
                                                                 Tipo de Prenda: <b>{{ prenda.nombre }}</b> 
                                                                 <br> 
                                                                 Cantidad: <b>{{ prenda.cantidad }} ({{ prenda.unidad }})</b> <br>
-                                                                Carga: <b>{{ prenda.kg*prenda.cantidad }} Kg.</b>
+                                                                Carga: <b>{{ Number(prenda.kg*prenda.cantidad).toFixed(4) }} Kg.</b>
                                                             </b-col>
                                                             <b-col cols="4">
                                                                 <vs-button
