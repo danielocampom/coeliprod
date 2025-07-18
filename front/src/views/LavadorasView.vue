@@ -125,7 +125,7 @@
             >
                 <template #cell(estado)="row">
                     <div class="d-flex justify-content-center">
-                        <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
+                        <box-icon name='radio-circle-marked' :color="row.item.estado === 1 || row.item.estado === 7 ? '#32ff00' : '#ff0023'" ></box-icon>
                     </div>
                 </template>
                 <template #cell(actions)="row">
