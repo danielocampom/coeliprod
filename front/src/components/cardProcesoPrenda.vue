@@ -478,17 +478,19 @@ export default {
             this.cancelPredas = true
         },
         async mostrarLavadoras(id){
-            // let item = []
+            let item = []
             fetchApi(this.url+`lavadora/findByTipoLavado/${id}`, 'GET', this.$session.get('token'))
             .then(data => {
                 if(data.status == 200){
-                    // data.datos.forEach(lavado => {
-                    //     if(lavado.estado !== "OCUPADO"){
-                    //         item.push({id: lavado.idLavadora, lavadora: lavado.lavadora, max: lavado.max, min: lavado.min })
-                    //     }
-                    // });
-                    this.getLavado = data.datos 
+                    data.datos.forEach(lavado => {
+                        if(lavado.idEstado == 1 || lavado.idEstado == 7){
+                            item.push({id: lavado.idLavadora, lavadora: lavado.lavadora, max: lavado.max, min: lavado.min })
+                        }
+                    });
+                    this.getLavado = item 
                 } 
+                // console.log(this.getLavado)
+
             })
 
         },
