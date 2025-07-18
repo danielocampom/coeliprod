@@ -174,6 +174,7 @@ export default {
         fields: [
             { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
             { key: 'nombre', label: 'Nombre', sortable: true, sortDirection: 'desc' },
+            { key: 'tipoLavado', label: 'Tipo de lavado', sortable: true, sortDirection: 'desc' },
             { key: 'min', label: 'Campacidad Minima %', sortable: true, sortDirection: 'desc' },
             { key: 'max', label: 'Capacidad Maxima %', sortable: true, sortDirection: 'desc' },
             { key: 'kilos', label: 'Capacidad en kilos', sortable: true, sortDirection: 'desc' },

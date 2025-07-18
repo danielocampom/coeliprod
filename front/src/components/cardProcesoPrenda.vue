@@ -118,34 +118,34 @@
                         <br>
                         <div class="center  con-selects" v-if="this.data.idTipoLavado != null" >
                             
-                            <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
-                                <vs-option-group>
-                                    <div slot="title">
-                                        Selecciona una opcion
-                                    </div>
-                                    <vs-option  v-for="(lavado, i) in getLavado" :key="i" :label="lavado.lavadora + ' - Max: ' + lavado.max + ' Min: ' + lavado.min" :value="lavado.idLavadora">
-                                        {{ lavado.lavadora }}  Max.: {{ (lavado.max/100)*lavado.kilos }} KG  Min.: {{ (lavado.min/100)*lavado.kilos }} KG
-                                    </vs-option>
-                                </vs-option-group>
-                            </vs-select>
+
+                            <v-select
+                                v-model="tipoLavadora"
+                                :options="getLavado"
+                                label="nombre"
+                                placeholder="Lavadora"
+                                :reduce="option => option.id"
+                                :searchable="true"
+                                :clearable="false"
+                                no-results-text="No se encontraron resultados"
+                            />
+
                             <br>
-                            <vs-select 
-                                style="max-width:100%!important;" class="mt-3" success label-placeholder="Motivo" color="success" 
-                                    v-model="idMotivoMaquinada">
-                                <vs-option-group>
-                                    <div slot="title">
-                                        Selecciona una motivo
-                                    </div>
-                                    <vs-option  v-for="(motivo, i) in motivos" :key="i" 
-                                    :label="motivo.motivo" 
-                                    :value="motivo.id">
-                                        {{ motivo.motivo }}
-                                    </vs-option>
-                                </vs-option-group>
-                            </vs-select>
+                            <br>
+                             <v-select
+                                v-model="idMotivoMaquinada"
+                                :options="motivos"
+                                label="motivo"
+                                placeholder="Motivo"
+                                :reduce="option => option.id"
+                                :searchable="true"
+                                :clearable="false"
+                                no-results-text="No se encontraron resultados"
+                            />
 
                         </div>
-                        
+                        <br>
+                        <br>
                         
                     </div>
                     <template #footer>
@@ -355,6 +355,8 @@
 </template>
 
 <script>
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 import loginComponent from './cardLogin.vue';
 import ConfirmComponent from '@/components/confirm.vue'
 import { refreshSession, fetchApi } from "@/service/service.js"
@@ -405,6 +407,7 @@ export default {
     components: {
         loginComponent,
         ConfirmComponent,
+        vSelect
     },
     
     watch: {
@@ -484,12 +487,14 @@ export default {
                 if(data.status == 200){
                     data.datos.forEach(lavado => {
                         if(lavado.idEstado == 1 || lavado.idEstado == 7){
-                            item.push({id: lavado.idLavadora, lavadora: lavado.lavadora, max: lavado.max, min: lavado.min })
+                            let max = (lavado.max / 100) * lavado.kilos  + " kg "
+                            let min = (lavado.min / 100) * lavado.kilos + " kg "
+                            item.push({"id": lavado.idLavadora, "nombre": `${lavado.lavadora}  max: ${max} min: ${min}`})
                         }
                     });
                     this.getLavado = item 
                 } 
-                // console.log(this.getLavado)
+                // console.log(data)
 
             })
 

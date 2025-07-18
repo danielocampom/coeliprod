@@ -360,9 +360,11 @@ export default {
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     if(data.datos.length != 0){
-                        this.getPrendas = data.datos
                         data.datos.forEach( value => {
-                            this.array_prendas.push({id: value.id, nombre: value.nombre, kg: value.cantidadKilos, unidad:value.unidad})
+
+                            this.getPrendas.push({id: value.id, nombre: `${value.nombre} - ${value.clave}`})
+
+                            this.array_prendas.push({id: value.id, nombre: `${value.nombre} - ${value.clave}`, kg: value.cantidadKilos, unidad:value.unidad})
                         })
                     }else{
                         this.getPrendas = []
