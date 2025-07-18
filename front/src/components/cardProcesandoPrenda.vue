@@ -32,6 +32,8 @@
            
         </b-card>    
         <b-card v-if="data.detalleMaquinada.length == 1" :style="{ 'border-left': `solid 5px #007bff !important` }" :title="'Lavadora '+ data.lavadora" :sub-title="'Cliente '+data.detalleMaquinada[0].nombreCliente">
+            <small>carga utilizada {{ limitDecimal(data.kilosMaquinada) }} kg</small> <br>
+           
             <small>Prenda {{ data.detalleMaquinada[0].nombrePrenda }}</small> <br>
             <strong>
                 Cantidad de Prendas {{ data.detalleMaquinada[0].cantidad }}

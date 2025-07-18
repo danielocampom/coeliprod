@@ -226,6 +226,8 @@
                                     </template>
                                 </vs-input>
                             </div>
+                            <strong class="fw-light">carga de: {{ Number((cantidadPrendasConbinar * (1000 / cantidadPorKilo))/1000).toFixed(4) }} Kg.</strong>
+
                         </template>
                     </div>
 

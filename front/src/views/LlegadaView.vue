@@ -82,7 +82,7 @@
                                                             </div>
                                                         </b-col>
                                                         <b-col lg="6" sm="8" class="mt-4">
-                                                            <vs-input v-model="cantidad" type="number" primary label-placeholder="Cantidad en Piezas">
+                                                            <vs-input v-model="cantidad" type="number" primary label-placeholder="Cantidad">
                                                                 <template #icon>
                                                                     <box-icon name='dialpad-alt'></box-icon>
                                                                 </template>
@@ -108,7 +108,8 @@
                                                             <b-col cols="8">
                                                                 Tipo de Prenda: <b>{{ prenda.nombre }}</b> 
                                                                 <br> 
-                                                                Cantidad: <b>{{ prenda.cantidad }}</b>
+                                                                Cantidad: <b>{{ prenda.cantidad }} ({{ prenda.unidad }})</b> <br>
+                                                                Carga: <b>{{ prenda.kg*prenda.cantidad }} Kg.</b>
                                                             </b-col>
                                                             <b-col cols="4">
                                                                 <vs-button
@@ -361,7 +362,7 @@ export default {
                     if(data.datos.length != 0){
                         this.getPrendas = data.datos
                         data.datos.forEach( value => {
-                            this.array_prendas.push({id: value.id, nombre: value.nombre})
+                            this.array_prendas.push({id: value.id, nombre: value.nombre, kg: value.cantidadKilos, unidad:value.unidad})
                         })
                     }else{
                         this.getPrendas = []
@@ -374,10 +375,14 @@ export default {
         },
         async addPrenda(){
 
+            // console.log(this.nombrePrenda)
+
             let prenda = {
                 "id": this.contador,
                 "idPrenda": this.SelectPrenda,
                 "nombre": this.nombrePrenda.nombre,
+                "kg": this.nombrePrenda.kg,
+                "unidad": this.nombrePrenda.unidad,
                 "cantidad": this.cantidad,
 
             }

@@ -90,7 +90,8 @@
             </div>
 
             <strong class="fw-light">
-                Cantidad: {{ data.cantidadPrendas }}
+                Cantidad: {{ data.cantidadPrendas }} <br>
+                Carga Total <b>{{ Number((data.cantidadPrendas * ( 1000 / data.cantidadPorKilo )) / 1000).toFixed(4) }} Kg.</b>
             </strong>
         
             <div class="mt-auto">
@@ -111,7 +112,10 @@
                             v-model="cantidad"
                             label-placeholder="cantidad a ingresar"
                         />
-                        
+                        <br>
+                        <strong class="fw-light">carga de: {{ Number((cantidad * (1000 / data.cantidadPorKilo))/1000).toFixed(4) }} Kg.</strong>
+                        <hr>
+                        <br>
                         <div class="center  con-selects" v-if="this.data.idTipoLavado != null" >
                             
                             <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
@@ -124,6 +128,7 @@
                                     </vs-option>
                                 </vs-option-group>
                             </vs-select>
+                            <br>
                             <vs-select 
                                 style="max-width:100%!important;" class="mt-3" success label-placeholder="Motivo" color="success" 
                                     v-model="idMotivoMaquinada">
@@ -296,7 +301,8 @@
                 </template>
                 <div class="con-form">
                     <template>
-                        <p>Cantidad <b>{{ data.cantidadPrendas }}</b></p>
+                        <p>Cantidad <b>{{ data.cantidadPrendas }}</b></p> <br>
+                        
                         <div class="center content-inputs">
                             <vs-input danger type="text" v-model="motivoElim" label-placeholder="Describe el motivo">
                                 <template #icon>
@@ -422,10 +428,10 @@ export default {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda)
         }, 100) 
-            if(this.data.idTipoLavado != null){
-                this.mostrarLavadoras(this.data.idTipoLavado)
-            }
-
+        if(this.data.idTipoLavado != null){
+            this.mostrarLavadoras(this.data.idTipoLavado)
+        }
+        // console.log(this.data)
     },
     methods: {
         refresh(){
