@@ -24,7 +24,7 @@
                                     <box-icon name='wind'></box-icon>
                                 </template>
                             </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre">
+                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Prenda">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
                                 </template>

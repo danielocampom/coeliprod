@@ -111,6 +111,7 @@
                             class="mt-2"
                             v-model="cantidad"
                             label-placeholder="cantidad a ingresar"
+                            :max="data.cantidadPrendas"
                         />
                         <br>
                         <strong class="fw-light">carga de: {{ Number((cantidad * (1000 / data.cantidadPorKilo))/1000).toFixed(4) }} Kg.</strong>
@@ -124,7 +125,6 @@
                                 :options="getLavado"
                                 label="nombre"
                                 placeholder="Lavadora"
-                                :reduce="option => option.id"
                                 :searchable="true"
                                 :clearable="false"
                                 no-results-text="No se encontraron resultados"
@@ -132,7 +132,7 @@
 
                             <br>
                             <br>
-                             <v-select
+                             <v-select v-if="mostrarCampoMotivo(tipoLavadora.max, tipoLavadora.min, Number((cantidad * (1000 / data.cantidadPorKilo))/1000).toFixed(4))"
                                 v-model="idMotivoMaquinada"
                                 :options="motivos"
                                 label="motivo"
@@ -149,7 +149,7 @@
                         
                     </div>
                     <template #footer>
-                        <div class="footer-dialog">
+                        <div class="footer-dialog"  v-if="cantidad <= data.cantidadPrendas && cantidad > 0">
                             <vs-button block @click="iniciar()" :disabled="iniciarProceso">
                                 <box-icon v-if="iniciarProceso" name='loader' flip='vertical' animation='spin' color='#ffffff' ></box-icon>
                                 Iniciar 
@@ -443,6 +443,24 @@ export default {
                 this.$session.set('token', data.datos.token)
             }) 
         },
+       mostrarCampoMotivo(max, min, cantidad) {
+            // Convertir cantidad a número decimal
+            const cantidadNum = parseFloat(cantidad);
+
+            // Extraer los valores numéricos de max y min (asumiendo formato "10 kg")
+            const maxValue = max ? parseFloat(max.split(" ")[0]) : 0;
+            const minValue = min ? parseFloat(min.split(" ")[0]) : 0;
+
+            // Validar casos inválidos
+            if (isNaN(cantidadNum) || cantidadNum === 0) return false;
+            if (maxValue === 0 && minValue === 0) return false;
+
+            // Devolver true si cantidad está FUERA del rango, false si está DENTRO
+            const mostrar = cantidadNum < minValue || cantidadNum > maxValue;
+
+            // console.log('mostrar:', mostrar);
+            return mostrar;
+        },
         editCantidades(){
             this.textAlertConfirm = 
             this.editCount = true;
@@ -489,7 +507,12 @@ export default {
                         if(lavado.idEstado == 1 || lavado.idEstado == 7){
                             let max = (lavado.max / 100) * lavado.kilos  + " kg "
                             let min = (lavado.min / 100) * lavado.kilos + " kg "
-                            item.push({"id": lavado.idLavadora, "nombre": `${lavado.lavadora}  max: ${max} min: ${min}`})
+                            item.push( {
+                                "id": lavado.idLavadora, 
+                                "nombre": `${lavado.lavadora}  max: ${max} min: ${min}`,
+                                max: max,
+                                min: min,
+                            })
                         }
                     });
                     this.getLavado = item 
@@ -731,7 +754,7 @@ export default {
                 let token = this.$session.get('token')
 
                 let json = {
-                    "idLavadora": this.tipoLavadora,
+                    "idLavadora": this.tipoLavadora.id,
 
                     "prendas": [{
                         "idOrdenPrenda": this.data.idOrdenPrenda,

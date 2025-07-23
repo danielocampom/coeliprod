@@ -86,7 +86,7 @@
                                             </b-card>
                                         </b-col>
                                     </b-row>
-                                        <vs-button class="mt-5" v-if="prendas.length > 1" block flat primary @click="modalIniciar =! modalIniciar"> Iniciar ({{ Number(canTotal.toFixed(4)) }} KG a ingresar)</vs-button> 
+                                        <vs-button class="mt-5" v-if="prendas.length > 1" block flat primary @click="a =! a"> Iniciar ({{ Number(canTotal.toFixed(4)) }} KG a ingresar)</vs-button> 
                                         <vs-dialog blur  v-model="modalIniciar">
                                             <template #header>
                                                 <h4 class="not-margin">
@@ -220,7 +220,9 @@
                             <p>Cantidad <b> {{cantidadOriginal}} </b></p>
                             
                             <div class="center content-inputs">
-                                <vs-input danger type="number" v-model="cantidadPrendasConbinar" label-placeholder="Digita una cantidad">
+                                <vs-input danger type="number" 
+                                    v-model="cantidadPrendasConbinar" 
+                                    label-placeholder="Digita una cantidad">
                                     <template #icon>
                                         <box-icon name='dialpad-alt' ></box-icon>
                                     </template>
@@ -232,7 +234,7 @@
                     </div>
 
                     <template #footer>
-                        <div class="con-footer mt-4">
+                        <div class="con-footer mt-4" v-if="cantidadPrendasConbinar <= cantidadOriginal && cantidadPrendasConbinar > 0">
                             <vs-button primary
                                 block
                                 flat
@@ -412,12 +414,23 @@ export default {
             this.$emit('item-dropped', droppedItem)
         },
 
+        // existeDuplicado(arr, nuevoObj, clavesUnicas = []) {
+        //     console.log(arr, nuevoObj, clavesUnicas)
+        //     return arr.some(item =>
+        //         clavesUnicas.some(clave => item[clave] === nuevoObj[clave])
+        //     );
+        // },
+        
         existeDuplicado(arr, nuevoObj, clavesUnicas = []) {
             return arr.some(item =>
-                clavesUnicas.some(clave => item[clave] === nuevoObj[clave])
+                clavesUnicas.every(clave => 
+                item[clave] !== undefined && 
+                nuevoObj[clave] !== undefined && 
+                item[clave] === nuevoObj[clave]
+                )
             );
         },
-        
+
         confimar(){
             this.prendas.push({
                     "id": this.prendas.length+1,

@@ -327,6 +327,7 @@ export default {
                     this.refresh()
                     this.openNotification(`Exito: ${data.mensaje}`, `Se a Autorizado el proceso Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
+                    this.viewMotivo = false
                 }else{
                     this.openNotification(`Error: ${data.mensaje}`, `${data.diagnostico}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 }
