@@ -556,8 +556,8 @@ export default {
                         (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
                         (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
-                        (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))||
-                        (consulta.tipoLavado && consulta.tipoLavado.toString().includes(query))
+                        (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))
+                        
                         // (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
                         // (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );

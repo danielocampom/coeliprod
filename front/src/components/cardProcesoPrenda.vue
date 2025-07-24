@@ -95,7 +95,7 @@
             </strong>
         
             <div class="mt-auto">
-                <vs-button block flat primary @click="modalIniciar=!modalIniciar" > Iniciar </vs-button> 
+                <vs-button block flat primary @click="modalIniciarProceso()" > Iniciar </vs-button> 
                 <vs-dialog blur  v-model="modalIniciar">
                     <template #header>
                         <h4 class="not-margin">
@@ -426,14 +426,11 @@ export default {
         // let fecha=new Date(this.data.fechaInicio);
         // console.log(this.data.fechaInicio)
         // this.date = this.calcularTiempoTranscurrido(this.data.fechaInicio);
-        this.mostrarMotivo()
         setTimeout(() => {
             this.render = false
             this.mostrarDetailPrendas(this.data.idPrenda)
         }, 100) 
-        if(this.data.idTipoLavado != null){
-            this.mostrarLavadoras(this.data.idTipoLavado)
-        }
+        
         // console.log(this.data)
     },
     methods: {
@@ -442,6 +439,13 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        modalIniciarProceso(){
+            this.modalIniciar = !this.modalIniciar
+            if(this.data.idTipoLavado != null){
+                this.mostrarLavadoras(this.data.idTipoLavado)
+                this.mostrarMotivo()
+            }
         },
        mostrarCampoMotivo(max, min, cantidad) {
             // Convertir cantidad a número decimal
