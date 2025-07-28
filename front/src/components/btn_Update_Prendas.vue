@@ -13,7 +13,7 @@
 
             <div class="con-form">
                 <template>
-                    <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Codigo">
+                    <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Artículo">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
                         </template>
@@ -28,7 +28,7 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
-                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Unidad por kilos">
+                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Prenda por kilo">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
                         </template>

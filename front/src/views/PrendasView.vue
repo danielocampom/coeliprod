@@ -19,7 +19,7 @@
                         </template>
             
                         <div class="con-form">
-                            <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Codigo">
+                            <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Artículo">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
                                 </template>
@@ -34,7 +34,7 @@
                                     <box-icon name='wind'></box-icon>
                                 </template>
                             </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Unidad por kilos">
+                            <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Prenda por kilo">
                                 <template #icon>
                                     <box-icon name='wind'></box-icon>
                                 </template>
@@ -214,9 +214,9 @@ export default {
             { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
             { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
             { key: 'nombre', label: 'Prendas', sortable: true, sortDirection: 'desc' },
-            { key: 'clave', label: 'Codigo', sortable: true, sortDirection: 'desc' },
+            { key: 'clave', label: 'Artículo', sortable: true, sortDirection: 'desc' },
             { key: 'descripcion', label: 'Descripción', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadKilos', label: 'Unidades Por Kilo', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadKilos', label: 'Prenda por kilo', sortable: true, sortDirection: 'desc' },
             { key: 'cantidadBolsa', label: 'Cantidad pieza/par', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],

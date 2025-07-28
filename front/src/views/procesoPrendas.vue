@@ -631,7 +631,6 @@ export default {
         },
         updatePage(status){
             if(status == 200){
-                console.log(this.searchQuery)
                 if (this.searchQuery === "") {
                     this.mostratConsultas();
                 } else {
