@@ -154,6 +154,12 @@ const routes = [
     component: () => import('../views/motivoView.vue'),
     meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.CANCELACION]}
   },
+  {
+    path: '/catalogos',
+    name: 'catalogos',
+    component: () => import('../views/catalogosView.vue'),
+    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN, ROLES.CANCELACION]}
+  },
   
   {
     path: '/roles',

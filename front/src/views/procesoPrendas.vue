@@ -631,7 +631,13 @@ export default {
         },
         updatePage(status){
             if(status == 200){
-                this.mostratConsultas()
+                console.log(this.searchQuery)
+                if (this.searchQuery === "") {
+                    this.mostratConsultas();
+                } else {
+                    this.filterConsultas();
+                    
+                }
             }
         },
         obtenerFechaBonita(fechaParametro) {

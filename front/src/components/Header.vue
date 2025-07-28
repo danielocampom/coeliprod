@@ -232,6 +232,14 @@
             </router-link>
           </vs-sidebar-item>
 
+          <vs-sidebar-item :class="{ 'active': isActive('/catalogos') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="catalogos" >
+            <template #icon>
+              <box-icon name='folder'></box-icon>
+            </template>
+            <router-link to="/catalogos" class="nav-link">
+                catalogos
+            </router-link>
+          </vs-sidebar-item>
           <vs-sidebar-item id="cambioNip">
             <template #icon >
               <box-icon name='dialpad-alt'  @click="passModal"></box-icon>
