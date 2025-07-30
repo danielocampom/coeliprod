@@ -291,6 +291,8 @@ export default {
         tipoLavado: "",
         folio: "",
         idPaso: "",
+        idPrenda: "",
+        idOrdenLavado: "",
         idTipoLavado: "",
         idOrdenPrenda: "",
         showError: false,
@@ -385,7 +387,7 @@ export default {
             }
             
 
-            const clavesUnicas = ['cantidadPrendas', 'folio', 'idOrdenLavado', 'idOrdenPrenda', 'idPaso'];
+            const clavesUnicas = ['cantidadOriginal', 'folio', 'idOrdenLavado', 'idOrdenPrenda', 'idPaso', 'idPrenda'];
 
             if (this.existeDuplicado(this.prendas, droppedItem, clavesUnicas)) {
                 this.handleInvalidDrop()
@@ -397,13 +399,17 @@ export default {
                 this.animate = true
 
             }
-            this.nombreTipoLavado = droppedItem.tipoLavado
+
+            this.cantidadOriginal = droppedItem.cantidadPrendas
+            this.folio = droppedItem.folio
+            this.idOrdenLavado = droppedItem.idOrdenLavado
             this.idOrdenPrenda = droppedItem.idOrdenPrenda
             this.idPaso = droppedItem.idPaso
+            this.idPrenda = droppedItem.idPrenda
+            
+            this.nombreTipoLavado = droppedItem.tipoLavado
             this.prenda = droppedItem.nombrePrenda
             this.nombreCliente = droppedItem.nomCliente
-            this.folio = droppedItem.folio
-            this.cantidadOriginal = droppedItem.cantidadPrendas
             this.cantidadPorKilo = droppedItem.cantidadPorKilo
             
             // console.log(droppedItem)
@@ -415,7 +421,7 @@ export default {
         },
 
         existeDuplicado(arr, nuevoObj, clavesUnicas = []) {
-            console.log(arr, nuevoObj, clavesUnicas)
+            console.log(arr)
             return arr.some(item =>
                 clavesUnicas.some(clave => item[clave] === nuevoObj[clave])
             );
@@ -425,15 +431,20 @@ export default {
         confimar(){
             this.prendas.push({
                     "id": this.prendas.length+1,
-                    "idOrdenPrenda": this.idOrdenPrenda,
                     "cantidad": this.cantidadPrendasConbinar,
                     "idPasoProceso": this.idPaso,
                     "idTipoLavado": this.idTipoLavado,
                     "prenda": this.prenda,
-                    "folio": this.folio,
                     "nombreCliente": this.nombreCliente,
                     "tipoLavado": this.nombreTipoLavado,
-                    "cantidadPorKilo": this.cantidadPorKilo
+                    "cantidadPorKilo": this.cantidadPorKilo,
+                    
+                    "cantidadOriginal": this.cantidadOriginal,
+                    "folio": this.folio,
+                    "idOrdenLavado": this.idOrdenLavado,
+                    "idOrdenPrenda": this.idOrdenPrenda,
+                    "idPaso": this.idPaso,
+                    "idPrenda": this.idPrenda,
             })
             // console.log(this.prendas)
             this.droppedItemsCount = this.prendas.length
@@ -585,7 +596,7 @@ export default {
 
 
         },
-        
+
         async mostratConsultas() {
             this.consultas = [];
             this.consultasProcesando = [];
