@@ -216,8 +216,10 @@ export default {
             { key: 'nombre', label: 'Prendas', sortable: true, sortDirection: 'desc' },
             { key: 'clave', label: 'Artículo', sortable: true, sortDirection: 'desc' },
             { key: 'descripcion', label: 'Descripción', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadKilos', label: 'Prenda por kilo', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadBolsa', label: 'Cantidad pieza/par', sortable: true, sortDirection: 'desc' },
+            { key: 'unidad', label: 'Tipo Unidad', sortable: true, sortDirection: 'desc' },
+            { key: 'material', label: 'Material', sortable: true, sortDirection: 'desc' },
+            { key: 'familia', label: 'Familia', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadBolsa', label: 'Cantidad por bolsa', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
         unidades: [

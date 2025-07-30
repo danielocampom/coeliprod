@@ -317,7 +317,7 @@ export default {
         },
         async mostraActivos(){
             this.items = []
-            fetchApi(this.url+'prenda/findByEstado/1', 'GET', this.$session.get('token'))
+            fetchApi(this.url+'familia/findAll', 'GET', this.$session.get('token'))
             .then(data => {
                 this.prendas = []
                 if(data.status == 401){ this.activarReboot = true }
