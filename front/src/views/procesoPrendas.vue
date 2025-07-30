@@ -380,18 +380,21 @@ export default {
                     this.mostrarLavadoras(prendaLider)
                     this.handleValidDrop(droppedItem)
                     this.cantidadCobinado = true
+                    
                 }else{
+                    this.openNotification(`Error`, "No corresponde al mismo tipo de lavado", 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`, 'none')
                     this.handleInvalidDrop()
                 }
 
             }
             
 
-            const clavesUnicas = ['cantidadOriginal', 'folio', 'idOrdenLavado', 'idOrdenPrenda', 'idPaso', 'idPrenda'];
+            // const clavesUnicas = ['cantidadOriginal', 'folio', 'idOrdenLavado', 'idOrdenPrenda', 'idPaso', 'idPrenda'];
 
-            if (this.existeDuplicado(this.prendas, droppedItem, clavesUnicas)) {
+            if (this.existeDuplicado(this.prendas, droppedItem)) {
                 this.handleInvalidDrop()
                 this.cantidadCobinado = false
+                this.openNotification(`Error`, "Ya existe una prenda con los mismos datos", 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`, 'none')
             }
 
             if(this.prendas.length == 0){
@@ -420,13 +423,31 @@ export default {
             this.$emit('item-dropped', droppedItem)
         },
 
-        existeDuplicado(arr, nuevoObj, clavesUnicas = []) {
-            console.log(arr)
-            return arr.some(item =>
-                clavesUnicas.some(clave => item[clave] === nuevoObj[clave])
-            );
+        // existeDuplicado(arr, nuevoObj, clavesUnicas = []) {
+        //     return arr.some(item =>
+        //         clavesUnicas.some(clave => item[clave] === nuevoObj[clave])
+        //     );
+        // },
+        existeDuplicado(arr, nuevoObj) {
+            let tieneDuplicados = false;
+            arr.forEach(item => {
+                // <Verifica coincidencias parciales
+                const clavesCoincidentes = [];
+                if (item.cantidadOriginal === nuevoObj.cantidadPrendas) clavesCoincidentes.push(`cantidadOriginal: ${nuevoObj.cantidadPrendas}`);
+                if (item.folio === nuevoObj.folio) clavesCoincidentes.push(`folio: ${nuevoObj.folio}`);
+                if (item.idOrdenLavado === nuevoObj.idOrdenLavado) clavesCoincidentes.push(`idOrdenLavado: ${nuevoObj.idOrdenLavado}`);
+                if (item.idOrdenPrenda === nuevoObj.idOrdenPrenda) clavesCoincidentes.push(`idOrdenPrenda: ${nuevoObj.idOrdenPrenda}`);
+                if (item.idPaso === nuevoObj.idPaso) clavesCoincidentes.push(`idPaso: ${nuevoObj.idPaso}`);
+                if (item.idPrenda === nuevoObj.idPrenda) clavesCoincidentes.push(`idPrenda: ${nuevoObj.idPrenda}`);
+
+
+                if(clavesCoincidentes.length == 6){
+                    return tieneDuplicados = true;
+                }
+            });
+
+            return tieneDuplicados;
         },
-        
 
         confimar(){
             this.prendas.push({
