@@ -585,6 +585,7 @@ export default {
 
 
         },
+        
         async mostratConsultas() {
             this.consultas = [];
             this.consultasProcesando = [];
