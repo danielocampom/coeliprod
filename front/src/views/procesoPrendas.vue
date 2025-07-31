@@ -579,7 +579,7 @@ export default {
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
                         (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
                         (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))
-                        
+                            
                         // (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
                         // (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );
@@ -594,27 +594,47 @@ export default {
         },
         filterConsultasP() {
             if (this.searchQueryP) {
-                const query = this.searchQueryP.toLowerCase(); // Convertir a minúsculas para búsqueda insensible a mayúsculas
-                this.filteredConsultasP = this.consultasProcesando.filter(consulta => {
-                    // Buscar en todas las propiedades relevantes
-                    return (
-                        (consulta.nomCliente && consulta.nomCliente.toLowerCase().includes(query)) ||
-                        (consulta.nombrePaso && consulta.nombrePaso.toLowerCase().includes(query)) ||
-                        (consulta.nombrePrenda && consulta.nombrePrenda.toLowerCase().includes(query))||
-                        (consulta.nombreSigPaso && consulta.nombreSigPaso.toLowerCase().includes(query))||
-                        (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
-                        (consulta.folio && consulta.folio.toLowerCase().includes(query))||
-                        (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
-                        (consulta.idOrdenLavado.toString() && consulta.idOrdenLavado.toString().includes(query))||
-                        (this.obtenerFechaBonita(consulta.fechaEntrega) && this.obtenerFechaBonita(consulta.fechaEntrega).toLowerCase().includes(query))||
-                        (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
-                    );
-                });
-            } else {
-                // Si no hay texto de búsqueda, muestra todas las cards
-                this.filteredConsultasP = this.consultasProcesando;
-            }
+                const query = this.searchQueryP.toLowerCase().trim(); // Normalizar la consulta
+                console.log('Consulta de búsqueda:', query); // Depurar consulta
+                console.log('Datos originales:', this.consultasProcesando); // Depurar datos
 
+                this.filteredConsultasP = this.consultasProcesando.filter((consulta, index) => {
+                    console.log(`Procesando consulta #${index}:`, consulta); // Depurar cada objeto
+
+                    // Validar que consulta sea un objeto
+                    if (!consulta || typeof consulta !== 'object') {
+                        console.warn(`Consulta inválida en índice ${index}:`, consulta);
+                        return false;
+                    }
+
+                    // Buscar en la propiedad lavadora (nivel raíz)
+                    const matchesLavadora = consulta.lavadora && String(consulta.lavadora).toLowerCase().includes(query);
+                    console.log(`Lavadora coincide:`, matchesLavadora, consulta.lavadora); // Depurar lavadora
+
+                    // Buscar en las propiedades dentro del array detalleMaquinada
+                    const matchesDetalleMaquinada =
+                        Array.isArray(consulta.detalleMaquinada) &&
+                        consulta.detalleMaquinada.some((detalle, detalleIndex) => {
+                            const matches =
+                                (detalle.nombreCliente && String(detalle.nombreCliente).toLowerCase().includes(query)) ||
+                                (detalle.nombrePrenda && String(detalle.nombrePrenda).toLowerCase().includes(query)) ||
+                                (detalle.idOrdenLavado && String(detalle.idOrdenLavado).includes(query)) ||
+                                (detalle.estado && String(detalle.estado).toLowerCase().includes(query));
+                            console.log(`Detalle #${detalleIndex} coincide:`, matches, detalle); // Depurar detalle
+                            return matches;
+                        });
+
+                    const hasMatch = matchesLavadora || matchesDetalleMaquinada;
+                    console.log(`Consulta #${index} coincide:`, hasMatch); // Depurar resultado
+                    return hasMatch;
+                });
+
+                console.log('Resultados filtrados:', this.filteredConsultasP); // Depurar resultados
+            } else {
+                // Si no hay consulta, mostrar todo
+                this.filteredConsultasP = this.consultasProcesando;
+                console.log('Sin consulta, mostrando todo:', this.filteredConsultasP);
+            }
 
         },
 
@@ -654,12 +674,14 @@ export default {
                 });
         },
         updatePage(status){
+            // console.log("actualizando...")
             if(status == 200){
-                if (this.searchQuery === "") {
-                    this.mostratConsultas();
-                } else {
-                    this.filterConsultas();
-                    
+                this.mostratConsultas();
+                if(this.searchQuery){
+                    setTimeout(() => {
+                        // console.log("filtro aplicado")
+                        this.filterConsultas();
+                    }, 1000);
                 }
             }
         },

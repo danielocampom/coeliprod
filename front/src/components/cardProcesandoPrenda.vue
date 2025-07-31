@@ -63,7 +63,7 @@
             </div>
             <p class="fw-light" v-if="data.detalleMaquinada[0].lavadora">Lavadora {{ data.detalleMaquinada[0].lavadora }}</p>
             <vs-button class="d-none" block flat primary @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
-            <vs-button v-if=" data.autorizacion == null && data.requiereAuth && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="autorizar(data.id)"> Autorizar </vs-button>
+            <vs-button v-if=" data.autorizacion == null && data.requiereAuth && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))"  block flat primary  @click="viewMotivo =! viewMotivo"> Autorizar </vs-button>
             <vs-button v-if="data.requiereAuth && data.autorizacion != null" block flat danger @click="terminar(data.id)"> Terminar </vs-button>
             <vs-button v-if="!data.requiereAuth && data.autorizacion == null" block flat danger @click="terminar(data.id)"> Terminar </vs-button>
             <vs-button v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" block flat danger @click="cancel()"> Cancelar Prenda </vs-button>

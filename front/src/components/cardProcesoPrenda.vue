@@ -85,7 +85,10 @@
             <br>
             <br>
             <br>
-            <div class="badge bg-primary text-wrap float-end" >
+            <div class="badge bg-primary text-wrap float-end" v-if="data.tipoLavado" >
+                {{ data.tipoLavado }}
+            </div>
+            <div class="badge bg-primary text-wrap float-end" v-else >
                 {{ data.nombrePaso }}
             </div>
 
