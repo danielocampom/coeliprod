@@ -19,68 +19,24 @@
                         </template>
             
                         <div class="con-form">
-                            <vs-input class="mt-3" success type="text" v-model="clave" label-placeholder="Tipo de Catalogo">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="nombre" label-placeholder="Nombre del Catalogo">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="descripcion" label-placeholder="Valor">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Unidad por kilos">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
-                            <vs-input class="mt-3" success type="text" v-model="cantidadBolsa" label-placeholder="Cantidad de prendas por bolsa">
-                                <template #icon>
-                                    <box-icon name='wind'></box-icon>
-                                </template>
-                            </vs-input>
                             <div class="con-selects mt-5">
-                                <b-skeleton type="input" v-if="tiposProceso.length == 0"></b-skeleton>
                                 <v-select
-                                    v-model="unidadKg"
-                                    :options="unidades"
+                                    v-model="tipoCatalogo"
+                                    :options="tiposCatalogos"
                                     label="nombre"
-                                    placeholder="Tipo de unidad"
+                                    placeholder="Tipo de Catalogo"
                                     :reduce="option => option.id"
                                     :searchable="true"
                                     :clearable="false"
                                 />
                             </div>
-                            
-                            <div class="con-selects mt-4">
-                                <b-skeleton type="input" v-if="clientes.length == 0"></b-skeleton>
-                                <v-select
-                                    v-model="cliente"
-                                    :options="clientes"
-                                    label="nombre"
-                                    placeholder="Cliente"
-                                    :reduce="option => option.id"
-                                    :searchable="true"
-                                    :clearable="false"
-                                />
-                            </div>
-                            <div class="con-selects mt-5">
-                                <b-skeleton type="input" v-if="tiposProceso.length == 0"></b-skeleton>
-                                <v-select
-                                    v-model="tipoProceso"
-                                    :options="tiposProceso"
-                                    label="nombre"
-                                    placeholder="Tipo de proceso"
-                                    :reduce="option => option.id"
-                                    :searchable="true"
-                                    :clearable="false"
-                                />
-                            </div>
+                            <vs-input class="mt-5" success type="text" v-model="nombre" label-placeholder="Nombre del Catalogo">
+                                <template #icon>
+                                    <box-icon name='book'></box-icon>
+                                </template>
+                            </vs-input>
+                          
+                           
                         </div>
                         <br>
                         <template #footer>
@@ -88,7 +44,7 @@
                                 <vs-button block success
                                     flat
                                     :btnGuardar="btnGuardar == 1"
-                                    @click="addPrenda()">
+                                    @click="addCatalogo()">
                                     Guardar
                                 </vs-button>
                             </div>
@@ -97,97 +53,15 @@
                 </b-col>
                 <b-col md="8" sm="12"></b-col>
 
-                <b-col md="6" sm="6">
-                    <b-form-group
-                        label="registros"
-                        label-for="per-page-select"
-                        label-cols-sm="6"
-                        label-cols-md="4"
-                        label-cols-lg="3"
-                        label-align-sm="right"
-                        label-size="sm"
-                        class="mb-0"
-                        >
-                        <b-form-select label="registros"
-                            class="custom-select"
-                            id="per-page-select"
-                            v-model="perPage"
-                            :options="pageOptions"
-                            size="sm"
-                        ></b-form-select>
-                    </b-form-group>
-                </b-col>
-                <b-col md="6" sm="6">
-                    <b-form-group
-                    label="Buscar"
-                    label-for="filter-input"
-                    label-cols-sm="3"
-                    label-align-sm="right"
-                    label-size="sm"
-                    class="mb-0"
-                    >
-                    <b-input-group size="sm">
-                        <b-form-input
-                        id="filter-input"
-                        v-model="filter"
-                        type="search"
-                        placeholder="Buscar"
-                        ></b-form-input>
-
-                        <b-input-group-append>
-                        <b-button :disabled="!filter" @click="filter = ''" variant="danger">X</b-button>
-                        </b-input-group-append>
-                    </b-input-group>
-                    </b-form-group>
-                </b-col>
             </b-row>
-            <b-table
-                class="table table-bordered table-hover"
-                :items="items"
-                :fields="fields"
-                :current-page="currentPage"
-                :per-page="perPage"
-                :filter="filter"
-                :filter-included-fields="filterOn"
-                :sort-by.sync="sortBy"
-                :sort-desc.sync="sortDesc"
-                :sort-direction="sortDirection"
-                label-sort-asc=""
-                label-sort-desc=""
-                label-sort-clear=""
-                stacked="md"
-                show-empty
-                empty-text="No hay datos disponibles"
-                small
-                @filtered="onFiltered"
-            >
-                <template #cell(estado)="row">
-                    <div class="d-flex justify-content-center">
-                        <box-icon name='radio-circle-marked' :color="row.item.estado == 1 ? '#32ff00' : '#ff0023'" ></box-icon>
-                    </div>
-                </template>
-                <template #cell(actions)="row">
-                    <div class="d-flex justify-content-center">
-                        <btnUpdatePrenda @updatePage="updatePage" :data="{row}" />
-                    </div>
-                </template>
+           
 
-                <template #row-details="row">
-                    <b-card>
-                    <ul>
-                        <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value }}</li>
-                    </ul>
-                    </b-card>
-                </template>
-            </b-table>
-            <b-pagination
-                v-model="currentPage"
-                :total-rows="totalRows"
-                :per-page="perPage"
-                align="fill"
-                size="sm"
-                class="my-0 mb-3"
-            ></b-pagination>
+            <h3>Catalogo Familia</h3>
+            <tableCatalogosFamilia :refresh-key="refreshKeyFamilia"></tableCatalogosFamilia>
+            <h3>Catalogo Material</h3>
+            <tableCatalogosMaterial :refresh-key="refreshKeyMaterial"></tableCatalogosMaterial>
+          
+
         </b-container>
         <br>
         
@@ -202,69 +76,35 @@
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 import HeaderComponent from '@/components/Header.vue';
-import btnUpdatePrenda from '@/components/btn_Update_Prendas.vue'
-import { fetchApi, refreshSession } from "@/service/service.js"
+import tableCatalogosFamilia from '@/components/tableCatalogo_Familia.vue'
+import tableCatalogosMaterial from '@/components/tableCatalogo_Material.vue'
+import { refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 
 export default {
     name:"PrendasView",
     data: () => ({
-        items: [],
-        fields: [
-            { key: 'estado', label: 'Estado', sortable: true, class: 'text-center' },
-            { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
-            { key: 'nombre', label: 'Prendas', sortable: true, sortDirection: 'desc' },
-            { key: 'clave', label: 'Codigo', sortable: true, sortDirection: 'desc' },
-            { key: 'descripcion', label: 'Descripción', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadKilos', label: 'Unidades Por Kilo', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadBolsa', label: 'Cantidad pieza/par', sortable: true, sortDirection: 'desc' },
-            { key: 'actions', label: 'Acciones' }
-        ],
-        unidades: [
-            {"id": 0, "nombre": 'Pieza'}, 
-            {"id": 1, "nombre": 'Par'}, 
-            {"id": 2, "nombre": 'Conjunto'}, 
-        ],
-        clave: '',
-        totalRows: 1,
-        currentPage: 1,
-        perPage: 5,
-        pageOptions: [5, 10, 15, { value: 100, text: "mostrar Todo" }],
-        sortBy: '',
-        sortDesc: false,
-        sortDirection: 'asc',
-        filter: null,
-        filterOn: [],
-        infoModal: {
-          id: 'info-modal',
-          title: '',
-          content: ''
-        },
 
-        prendas: [],
-        tiposProceso: [],
-        clientes: [],
-        sinData: false,
-        activeModal: false,
+        tiposCatalogos: [
+            {"id": 0, "nombre": 'Familia'}, 
+            {"id": 1, "nombre": 'Material'}, 
+        ],
+        tipoCatalogo: '',
         nombre: '',
-        descripcion: '',
-        kilos: '',
-        cantidadBolsa: '',
-        tipoProceso: '',
-        unidadKg: '',
-        cliente: '',
+
+        activeModal: false,
         btnGuardar: 0,
-        buscarAct: false,
-        buscarTxt: '',
-        btnBuscar: 0,
-        hidden: true,
+
+        refreshKeyFamilia: 0, // Clave para familias
+        refreshKeyMaterial: 0, // Clave para materiales
 
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
     }),
     components: {
         HeaderComponent,
-        btnUpdatePrenda,
+        tableCatalogosFamilia,
+        tableCatalogosMaterial,
         loginComponent,
         vSelect
     },
@@ -275,9 +115,7 @@ export default {
         })
     },
     mounted(){    
-        this.mostraActivos()
-        this.mostraProceso()
-        this.mostraClientes()
+
     },
     methods: {
         refresh(){
@@ -288,95 +126,85 @@ export default {
         },
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
-            this.totalRows = filteredItems.length
-            this.currentPage = 1
-        },
-        async mostraProceso(){
-            fetchApi(this.url+'proceso/findAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.tiposProceso = data.datos
-                }else{
-                    this.tiposProceso = [{"id": 0, "nombre": 'Sin Procesos'}]
-
-                }
-            })
-        },
-        async mostraClientes(){
-            fetchApi(this.url+'cliente/findByEstado/1', 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.clientes = data.datos
-                }else{
-                    this.clientes = [{"id": 0, "nombre": 'Sin Clientes'}]
-
-                }
-            })
-        },
-        async mostraActivos(){
-            this.items = []
-            fetchApi(this.url+'familia/findAll', 'GET', this.$session.get('token'))
-            .then(data => {
-                this.prendas = []
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    data.datos.forEach( val => {
-                        this.items.push(val)
-                    })
-
-                    // console.log(this.items)
-                    this.totalRows = this.items.length
-                }else{
-                    this.sinData = true
-                }
-            })
+            this.totalRowsF = filteredItems.length
+            this.currentPageF = 1
         },
         
-        async addPrenda(){
-            let token = this.$session.get('token')
+        
+        async addCatalogo(){
 
-            let json = {
-                "idCliente": this.cliente,
-                "nombre": this.nombre,
-                "descripcion": this.descripcion,
-                "idProceso": this.tipoProceso,
-                "cantidadBolsa": this.cantidadBolsa,
-                "kilos": this.kilos,
-                "clave": this.clave,
-                "unidad": this.unidadKg
-            };
-            let res = await fetch(this.url+"prenda/register",{
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*",
-                    'Authorization': token
-                },
-                body: JSON.stringify(json)
-            })
-            let data = await res.json()
+            if(this.tipoCatalogo == '' && this.nombre == ''){
+                this.openNotification(
+                    'Error: Campos Vacios',
+                    'Por favor, complete todos los campos',
+                    'danger',
+                    'top-left',
+                    `<box-icon name='bug' color="#fff"></box-icon>`
+                );
+                return;
+            }
 
-            if(data.status == 401){ this.activarReboot = true }
-            if(data.status == 200){
-                this.refresh()
-                //se actualiza token
-                this.tipoProceso = ''
-                this.cliente = ''
-                this.cantidadBolsa = ''
-                this.nombre = ''
-                this.activeModal = false
-                this.openNotification(`Exito: ${data.mensaje}`, `Se ha Registrado Correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
-                this.mostraActivos()
-            }else{
-                console.warn(data)
-                this.openNotification(`Error: Inesperado`, `Si el problema persiste comuniquese con el administrador`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+            const token = this.$session.get('token');
+            const tipo = this.tipoCatalogo == 0 ? 'familia' : 'material';
+            const json = { [tipo]: this.nombre };
+
+            try {
+                const res = await fetch(`${this.url}prenda/${tipo}/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Authorization': token,
+                    },
+                    body: JSON.stringify(json),
+                });
+                const data = await res.json();
+
+                if (data.status === 401) {
+                    this.activarReboot = true;
+                    return;
+                }
+
+                if (data.status === 200) {
+                    if (tipo === 'familia') {
+                        this.refreshKeyFamilia += 1;
+                    } else {
+                        this.refreshKeyMaterial += 1;
+                    }
+                    this.nombre = '';
+                    this.tipoCatalogo = '';
+                    this.activeModal = false;
+                    this.openNotification(
+                        `Éxito: ${data.mensaje}`,
+                        `Se ha registrado correctamente el ${tipo}`,
+                        'success',
+                        'top-left',
+                        `<box-icon name='check' color="#fff"></box-icon>`
+                    );
+                } else {
+                    console.warn(data);
+                    this.openNotification(
+                        'Error: Inesperado',
+                        'Si el problema persiste, comuníquese con el administrador',
+                        'danger',
+                        'top-left',
+                        `<box-icon name='bug' color="#fff"></box-icon>`
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+                this.openNotification(
+                    'Error: Inesperado',
+                    'Si el problema persiste, comuníquese con el administrador',
+                    'danger',
+                    'top-left',
+                    `<box-icon name='bug' color="#fff"></box-icon>`
+                );
             }
         },
         async updatePage(status){
             if(status == 200){
-                this.mostraActivos()
+                console.log("actualizado")
             }
         },
         openNotification( title, text, color, position = null, icon) {
