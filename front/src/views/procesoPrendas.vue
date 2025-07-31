@@ -575,7 +575,6 @@ export default {
                         (consulta.nomCliente && consulta.nomCliente.toLowerCase().includes(query)) ||
                         (consulta.nombrePaso && consulta.nombrePaso.toLowerCase().includes(query)) ||
                         (consulta.nombrePrenda && consulta.nombrePrenda.toLowerCase().includes(query))||
-                        (consulta.nombreSigPaso && consulta.nombreSigPaso.toLowerCase().includes(query))||
                         (consulta.tipoLavado && consulta.tipoLavado.toLowerCase().includes(query))||
                         (consulta.folio && consulta.folio.toLowerCase().includes(query))||
                         (consulta.descripcionEstado && consulta.descripcionEstado.toLowerCase().includes(query))||
@@ -585,6 +584,7 @@ export default {
                         // (this.obtenerFechaBonita(consulta.fhAlta) && this.obtenerFechaBonita(consulta.fhAlta.toLowerCase()).includes(query))
                     );
                 });
+                // console.log(this.filteredConsultas)
             } else {
                 // Si no hay texto de búsqueda, muestra todas las cards
                 this.filteredConsultas = this.consultas;
