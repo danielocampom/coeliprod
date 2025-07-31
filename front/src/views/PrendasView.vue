@@ -81,6 +81,28 @@
                                     :clearable="false"
                                 />
                             </div>
+                            <div class="con-selects mt-5">
+                                <v-select
+                                    v-model="familia"
+                                    :options="familias"
+                                    label="familia"
+                                    placeholder="Tipo de familia"
+                                    :reduce="option => option.id"
+                                    :searchable="true"
+                                    :clearable="false"
+                                />
+                            </div>
+                            <div class="con-selects mt-5">
+                                <v-select
+                                    v-model="material"
+                                    :options="materiales"
+                                    label="material"
+                                    placeholder="Tipo de material"
+                                    :reduce="option => option.id"
+                                    :searchable="true"
+                                    :clearable="false"
+                                />
+                            </div>
                         </div>
                         <br>
                         <template #footer>
@@ -217,8 +239,8 @@ export default {
             { key: 'clave', label: 'Artículo', sortable: true, sortDirection: 'desc' },
             { key: 'descripcion', label: 'Descripción', sortable: true, sortDirection: 'desc' },
             { key: 'unidad', label: 'Tipo Unidad', sortable: true, sortDirection: 'desc' },
-            { key: 'material', label: 'Material', sortable: true, sortDirection: 'desc' },
-            { key: 'familia', label: 'Familia', sortable: true, sortDirection: 'desc' },
+            { key: 'material.material', label: 'Material', sortable: true, sortDirection: 'desc' },
+            { key: 'familia.familia', label: 'Familia', sortable: true, sortDirection: 'desc' },
             { key: 'cantidadBolsa', label: 'Cantidad por bolsa', sortable: true, sortDirection: 'desc' },
             { key: 'actions', label: 'Acciones' }
         ],
@@ -261,6 +283,11 @@ export default {
         btnBuscar: 0,
         hidden: true,
 
+        materiales: [],
+        familias: [],
+        material: '',
+        familia: '',
+
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
 
     }),
@@ -280,6 +307,8 @@ export default {
         this.mostraActivos()
         this.mostraProceso()
         this.mostraClientes()
+        this.mostraMateriales()
+        this.mostraFamilias()
     },
     methods: {
         refresh(){
@@ -301,6 +330,30 @@ export default {
                     this.tiposProceso = data.datos
                 }else{
                     this.tiposProceso = [{"id": 0, "nombre": 'Sin Procesos'}]
+
+                }
+            })
+        },
+        async mostraFamilias(){
+            fetchApi(this.url+'prenda/familia/get', 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.familias = data.datos
+                }else{
+                    this.familias = [{"id": 0, "nombre": 'Sin famolias'}]
+
+                }
+            })
+        },
+        async mostraMateriales(){
+            fetchApi(this.url+'prenda/material/get', 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.materiales = data.datos
+                }else{
+                    this.materiales = [{"id": 0, "nombre": 'Sin Materiales'}]
 
                 }
             })
@@ -347,7 +400,9 @@ export default {
                 "cantidadBolsa": this.cantidadBolsa,
                 "kilos": this.kilos,
                 "clave": this.clave,
-                "unidad": this.unidadKg
+                "unidad": this.unidadKg,
+                "idFamilia": this.familia,
+                "idMaterial": this.material
             };
             let res = await fetch(this.url+"prenda/register",{
                 method: "POST",

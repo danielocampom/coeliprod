@@ -76,6 +76,28 @@
                             :clearable="false"
                         />
                     </div>
+                    <div class="con-selects mt-5">
+                        <v-select
+                            v-model="familia"
+                            :options="familias"
+                            label="familia"
+                            placeholder="Tipo de familia"
+                            :reduce="option => option.id"
+                            :searchable="true"
+                            :clearable="false"
+                        />
+                    </div>
+                    <div class="con-selects mt-5">
+                        <v-select
+                            v-model="material"
+                            :options="materiales"
+                            label="material"
+                            placeholder="Tipo de material"
+                            :reduce="option => option.id"
+                            :searchable="true"
+                            :clearable="false"
+                        />
+                    </div>
                     
                 </template>
             </div>
@@ -151,6 +173,11 @@ export default {
         clave: '',
         unidadKg: '',
 
+        materiales: [],
+        familias: [],
+        material: '',
+        familia: '',
+
         btnElimina: 0,
         btnActualizar: 0,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
@@ -162,12 +189,6 @@ export default {
 
     },
     mounted(){
-        setTimeout(() => {
-            this.mostraCliente()
-            this.mostraProceso()
-            this.mostraTipoProceso()
-            this.mostraTipoClientes()
-        }, 1500)
         // console.log(this.data.row.item)
     },
     methods: {
@@ -188,6 +209,14 @@ export default {
             this.estado = this.data.row.item.estado == 1 ? true : false
             this.clave = this.data.row.item.clave
             this.unidadKg = this.data.row.item.unidad
+            this.material = this.data.row.item.material
+            this.familia = this.data.row.item.familia
+            this.mostraCliente()
+            this.mostraProceso()
+            this.mostraTipoProceso()
+            this.mostraTipoClientes()
+            this.mostraMateriales()
+            this.mostraFamilias()
         },
     
         async mostraCliente(){
@@ -200,6 +229,31 @@ export default {
                 }
             })
 
+        },
+
+        async mostraFamilias(){
+            fetchApi(this.url+'prenda/familia/get', 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.familias = data.datos
+                }else{
+                    this.familias = [{"id": 0, "nombre": 'Sin famolias'}]
+
+                }
+            })
+        },
+        async mostraMateriales(){
+            fetchApi(this.url+'prenda/material/get', 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.materiales = data.datos
+                }else{
+                    this.materiales = [{"id": 0, "nombre": 'Sin Materiales'}]
+
+                }
+            })
         },
         async mostraProceso(){
 
@@ -293,6 +347,8 @@ export default {
                 "clave": this.clave,
                 "unidad": this.unidadKg,
                 "idPrenda": this.data.row.item.id,
+                "idFamilia": this.familia,
+                "idMaterial": this.material
 
             };
             let res = await fetch(this.url+"prenda/update",{
