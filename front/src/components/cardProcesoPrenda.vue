@@ -161,15 +161,21 @@
                     </template>
                 </vs-dialog>
 
-                <vs-button block flat success @click="modalShowDetail=!modalShowDetail"> Detalles </vs-button>
+                <vs-button block flat success @click="detalles()"> Detalles </vs-button>
                 <b-modal size="lg" centered v-model="modalShowDetail">
                     <template #modal-header="{ close }">
-                        <h5>Detalles </h5>
+                        <h5>
+                            Detalles 
+                        </h5>
                         <vs-button circle icon floating danger @click="close()">
                             <box-icon name='x' color="#fff"></box-icon>
                         </vs-button>
                     </template>
                     <template >
+                        <div class="text-center" v-if="detailLoader">
+                            <box-icon name='loader' flip='vertical' animation='spin' color='#000' ></box-icon>
+                        </div>
+
                         <div v-if="detail.length != 0">
                             <b-card>
                                 <div class="d-flex flex-row bd-highlight mb-3">
@@ -391,7 +397,8 @@ export default {
         mensaje: '',
         detail: [],
         pasos: [],
-        idPasos: [],  
+        idPasos: [], 
+        detailLoader: true, 
         modalShowDetail: false,
         render: true,
         iniciarProceso: false, 
@@ -414,14 +421,14 @@ export default {
     },
     
     watch: {
-        data: {
-            immediate: true, // Coma añadida aquí
-            handler(newVal) { // Sin punto y coma aquí
-                if (newVal) {
-                    this.mostrarDetailPrendas(newVal.idPrenda);
-                }
-            }
-        },
+        // data: {
+        //     immediate: true, // Coma añadida aquí
+        //     handler(newVal) { // Sin punto y coma aquí
+        //         if (newVal) {
+        //             this.mostrarDetailPrendas(newVal.idPrenda);
+        //         }
+        //     }
+        // },
         
     },
     mounted(){
@@ -431,7 +438,7 @@ export default {
         // this.date = this.calcularTiempoTranscurrido(this.data.fechaInicio);
         setTimeout(() => {
             this.render = false
-            this.mostrarDetailPrendas(this.data.idPrenda)
+            
         }, 100) 
         
         // console.log(this.data)
@@ -442,6 +449,10 @@ export default {
                 this.$session.start()
                 this.$session.set('token', data.datos.token)
             }) 
+        },
+        detalles(){
+            this.modalShowDetail=!this.modalShowDetail
+            this.mostrarDetailPrendas(this.data.idPrenda)
         },
         modalIniciarProceso(){
             this.modalIniciar = !this.modalIniciar
@@ -477,7 +488,7 @@ export default {
             // Lógica para manejar el caso en que no se encuentran resultados
             console.log(`No se encontraron resultados para: ${searchText}`);
         },
-        async modificarCount(){
+        async modificarCount(status){
             if(status == 200){
                 console.log("modificarCantidad...")
             }
@@ -589,6 +600,7 @@ export default {
                 })
                 let data = await res.json()
     
+
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.refresh()
@@ -620,7 +632,8 @@ export default {
                 if(data.status == 200){
                     this.refresh()
                     this.comfirm = false
-                    this.openOrdenPrendas = false
+                    this.openOrdenPrenda = false
+
                     this.openNotification(`Exito: ${data.mensaje}`, `Se han Eliminado Exitosamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
                     this.$emit('updatePage', '200')
                 }else{
@@ -631,11 +644,11 @@ export default {
         async regresarPaso(status){
             if(status == 200){
                 let token = this.$session.get('token')
-    
+                // console.log(this.data)
                 let json = {
-                    "mensaje": this.motivoElim,
-                    "cantidadCancela": 0,
-                    "idOrdenPrenda": 0,
+                    "mensaje": "regreso al paso anterior",
+                    "cantidadCancela": -1,
+                    "idOrdenPrenda": -1,
                     "idHist": this.data.idHist ? this.data.idHist : 0
     
                 };
@@ -806,15 +819,17 @@ export default {
         },
         async mostrarDetailPrendas(id){
             this.detail = []
-            if(id){
-                fetchApi(this.url+`prenda/findById/${id}`, 'GET', this.$session.get('token'))
-                .then(data => {
-                    if(data.status == 401){ this.activarReboot = true }
-                    if(data.status == 200){
-                        this.detail = data.datos
-                    }
-                })
-            }
+            this.detailLoader = true
+            fetchApi(this.url+`prenda/findById/${id}`, 'GET', this.$session.get('token'))
+            .then(data => {
+                if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.detail = data.datos
+                }
+            })
+            .finally(() => {
+                this.detailLoader = false
+            })
         },
         
         async updatePage(status){

@@ -28,7 +28,7 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
-                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Prenda por kilo">
+                    <vs-input class="mt-3" success type="text" v-model="kilos" label-placeholder="Peso de la prenda">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
                         </template>
