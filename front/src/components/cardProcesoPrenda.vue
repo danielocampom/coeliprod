@@ -185,7 +185,8 @@
                                     </div>
                                 </div>
                                 cantidad por bolsa: <b>{{ detail.cantidadBolsa }}</b> <br>
-                                cantidad prendas: <b>{{ data.cantidadPrendas }}  <box-icon name='edit' color="#0d6efd" v-if="$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" @click="editCantidades"></box-icon></b>
+                                cantidad prendas: <b>{{ data.cantidadPrendas }} 
+                                <box-icon name='edit' color="#0d6efd" v-if="data.npaso == 1 && $session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))" @click="editCantidades"></box-icon></b>
                                
                                 <br>
                                 tipo de lavado:<b> {{detail.proceso.nombre}} ({{ detail.proceso.codigo}})</b> 
@@ -312,15 +313,15 @@
                     <template>
                         <p>Cantidad <b>{{ data.cantidadPrendas }}</b></p> <br>
                         
-                        <div class="center content-inputs">
+                        <!-- <div class="center content-inputs">
                             <vs-input danger type="text" v-model="motivoElim" label-placeholder="Describe el motivo">
                                 <template #icon>
                                     <box-icon name='rename'></box-icon>
                                 </template>
                             </vs-input>
-                        </div>
+                        </div> -->
                         <div class="center content-inputs">
-                            <vs-input danger type="number" v-model="cantidadElim" label-placeholder="Digita una cantidad">
+                            <vs-input danger type="number" v-model="cantidadElim" label-placeholder="Digita la nueva cantidad">
                                 <template #icon>
                                     <box-icon name='dialpad-alt' ></box-icon>
                                 </template>
@@ -406,7 +407,6 @@ export default {
         editCount: false,
         comfirmCount: false,
         comfirm: false,
-        textAlertConfirm: '',
         pathname: window.location.pathname,
         url: process.env.VUE_APP_SERVICE_URL_API, activarReboot: false,
        
@@ -480,7 +480,6 @@ export default {
             return mostrar;
         },
         editCantidades(){
-            this.textAlertConfirm = 
             this.editCount = true;
             this.modalShowDetail= false;
         },
@@ -491,6 +490,42 @@ export default {
         async modificarCount(status){
             if(status == 200){
                 console.log("modificarCantidad...")
+                this.updateCantidades()
+
+            }
+        },
+        async updateCantidades(){
+            let token = this.$session.get('token')
+
+            let json = {
+                "idPrenda": this.data.idPrenda,
+                "idOrdenPrenda": this.data.idOrdenPrenda,
+                "cantidad": this.cantidadElim,
+                "primerPaso": this.data.npaso == 1 ? true : false, 
+            };
+            let res = await fetch(this.url+"orden/update/prenda",{
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
+            })
+            let data = await res.json()
+
+            if(data.status == 401){ this.activarReboot = true }
+                if(data.status == 200){
+                    this.refresh()
+                    this.editar = false
+                    this.editCount = false
+                    this.comfirmCount = false
+                    this.openNotification(`Exito:`, `Cantidad Actualizada`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
+
+                this.$emit('updatePage', '200')
+            }else{
+                this.openNotification(`Error: inesperado`, data.mensaje, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`, 'none')
+
             }
         },
         async mostrarMotivo(){
@@ -645,26 +680,20 @@ export default {
             if(status == 200){
                 let token = this.$session.get('token')
                 // console.log(this.data)
-                let json = {
-                    "mensaje": "regreso al paso anterior",
-                    "cantidadCancela": -1,
-                    "idOrdenPrenda": -1,
-                    "idHist": this.data.idHist ? this.data.idHist : 0
+                
     
-                };
-    
-                let res = await fetch(`${this.url}orden/paso/return`,{
+                let res = await fetch(`${this.url}paso/delete/${this.data.idHist}`,{
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
                         'Access-Control-Allow-Origin': "*",
                         'Authorization': token
                     },
-                    body: JSON.stringify(json)
     
                 })
                 let data = await res.json()
     
+                console.log(data)
                 if(data.status == 401){ this.activarReboot = true }
                 if(data.status == 200){
                     this.refresh()
