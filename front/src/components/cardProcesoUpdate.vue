@@ -117,7 +117,7 @@
                                     <vs-button
                                         primary
                                         block
-                                        @click="editarPaso(paso)"
+                                        @click="editarPaso(paso, i)"
                                     >
                                         <box-icon name='edit' color="#fff"></box-icon >Editar
                                     </vs-button>
@@ -408,11 +408,11 @@ export default {
         },
 
         onDragEnd() {
-            this.pasos = this.pasos.map((paso, index) => ({
+            this.pasos = this.pasos.map((paso) => ({
                 id: paso.id,
                 idTipoLavado: paso.idTipoLavado,
                 nombre: paso.nombre,
-                orden: index+1,
+                orden: this.pasos.length+1,
                 descripcion: paso.descripcion,
                 rolesCambio: paso.rolesCambio,
             }));
@@ -421,8 +421,9 @@ export default {
             this.activeDetalles = true
             this.$forceUpdate();
         },
-        editarPaso(pasos){
+        editarPaso(pasos, index){
 
+            // console.log(index)
             this.mostraRoles()
             this.mostrarTipoLavados()
 
@@ -432,7 +433,7 @@ export default {
             this.descripcion = pasos.descripcion
             this.tipoLavado = pasos.idTipoLavado
             this.idPaso = pasos.id 
-            this.ordenPaso = pasos.orden
+            this.ordenPaso = index + 1
             pasos.rolesCambio.forEach( rol => {
                 this.optionsRoles.push(''+rol) 
             });
@@ -503,6 +504,8 @@ export default {
         AddPaso(){
             this.activeAddPaso = true
             this.resultados = []
+            this.mostraRoles()
+            this.mostrarTipoLavados()
         },
         async deletePaso(id){
 
@@ -549,7 +552,7 @@ export default {
             let pasos = {
                 "descripcion": this.descripcionAdd,
                 "nombre": this.nombreAdd,
-                "orden": this.orden++,
+                "orden": this.pasos.length+1,
                 "rolesCambio": this.optionsRolesAdd,
                 "idTipoLavado": this.tipoLavadoAdd.id,
                 "id": this.contador,
@@ -680,8 +683,8 @@ export default {
         async updatePage(status){
             if(status == 200){
                 this.$emit('updatePage', '200')
-                this.mostraRoles()
-                this.mostrarTipoLavados()
+                // this.mostraRoles()
+                // this.mostrarTipoLavados()
                 // setTimeout(() => {
                 //     this.render = false
 
