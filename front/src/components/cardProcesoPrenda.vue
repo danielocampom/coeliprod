@@ -94,7 +94,7 @@
 
             <strong class="fw-light">
                 Cantidad: {{ data.cantidadPrendas }} <br>
-                Carga Total <b>{{ Number((data.cantidadPrendas * ( 1000 / data.cantidadPorKilo )) / 1000).toFixed(4) }} Kg.</b>
+                Carga Total <b>{{ Number(data.cantidadPrendas * data.peso).toFixed(4) }} Kg.</b>
             </strong>
         
             <div class="mt-auto">
@@ -117,7 +117,7 @@
                             :max="data.cantidadPrendas"
                         />
                         <br>
-                        <strong class="fw-light">carga de: {{ Number((cantidad * (1000 / data.cantidadPorKilo))/1000).toFixed(4) }} Kg.</strong>
+                        <strong class="fw-light">carga de: {{ Number(cantidad * data.peso).toFixed(4) }} Kg.</strong>
                         <hr>
                         <br>
                         <div class="center  con-selects" v-if="this.data.idTipoLavado != null" >

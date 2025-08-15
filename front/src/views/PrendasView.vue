@@ -237,7 +237,7 @@ export default {
             { key: 'cliente', label: 'Cliente', sortable: true, sortDirection: 'desc' },
             { key: 'nombre', label: 'Prendas', sortable: true, sortDirection: 'desc' },
             { key: 'clave', label: 'Artículo', sortable: true, sortDirection: 'desc' },
-            { key: 'cantidadKilos', label: 'Peso Prenda', sortable: true, sortDirection: 'desc' },
+            { key: 'cantidadKilos', label: 'Peso Prenda (Kg.)', sortable: true, sortDirection: 'desc' },
             { key: 'descripcion', label: 'Descripción', sortable: true, sortDirection: 'desc' },
             { key: 'unidad', label: 'Tipo Unidad', sortable: true, sortDirection: 'desc' },
             { key: 'material.material', label: 'Material', sortable: true, sortDirection: 'desc' },
