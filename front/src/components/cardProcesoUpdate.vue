@@ -380,10 +380,7 @@ export default {
         vSelect
     },
     created(){
-        refreshSession(this.url ,this.$session.get('token')).then( data => {
-            this.$session.start()
-            this.$session.set('token', data.datos.token)
-        })
+        
     },
     mounted(){
         this.contador = this.dataProceso.pasos.length
@@ -397,8 +394,7 @@ export default {
         }));
         this.nombreProceso = this.dataProceso.nombre
         this.codigoProceso = this.dataProceso.codigo
-        this.mostraRoles()
-        this.mostrarTipoLavados()
+        
         setTimeout(() => {
             this.render = false
         }, 1000) 
@@ -426,6 +422,9 @@ export default {
             this.$forceUpdate();
         },
         editarPaso(pasos){
+
+            this.mostraRoles()
+            this.mostrarTipoLavados()
 
             this.activeEditar = true
             this.activeEditarPaso = true
