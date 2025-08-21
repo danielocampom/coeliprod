@@ -337,6 +337,8 @@ export default {
         async update(){
             let token = this.$session.get('token')
 
+            console.log(this.data.row.item.id)
+
             let json = {
                 "idCliente": this.selectCliente,
                 "nombre": this.nombre,
@@ -347,8 +349,8 @@ export default {
                 "clave": this.clave,
                 "unidad": this.unidadKg,
                 "idPrenda": this.data.row.item.id,
-                "idFamilia": this.familia,
-                "idMaterial": this.material
+                "idFamilia": this.familia.id,
+                "idMaterial": this.material.id
 
             };
             let res = await fetch(this.url+"prenda/update",{
