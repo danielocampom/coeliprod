@@ -349,8 +349,8 @@ export default {
                 "clave": this.clave,
                 "unidad": this.unidadKg,
                 "idPrenda": this.data.row.item.id,
-                "idFamilia": this.familia.id,
-                "idMaterial": this.material.id
+                "idFamilia": this.familia?.id ?? this.familia, 
+                "idMaterial": this.material?.id ?? this.material
 
             };
             let res = await fetch(this.url+"prenda/update",{
