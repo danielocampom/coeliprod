@@ -9,7 +9,7 @@
                     <b-col md="4" sm="12">
                         <b-row>
                             <b-col class="p-1">
-                                <vs-button flat block icon @click="activeModal=!activeModal">
+                                <vs-button flat block icon @click="modalLavadora()">
                                     <box-icon name='wind' color="#195bff" ></box-icon> Agregar Lavadora
                                 </vs-button>
                                 <vs-dialog v-model="activeModal">
@@ -234,7 +234,6 @@ export default {
     },
     mounted(){   
         this.mostrarTodos()
-        this.mostraTipoLavado()
     
     },
     methods: {
@@ -249,6 +248,17 @@ export default {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length
             this.currentPage = 1
+        },
+        modalLavadora(){
+            this.activeModal = !this.activeModal
+            this.nombreLav = ''
+            this.tipoLavado = ''
+            this.capKg = ''
+            this.capMaxima = ''
+            this.capMinima = ''
+            this.programasLavado = []
+            this.mostraTipoLavado()
+
         },
         async mostraTipoLavado(){
             this.tiposLavado = []

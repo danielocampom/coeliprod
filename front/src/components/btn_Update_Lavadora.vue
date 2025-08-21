@@ -128,7 +128,6 @@ export default {
         vSelect
     },
     mounted(){
-        this.mostraTipoLavado()
         
     },
     methods: {
@@ -146,6 +145,7 @@ export default {
             this.capMaxima = this.dataWasher.row.item.max
             this.capMinima = this.dataWasher.row.item.min
             this.capKg = this.dataWasher.row.item.kilos
+            this.mostraTipoLavado()
         },
         desactivar(){
             this.active = false

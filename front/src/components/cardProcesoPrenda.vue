@@ -135,7 +135,7 @@
 
                             <br>
                             <br>
-                             <v-select v-if="mostrarCampoMotivo(tipoLavadora.max, tipoLavadora.min, Number((cantidad * (1000 / data.cantidadPorKilo))/1000).toFixed(4))"
+                             <v-select v-if="mostrarCampoMotivo(tipoLavadora.max, tipoLavadora.min, Number((cantidad * data.peso).toFixed(4)))"
                                 v-model="idMotivoMaquinada"
                                 :options="motivos"
                                 label="motivo"

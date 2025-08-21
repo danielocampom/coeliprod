@@ -148,7 +148,6 @@ export default {
         if(this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN'].includes(role))){
             this.mostrarBtn = true
         }
-        this.mostraRoles()
         
     },
     methods: {
@@ -167,6 +166,8 @@ export default {
             })
         },
         dataModal(){
+            this.mostraRoles()
+
             this.active = true
             this.nombre = this.dataUser.row.item.nombre
             this.paterno = this.dataUser.row.item.paterno

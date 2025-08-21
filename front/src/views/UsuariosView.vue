@@ -27,7 +27,7 @@
 
             <b-row class="align-items-end">
                 <b-col md="4" sm="12">
-                    <vs-button class="my-0 mb-3" flat icon block @click="activeModal=!activeModal">
+                    <vs-button class="my-0 mb-3" flat icon block @click="addUserBtn()">
                         <box-icon name='user-plus' color="#195bff"></box-icon> Agregar Usuario
                     </vs-button>
                     <b-modal size="xl" centered v-model="activeModal">
@@ -275,7 +275,6 @@
     },
     async mounted(){    
         this.mostrarUsuarios()
-        this.mostraRoles()
     },
     methods: {
         refresh(){
@@ -317,6 +316,11 @@
                   }
               })
           },
+        addUserBtn(){
+            this.activeModal=!this.activeModal
+            this.mostraRoles()
+  
+        },
         async addUser(){
             let token = this.$session.get('token')
   
