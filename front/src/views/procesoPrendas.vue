@@ -95,7 +95,7 @@
                                             </template>
                             
                                             <div class="con-form">
-                                                <div class="center  con-selects" >
+                                                <div class="center  con-selects" v-if="idTipoLavado != null" >
                                                     <vs-select style="max-width:100%!important;" class="mt-3" success label-placeholder="Lavadora" color="success"  v-model="tipoLavadora">
                                                         <vs-option-group>
                                                             <div slot="title">
@@ -108,6 +108,8 @@
                                                             </vs-option>
                                                         </vs-option-group>
                                                     </vs-select>
+                                                </div>
+                                                <div class="center  con-selects" >
                                                     <vs-select 
                                                         style="max-width:100%!important;" class="mt-3" success label-placeholder="Motivo" color="success" 
                                                          v-model="idMotivoMaquinada">
@@ -228,7 +230,7 @@
                                     </template>
                                 </vs-input>
                             </div>
-                            <strong class="fw-light">carga de: {{ Number((cantidadPrendasConbinar * (1000 / cantidadPorKilo))/1000).toFixed(4) }} Kg.</strong>
+                            <strong class="fw-light">carga de: {{ Number(cantidadPrendasConbinar * pesoPrenda).toFixed(4) }} Kg.</strong>
 
                         </template>
                     </div>
@@ -282,7 +284,8 @@ export default {
         isExpanded: false,
         cantidadCobinado: false,
         cantidadPrendasConbinar: "",
-        cantidadPorKilo: "",
+        pesoPrenda: "",
+        nombrePaso: "",
         droppedItemsCount: 0,
         isDragging: false,
         cantidadOriginal: "",
@@ -326,8 +329,7 @@ export default {
         },
         prendTotal(){
            this.canTotal =  this.prendas.reduce((acumulador, valorActual) =>{
-            //    console.log(acumulador, valorActual) 
-               return acumulador +  (parseFloat(valorActual.cantidad)/parseFloat(valorActual.cantidadPorKilo))
+               return acumulador +  (parseFloat(valorActual.cantidad)*parseFloat(valorActual.peso))
 
            },0)
         },
@@ -377,7 +379,9 @@ export default {
 
                 let prendaLider = this.prendas[0].idTipoLavado
                 if(prendaLider == this.idTipoLavado){
-                    this.mostrarLavadoras(prendaLider)
+                    if(this.prendas[0].idTipoLavado){
+                        this.mostrarLavadoras(prendaLider)
+                    }
                     this.handleValidDrop(droppedItem)
                     this.cantidadCobinado = true
                     
@@ -403,17 +407,19 @@ export default {
 
             }
 
+            console.log(droppedItem)
+
             this.cantidadOriginal = droppedItem.cantidadPrendas
             this.folio = droppedItem.folio
             this.idOrdenLavado = droppedItem.idOrdenLavado
             this.idOrdenPrenda = droppedItem.idOrdenPrenda
             this.idPaso = droppedItem.idPaso
             this.idPrenda = droppedItem.idPrenda
-            
+            this.nombrePaso = droppedItem.nombrePaso
             this.nombreTipoLavado = droppedItem.tipoLavado
             this.prenda = droppedItem.nombrePrenda
             this.nombreCliente = droppedItem.nomCliente
-            this.cantidadPorKilo = droppedItem.cantidadPorKilo
+            this.pesoPrenda = droppedItem.peso
             
             // console.log(droppedItem)
             // Incrementar contador
@@ -457,8 +463,8 @@ export default {
                     "idTipoLavado": this.idTipoLavado,
                     "prenda": this.prenda,
                     "nombreCliente": this.nombreCliente,
-                    "tipoLavado": this.nombreTipoLavado,
-                    "cantidadPorKilo": this.cantidadPorKilo,
+                    "tipoLavado": this.nombrePaso,
+                    "peso": this.pesoPrenda,
                     
                     "cantidadOriginal": this.cantidadOriginal,
                     "folio": this.folio,
@@ -515,7 +521,7 @@ export default {
         async iniciar(){
             
             this.iniciarProceso = true;
-
+            this.droppedItemsCount = 0
             let token = this.$session.get('token')
 
             let json = {
@@ -543,8 +549,9 @@ export default {
                 this.refresh()
                 this.modalIniciar = false
                 this.openNotification(`Exito: ${data.mensaje}`, `Se ha iniciado el proceso correctamente`, 'success', 'top-left',`<box-icon name='check' color="#fff"></box-icon>`)
-                this.mostrarDetailPrendas(this.data.idPrenda)
-                this.$emit('updatePage', '200')
+                // this.mostrarDetailPrendas(this.data.idPrenda)
+                // this.$emit('updatePage', '200')
+                this.updatePage(200)
 
             }else{
                 this.iniciarProceso = false;
