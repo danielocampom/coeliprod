@@ -62,16 +62,16 @@ const routes = [
   {
     path: '/dashboard',
     name: 'dashboard',
-    component: () => import('../views/Dashboard.vue'),
+    component: () => import('../views/DashboardAdmin.vue'),
     meta: {requireAuth: true, roles:[ROLES.SISTEMAS, ROLES.ADMIN, ROLES.DASHPROD]}
   },
   
-  {
-    path: '/dashboardAdmin',
-    name: 'dashboardAdmin',
-    component: () => import('../views/DashboardAdmin.vue'),
-    meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN]}
-  },
+  // {
+  //   path: '/dashboardAdmin',
+  //   name: 'dashboardAdmin',
+  //   component: () => import('../views/DashboardAdmin.vue'),
+  //   meta: {requireAuth: true, roles: [ROLES.SISTEMAS, ROLES.ADMIN]}
+  // },
   {
     path: '/usuarios',
     name: 'usuarios',

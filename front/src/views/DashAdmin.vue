@@ -25,11 +25,18 @@
             </b-row>
             <b-row v-else>
                 <b-col class="mt-4" lg="4" md="12" sm="12">
-                    <vs-card type="3" class="cardKM">
+                    <b-card 
+                        :style="{ 'border-left': `solid 5px #0d6efd !important` }"
+                         
+                    >
+                            <donutPie v-model="dp" :title="'cliente'"/>
+                
+                    </b-card>
+                    <!-- <vs-card type="3" class="cardKM">
                         <template #img>
                             <donutPie v-model="dp" :title="'cliente'"/>
                         </template>
-                    </vs-card>
+                    </vs-card> -->
                 </b-col>
                 <b-col class="mt-4" lg="4" md="12" sm="12">
                     <vs-card type="3" class="cardKM">
