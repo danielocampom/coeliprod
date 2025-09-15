@@ -4,7 +4,7 @@
         <br>
         <b-container class="bv-example-row mt-5">
             <hr>
-            <h3>Lavadoras en Uso</h3>
+            <h2 class="mt-3 mb-5">Lavadoras en Uso</h2>
             <b-row >
                 <b-col
                     class="mt-4"
@@ -67,7 +67,7 @@
             </b-row>
            
             <hr>
-            <h3>Ordenes en Proceso</h3>
+            <h2 class="mt-3 mb-5">Ordenes en Proceso</h2>
             
              <b-row >
                 <b-col
@@ -102,7 +102,7 @@
             </b-row>
             
             <hr>
-            <h3>Acumulado Mensual y Anual</h3>
+            <h2 class="mt-3 mb-5">Acumulado Mensual y Anual</h2>
             
             <b-row>
                 <b-col class="mt-4" lg="12" md="12" sm="12" >

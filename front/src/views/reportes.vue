@@ -12,7 +12,13 @@
                         <b-form-radio v-model="tipoReporte" value="anio">Por Año</b-form-radio>
                         <b-form-radio v-model="tipoReporte" value="personalizado">Personalizado</b-form-radio>
                     </b-form-group>
-
+                    <b-row class="mt-3">
+                        <b-col lg="3">
+                            <vs-switch val="true" v-model="eliminados">
+                                incluir Eliminados
+                            </vs-switch>
+                        </b-col>
+                    </b-row>
                     <b-row>
                         <b-col md="6" sm="6">
                             <b-form-group class="mt-4" label="Selecciona la fecha inicio">
@@ -59,6 +65,7 @@ export default {
             anio: 365,
             personalizado: null
         },
+        eliminados: false,
         tipoReporte: 'semana',
         fechaInicio: new Date(),
         fechaFinal: new Date(),
@@ -102,10 +109,10 @@ export default {
         },
         async generarReporte(){
             let token = this.$session.get('token')
-
             let json = {
                 "fechaInicio": this.fechaInicio,
                 "fechaFin": this.fechaFinal,
+                incluyeEliminados: this.eliminados,
             }
             let res = await fetch(this.url+"orden/reporte",{
                 method: "POST",
