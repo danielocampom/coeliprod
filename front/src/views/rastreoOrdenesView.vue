@@ -69,7 +69,7 @@
 
 <script>
 import HeaderComponent from '@/components/Header.vue';
-import { refreshSession, fetchApi } from "@/service/service.js"
+import { refreshSession } from "@/service/service.js"
 import loginComponent from '@/components/cardLogin.vue';
 import cardRastroComponent from '@/components/cardRastro.vue';
 import moment from 'moment'
@@ -113,19 +113,44 @@ export default {
             return moment(fechaCorta[0]).format("LL");  
         },
         async buscar(){
+            let token = this.$session.get('token')
+
             this.rastreo = []
 
-            fetchApi(this.url+`orden/findByIdOrdenLavado/${this.buscarTxt}`, 'GET', this.$session.get('token'))
-            .then(data => {
-                if(data.status == 401){ this.activarReboot = true }
-                if(data.status == 200){
-                    this.rastreo.push(data.datos)
-                    this.refresh()
-                }else{
-                    this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
-                    this.rastreo = []
-                }
+            // fetchApi(this.url+`orden/findByIdOrdenLavado/${this.buscarTxt}`, 'GET', this.$session.get('token'))
+            // .then(data => {
+            //     if(data.status == 401){ this.activarReboot = true }
+            //     if(data.status == 200){
+            //         this.rastreo.push(data.datos)
+            //         this.refresh()
+            //     }else{
+            //         this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+            //         this.rastreo = []
+            //     }
+            // })
+            let json = {
+                "criterio": this.buscarTxt,
+                
+            }
+            let res = await fetch(this.url+"orden/findByEnvio",{
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*",
+                    'Authorization': token
+                },
+                body: JSON.stringify(json)
             })
+            let data = await res.json()
+            if(data.status == 401){ this.activarReboot = true }
+            if(data.status == 200){
+                this.rastreo.push(data.datos)
+                this.refresh()
+            }else{
+                this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
+                this.rastreo = []
+            }
+           
         },
         
         openNotification( title, text, color, position = null, icon) {
