@@ -1,39 +1,62 @@
 <template>
         
-    <b-card :title="dataRastreo.prendas[0].nomCliente" :sub-title="'Id Orden' + dataRastreo.idOrden">
-        <v-row justify="space-between">
-            <v-col cols="10">
-                <strong>Fecha Recepcion: </strong> {{ fecha(dataRastreo.fechaRecepcion) }}
-                <br>
-                <strong>Fecha Entrega: </strong> {{ fecha(dataRastreo.fechaEntrega) }}
-            </v-col>
-            <v-col class="text-right" cols="2">
-                <div class='badge bg-primary text-wrap float-start' >
-                    {{ dataRastreo.nombreEstado }}
-                </div>
-            </v-col>
-        </v-row>
-        <br>
-        <v-timeline  dense >
-            <v-timeline-item  color="deep-purple lighten-1"  v-for="(rs, i) in dataRastreo.prendas" :key="i">
-                <v-card class="elevation-2">
-                    <div class='badge bg-primary text-wrap float-end' >
-                        {{ rs.nombreEstado }}
+    <v-timeline  dense >
+        <v-timeline-item  color="deep-purple lighten-1"  >
+            <v-card class="elevation-2">
+                <div class='badge bg-primary text-wrap float-end' >
+                        {{ dataRastreo.nombreEstado }}
                     </div>
-                    <v-card-title class="text-h5">
-                        <strong>Fecha Alta: </strong> {{ fecha(rs.fechaAlta) }}
-                        <strong>Ultimo Movimiento: </strong> {{ fecha(rs.ultimoEstado) }}
-                    </v-card-title>
-                    <v-card-text>
-                        <div class="mt-1">
-                            <label for="descripcion">cantidad: </label>
-                            <strong>{{rs.cantidad}}</strong>
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </v-timeline-item>
-        </v-timeline>
-    </b-card>
+                <v-card-title class="text-h5">
+                    {{ dataRastreo.prenda }}
+                </v-card-title>
+                <v-card-title class="text-h5">
+                    <strong> cantidad: </strong> {{ dataRastreo.cantidad }}
+                </v-card-title>
+                <v-card-text>
+                    <div class="mt-1">
+                        <label for="descripcion">Ultimo Movimiento: </label>
+                        <strong>{{ fecha(dataRastreo.ultimoEstado) }}</strong>
+                    </div>
+                </v-card-text>
+
+                <v-timeline dense clipped >
+                    <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
+                        <template v-slot:icon>
+                            <span>His</span>
+                        </template>
+                    </v-timeline-item>
+                    <br>
+                    <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(h, j) in dataRastreo.historial" :key="j">
+                        <v-timeline  dense >
+                            <v-card class="elevation-2">
+                                <div class='badge bg-primary text-wrap float-end' >
+                                    {{ h.estado }}
+                                </div>
+                                <v-card-title class="text-h5">
+                                    {{ h.pasoProceso.nombre }}
+                                </v-card-title>
+                                <v-card-title class="text-h5">
+                                    <strong> Cantidad Lavada: </strong> {{ h.cantidad }}
+                                </v-card-title>
+                                <v-card-text>
+                                    <div class="mt-1">
+                                        <label for="descripcion">Fecha de Inicio: </label>
+                                        <strong>{{fecha(h.fechaInicio)}}</strong>
+                                    </div>
+                                </v-card-text>
+                                 <v-card-text v-if="h.fechaFin != null">
+                                    <div class="mt-1">
+                                        <label for="descripcion">Fecha de Final: </label>
+                                        <strong>{{fecha(h.fechaFin)}}</strong>
+                                    </div>
+                                </v-card-text>
+                            </v-card>
+                        </v-timeline>
+                    </v-timeline-item>
+                </v-timeline>
+            </v-card>
+        </v-timeline-item>
+    </v-timeline>
                     
 
 </template>
@@ -68,8 +91,9 @@ export default {
 
     },
     mounted(){
-
+        console.log(this.dataRastreo)
     },
+    
     methods: {
         
         refresh(){

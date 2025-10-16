@@ -35,16 +35,40 @@
         </b-container>
         <br>
         <template>
-            <v-container style="max-width: 900px;" v-if="rastreo.length > 0">
+            <v-container style="max-width: 900px;" v-if="rastreo.length != 0">
                 <v-timeline dense clipped >
                     <v-timeline-item fill-dot class="white--text mb-12" color="orange" large>
                         <template v-slot:icon>
-                            <span>HI</span>
+                            <span>In</span>
                         </template>
                     </v-timeline-item>
                     <br>
-                    <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(rs, i) in rastreo" :key="i">
-                        <cardRastroComponent :dataRastreo="{idOrden:rs.idOrden, idCliente:rs.idCliente, fechaRecepcion:rs.fechaRecepcion, fechaEntrega:rs.fechaEntrega, nombreEstado:rs.nombreEstado, prendas:rs.prendas}"></cardRastroComponent>
+                    <v-timeline-item class="mb-4" color="primary" icon-color="grey lighten-2" small>
+                        <v-timeline  dense >
+                            <v-card class="elevation-2">
+                                <v-card-title class="text-h5">
+                                    {{ rastreo.prendas[0].nomCliente }}
+                                </v-card-title>
+                                <div class='badge bg-primary text-wrap float-end' >
+                                    {{ rastreo.nombreEstado }}
+                                </div>
+                                <v-card-title class="text-h5">
+                                    <strong>Fecha Recepcion: </strong> {{ fecha(rastreo.fechaRecepcion) }}
+                                </v-card-title>
+                                <v-card-title class="text-h5">
+                                    <strong>Fecha Entrega: </strong> {{ fecha(rastreo.fechaEntrega) }}
+                                </v-card-title>
+                                <v-card-text>
+                                    <div class="mt-1">
+                                        <label for="descripcion">Folio: </label>
+                                        <strong>{{rastreo.numEnvio}}</strong>
+                                    </div>
+                                </v-card-text>
+                            </v-card>
+                        </v-timeline>
+                            <div class="mb-4" color="primary" icon-color="grey lighten-2" small  v-for="(rs, i) in rastreo.prendas" :key="i">
+                                <cardRastroComponent :dataRastreo="rs"></cardRastroComponent>
+                            </div>
                     </v-timeline-item>
                 </v-timeline>
             </v-container>
@@ -144,13 +168,14 @@ export default {
             let data = await res.json()
             if(data.status == 401){ this.activarReboot = true }
             if(data.status == 200){
-                this.rastreo.push(data.datos)
+                this.rastreo = data.datos[0]
                 this.refresh()
             }else{
                 this.openNotification(`Ooops! Error:`, `${data.mensaje}`, 'danger', 'top-left',`<box-icon name='bug' color="#fff"></box-icon>`)
                 this.rastreo = []
             }
            
+            // console.log(this.rastreo)
         },
         
         openNotification( title, text, color, position = null, icon) {
