@@ -1,26 +1,26 @@
 <template>
     <div class="container">
         <vs-alert danger >
-            <b-skeleton v-if="!dataClient.nombreCliente" type="button"></b-skeleton>
-            <div>
-                <p class="fw-bold fs-5">{{ dataClient.nombrePrenda }} </p> 
-                <p class="fw-semibold">{{ dataClient.nombreCliente }}</p>
-                <p class="fw-semibold">Numero Orden {{ dataClient.idOrdenLavado }}</p>
-                <p class="mt-2 mb-3">Fecha de Cancelacion <b>{{ fecha(dataClient.fechaCancelacion) }}</b></p>
-
+            <div v-for="(prendas, i) in dataClient.prendas" :key="i">
+                <b-skeleton v-if="!dataClient.prendas[0].nomCliente" type="button"></b-skeleton>
+                <div>
+                    <p class="fw-bold fs-5">{{ prendas.prenda }} </p> 
+                    <p class="fw-semibold">{{ prendas.nomCliente }}</p>
+                    <p class="fw-semibold">Folio {{ dataClient.numEnvio }}</p>
+                    <p class="mt-2 mb-3">Ultimo Estado <b>{{ fecha(prendas.ultimoEstado) }}</b></p>
+    
+                </div>
+                <b-skeleton v-if="render" type="avatar"></b-skeleton>
+                <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
+                <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
+                <b-skeleton v-if="render" animation="throb" width="40%"></b-skeleton>
+                
+                <div v-else>
+                    <btn_ticket_cancel :idOrdenPrenda="prendas.idOrdenPrena" />
+                    <p>Cantidad <b>{{prendas.cantidad}}</b></p>
+                </div>
+                <hr>
             </div>
-            <b-skeleton v-if="render" type="avatar"></b-skeleton>
-            <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
-            <b-skeleton v-if="render" animation="throb" width="100%"></b-skeleton>
-            <b-skeleton v-if="render" animation="throb" width="40%"></b-skeleton>
-            
-            <div v-else>
-                <btn_ticket_cancel :idOrdenPrenda="dataClient.idOrdenPrenda" />
-                {{dataClient.descripcion}} 
-                <p>Cantidad Anterior <b>{{dataClient.cantidadAnterior}}</b></p>
-                <p>Cantidad Actual <b>{{dataClient.cantidadActual}}</b></p> 
-            </div>
-            <hr>
         </vs-alert>
         <div v-if="activarReboot">
             <loginComponent :login="activarReboot"></loginComponent>
@@ -50,6 +50,7 @@ export default {
 
     }),
     mounted(){
+        console.log(this.dataClient)
         setTimeout(() => {
             this.render = false
         }, 1500)

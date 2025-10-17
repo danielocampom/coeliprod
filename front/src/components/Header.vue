@@ -191,9 +191,18 @@
               <box-icon name='folder-minus'></box-icon>
             </template>
             <router-link to="/canceladas" class="nav-link">
-                Ordenes canceladas
+                canceladas
             </router-link>
           </vs-sidebar-item>
+
+          <!-- <vs-sidebar-item :class="{ 'active': isActive('/OrdenesCanceladas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="canceladas">
+            <template #icon>
+              <box-icon name='folder-minus'></box-icon>
+            </template>
+            <router-link to="/canceladas" class="nav-link">
+                Ordenes canceladas
+            </router-link>
+          </vs-sidebar-item> -->
       </vs-sidebar-group>
 
       <vs-sidebar-group>
