@@ -177,14 +177,14 @@
             </router-link>
           </vs-sidebar-item>
 
-          <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'HISTORIAL LAVADO'].includes(role))" id="rastreo" >
+          <!-- <vs-sidebar-item :class="{ 'active': isActive('/historico') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'HISTORIAL LAVADO'].includes(role))" id="rastreo" >
             <template #icon>
               <box-icon name='book-reader'></box-icon>
             </template>
             <router-link to="/historico" class="nav-link">
                 Historico de Ordenes
             </router-link>
-          </vs-sidebar-item>
+          </vs-sidebar-item> -->
           
           <vs-sidebar-item :class="{ 'active': isActive('/canceladas') }" v-if="this.$session.get('roles').some(role => ['SISTEMAS', 'ADMIN', 'CANCELACION'].includes(role))" id="canceladas">
             <template #icon>
