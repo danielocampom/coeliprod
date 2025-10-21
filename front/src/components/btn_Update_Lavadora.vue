@@ -239,9 +239,14 @@ export default {
             this.programas.forEach( pl => {
                 pogramLav.push(pl.idPrograma)
             })
+
+            const valor = typeof this.tipoLavado === 'string'
+            ? this.dataWasher.row.item.id
+            : this.tipoLavado;
+
             let json = {
                 "lavadora": this.nombreUp,
-                "idTipoLavado": this.tipoLavado,
+                "idTipoLavado": valor,
                 "idLavadora": this.dataWasher.row.item.id,
                 "maximo": this.capMaxima,
                 "minimo": this.capMinima,
