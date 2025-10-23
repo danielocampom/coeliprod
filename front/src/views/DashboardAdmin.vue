@@ -58,7 +58,7 @@
                                 <hr />
 
                                 <p class="mb-0">
-                                    <strong>Peso total:</strong> {{ lavadora.kilos }} kg
+                                    <strong>Peso total:</strong> {{ Number(lavadora.kilos).toFixed(4) }} kg
                                 </p>
                             </div>
                         </div>

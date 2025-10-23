@@ -104,7 +104,7 @@
                                                             <vs-option  v-for="(lavado, i) in getLavado" :key="i" 
                                                             :label="`${lavado.lavadora} - Max: ${(lavado.max / 100) * lavado.kilos} Min: ${(lavado.min / 100) * lavado.kilos}`" 
                                                             :value="lavado.idLavadora">
-                                                                {{ lavado.lavadora }}  Max.: {{ (lavado.max/100)*lavado.kilos }} KG  Min.: {{ (lavado.min/100)*lavado.kilos }} KG
+                                                                {{ lavado.lavadora }}  Max.: {{  Number((lavado.max/100)*lavado.kilos).toFixed(4)   }} KG  Min.: {{ Number((lavado.min/100)*lavado.kilos).toFixed(4) }} KG
                                                             </vs-option>
                                                         </vs-option-group>
                                                     </vs-select>
