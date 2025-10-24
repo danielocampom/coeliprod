@@ -34,12 +34,12 @@
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
-                    <vs-input success type="text" v-model="capMinima" class="mt-4" label-placeholder="Capacidad Minima">
+                    <vs-input success type="text" v-model="capMinima" class="mt-4" label-placeholder="Capacidad Minima en Porcentaje">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
                         </template>
                     </vs-input>
-                    <vs-input success type="text" v-model="capMaxima" class="mt-4" label-placeholder="Capacidad Maxima">
+                    <vs-input success type="text" v-model="capMaxima" class="mt-4" label-placeholder="Capacidad Maxima en Porcentaje">
                         <template #icon>
                             <box-icon name='wind'></box-icon>
                         </template>

@@ -558,8 +558,8 @@ export default {
                 if(data.status == 200){
                     data.datos.forEach(lavado => {
                         if(lavado.idEstado == 1 || lavado.idEstado == 7){
-                            let max = (lavado.max / 100) * lavado.kilos  + " kg "
-                            let min = (lavado.min / 100) * lavado.kilos + " kg "
+                            let max = Number((lavado.max / 100) * lavado.kilos).toFixed(4)  + " kg "
+                            let min = Number((lavado.min / 100) * lavado.kilos).toFixed(4) + " kg "
                             item.push( {
                                 "id": lavado.idLavadora, 
                                 "nombre": `${lavado.lavadora}  max: ${max} min: ${min}`,
